@@ -1,0 +1,201 @@
+{
+  "learner": "",
+  "currentChapter": "01-environment-setup",
+  "totalChapters": 24,
+  "completedChapters": 0,
+  "lastUpdated": "",
+  "chapters": {
+    "01-environment-setup": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "quizPassed": false,
+      "sourceFiles": [],
+      "description": "Node.js, npm, 터미널 기초, 프로젝트 구조 생성"
+    },
+    "02-first-server": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "quizPassed": false,
+      "sourceFiles": ["src/backend/src/index.js"],
+      "description": "HTTP, 요청/응답, Express 기초, Hello World 서버"
+    },
+    "03-typescript-intro": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "quizPassed": false,
+      "sourceFiles": ["src/backend/src/index.ts", "src/backend/tsconfig.json"],
+      "description": "타입, 인터페이스, JS 서버를 TS로 전환"
+    },
+    "04-where-to-store-data": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "quizPassed": false,
+      "sourceFiles": ["src/backend/src/data.json"],
+      "description": "JSON 파일의 한계 체감, DB 필요성 인식"
+    },
+    "05-sql-basics": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "quizPassed": false,
+      "sourceFiles": ["src/backend/src/db/schema.sql"],
+      "description": "CREATE TABLE, INSERT, SELECT, SQLite 기초"
+    },
+    "06-table-design": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "quizPassed": false,
+      "sourceFiles": ["src/backend/src/db/schema.sql", "docs/erd/community-board.md"],
+      "description": "관계(1:N, N:M), 정규화, FK, ERD 설계"
+    },
+    "07-sql-advanced": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "quizPassed": false,
+      "sourceFiles": ["src/backend/src/db/queries.sql"],
+      "description": "JOIN, WHERE, ORDER BY, 집계 함수"
+    },
+    "08-db-server-connect": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "quizPassed": false,
+      "sourceFiles": ["src/backend/src/db/index.ts"],
+      "description": "better-sqlite3로 Express에서 SQLite 연동"
+    },
+    "09-rest-api-design": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "quizPassed": false,
+      "sourceFiles": ["src/backend/src/routes/posts.ts"],
+      "description": "REST 원칙, 라우팅, 게시글 CRUD API"
+    },
+    "10-signup-api": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "quizPassed": false,
+      "sourceFiles": ["src/backend/src/routes/auth.ts", "src/backend/src/db/migrations/001-users.sql"],
+      "description": "비밀번호 해싱, 입력 검증, POST /api/auth/register"
+    },
+    "11-login-auth": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "quizPassed": false,
+      "sourceFiles": ["src/backend/src/routes/auth.ts", "src/backend/src/middleware/auth.ts"],
+      "description": "세션/토큰, JWT, 로그인 API + 인증 미들웨어"
+    },
+    "12-board-api": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "quizPassed": false,
+      "sourceFiles": ["src/backend/src/routes/boards.ts", "src/backend/src/routes/posts.ts", "src/backend/src/db/migrations/002-boards.sql"],
+      "description": "게시판 생성/목록/상세, 카테고리, 페이지네이션"
+    },
+    "13-error-handling": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "quizPassed": false,
+      "sourceFiles": ["src/backend/src/middleware/error.ts"],
+      "description": "에러 미들웨어, 입력 유효성 검증, 통합 에러 핸들링"
+    },
+    "14-vue-intro": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "quizPassed": false,
+      "sourceFiles": ["src/frontend/src/App.vue"],
+      "description": "Vue.js 컴포넌트, 반응성, 템플릿, 프로젝트 생성"
+    },
+    "15-routing": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "quizPassed": false,
+      "sourceFiles": ["src/frontend/src/router/index.ts", "src/frontend/src/views/HomeView.vue"],
+      "description": "Vue Router, SPA 개념, 페이지 골격"
+    },
+    "16-api-integration": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "quizPassed": false,
+      "sourceFiles": ["src/frontend/src/api/index.ts"],
+      "description": "fetch/axios, async/await, 서버 데이터 표시"
+    },
+    "17-auth-views": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "quizPassed": false,
+      "sourceFiles": ["src/frontend/src/views/LoginView.vue", "src/frontend/src/views/RegisterView.vue"],
+      "description": "폼, v-model, 회원가입/로그인 폼 구현"
+    },
+    "18-auth-state": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "quizPassed": false,
+      "sourceFiles": ["src/frontend/src/stores/auth.ts", "src/frontend/src/router/index.ts"],
+      "description": "Pinia, 토큰 저장, 라우트 가드, 비로그인 접근 차단"
+    },
+    "19-board-views": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "quizPassed": false,
+      "sourceFiles": ["src/frontend/src/views/BoardsView.vue", "src/frontend/src/views/BoardCreateView.vue"],
+      "description": "리스트 렌더링, 폼 제출, 게시판 목록/생성 화면"
+    },
+    "20-post-views": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "quizPassed": false,
+      "sourceFiles": ["src/frontend/src/views/PostListView.vue", "src/frontend/src/views/PostDetailView.vue", "src/frontend/src/views/PostCreateView.vue"],
+      "description": "에디터, 동적 라우트, 글 작성/목록/상세 화면"
+    },
+    "21-ui-polish": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "quizPassed": false,
+      "sourceFiles": ["src/frontend/src/assets/main.css"],
+      "description": "CSS 기초 복습, 반응형, 전체 화면 스타일링"
+    },
+    "22-integration-test": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "quizPassed": false,
+      "sourceFiles": [],
+      "description": "전체 흐름 점검, 회원가입→로그인→글쓰기 시나리오"
+    },
+    "23-deploy-prep": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "quizPassed": false,
+      "sourceFiles": ["vercel.json"],
+      "description": "빌드, 환경변수, Supabase 설정, 프로덕션 구성"
+    },
+    "24-deploy": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "quizPassed": false,
+      "sourceFiles": [],
+      "description": "SQLite→Supabase 마이그레이션, Vercel 배포, 라이브 URL 확인"
+    }
+  }
+}
