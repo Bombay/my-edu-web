@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>퀴즈 - {{CHAPTER_TITLE}}</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+      background: #f8f9fa;
+      color: #333;
+    }
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: #2c3e50;
+    }
+    .subtitle {
+      color: #666;
+      margin-bottom: 2rem;
+      font-size: 0.9rem;
+    }
+    .question {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .question h2 {
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      color: #2c3e50;
+    }
+    .question pre {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      padding: 1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 1rem 0;
+      font-size: 0.85rem;
+    }
+    .mermaid {
+      background: white;
+      text-align: center;
+      margin: 1rem 0;
+    }
+    .options {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .options li {
+      padding: 0.75rem 1rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .options li:hover {
+      border-color: #3498db;
+      background: #ebf5fb;
+    }
+    .options li.correct {
+      border-color: #27ae60;
+      background: #eafaf1;
+    }
+    .options li.wrong {
+      border-color: #e74c3c;
+      background: #fdedec;
+    }
+    .options li.disabled {
+      pointer-events: none;
+      opacity: 0.6;
+    }
+    .feedback {
+      margin-top: 0.75rem;
+      padding: 0.75rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      display: none;
+    }
+    .feedback.show { display: block; }
+    .feedback.correct-feedback {
+      background: #eafaf1;
+      color: #27ae60;
+      border: 1px solid #27ae60;
+    }
+    .feedback.wrong-feedback {
+      background: #fdedec;
+      color: #e74c3c;
+      border: 1px solid #e74c3c;
+    }
+    .score {
+      text-align: center;
+      padding: 2rem;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      display: none;
+    }
+    .score h2 { font-size: 1.3rem; margin-bottom: 1rem; }
+    .score .result {
+      font-size: 2rem;
+      font-weight: bold;
+      margin: 1rem 0;
+    }
+    .score .pass { color: #27ae60; }
+    .score .fail { color: #e74c3c; }
+  </style>
+</head>
+<body>
+  <h1>{{CHAPTER_TITLE}} 퀴즈</h1>
+  <p class="subtitle">챕터 {{CHAPTER_NUM}}에서 배운 내용을 확인합니다.</p>
+
+  <div id="quiz-container">
+  </div>
+
+  <div class="score" id="score-board">
+    <h2>퀴즈 결과</h2>
+    <div class="result" id="score-text"></div>
+    <p id="score-message"></p>
+  </div>
+
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+
+    // 퀴즈 데이터 - 챕터별로 이 부분을 교체합니다
+    const quizData = [
+      // 예시: 다이어그램 기반 문제
+      // {
+      //   type: 'diagram',
+      //   question: '아래 ERD에서 users와 posts의 관계는?',
+      //   diagram: 'erDiagram\n  USERS ||--o{ POSTS : writes',
+      //   options: ['1:1', '1:N', 'N:M', '관계 없음'],
+      //   answer: 1,
+      //   explanation: 'users 한 명이 여러 posts를 작성할 수 있으므로 1:N 관계입니다.'
+      // },
+      // 예시: 코드 기반 문제
+      // {
+      //   type: 'code',
+      //   question: '다음 SQL의 실행 결과는?',
+      //   code: 'SELECT COUNT(*) FROM users WHERE age > 20;',
+      //   options: ['모든 사용자 수', '20세 초과 사용자 수', '에러 발생', '0'],
+      //   answer: 1,
+      //   explanation: 'WHERE age > 20 조건에 맞는 행의 수를 COUNT(*)로 세어 반환합니다.'
+      // }
+    ];
+
+    const container = document.getElementById('quiz-container');
+    let answered = 0;
+
+    quizData.forEach((q, i) => {
+      const div = document.createElement('div');
+      div.className = 'question';
+      div.id = `q${i}`;
+
+      let contentHTML = `<h2>Q${i + 1}. ${q.question}</h2>`;
+
+      if (q.type === 'diagram' && q.diagram) {
+        contentHTML += `<div class="mermaid">${q.diagram}</div>`;
+      }
+      if (q.type === 'code' && q.code) {
+        contentHTML += `<pre><code>${q.code}</code></pre>`;
+      }
+
+      contentHTML += '<ul class="options">';
+      q.options.forEach((opt, j) => {
+        contentHTML += `<li onclick="checkAnswer(${i}, ${j})">${opt}</li>`;
+      });
+      contentHTML += '</ul>';
+      contentHTML += `<div class="feedback" id="feedback-${i}"></div>`;
+
+      div.innerHTML = contentHTML;
+      container.appendChild(div);
+    });
+
+    function checkAnswer(qIndex, selected) {
+      const q = quizData[qIndex];
+      const questionDiv = document.getElementById(`q${qIndex}`);
+      const options = questionDiv.querySelectorAll('.options li');
+      const feedback = document.getElementById(`feedback-${qIndex}`);
+
+      options.forEach((opt, j) => {
+        opt.classList.add('disabled');
+        if (j === q.answer) opt.classList.add('correct');
+        if (j === selected && j !== q.answer) opt.classList.add('wrong');
+      });
+
+      if (selected === q.answer) {
+        feedback.className = 'feedback show correct-feedback';
+        feedback.textContent = `정답! ${q.explanation}`;
+      } else {
+        feedback.className = 'feedback show wrong-feedback';
+        feedback.textContent = `오답. ${q.explanation}`;
+      }
+
+      answered++;
+      if (answered === quizData.length) showScore();
+    }
+
+    function showScore() {
+      const correct = document.querySelectorAll('.options li.correct').length;
+      const total = quizData.length;
+      const scoreBoard = document.getElementById('score-board');
+      const scoreText = document.getElementById('score-text');
+      const scoreMsg = document.getElementById('score-message');
+      const passed = correct === total;
+
+      scoreBoard.style.display = 'block';
+      scoreText.textContent = `${correct} / ${total}`;
+      scoreText.className = `result ${passed ? 'pass' : 'fail'}`;
+      scoreMsg.textContent = passed
+        ? '모든 문제를 맞혔습니다! Claude에게 "퀴즈 통과"라고 알려주세요.'
+        : '틀린 문제가 있습니다. Claude에게 틀린 부분을 질문해보세요.';
+    }
+  </script>
+</body>
+</html>
