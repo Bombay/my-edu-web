@@ -2,14 +2,14 @@
   "learner": "",
   "currentChapter": "01-environment-setup",
   "totalChapters": 24,
-  "completedChapters": 0,
+  "completedChapters": 1,
   "lastUpdated": "",
   "chapters": {
     "01-environment-setup": {
-      "status": "pending",
-      "startedAt": null,
-      "completedAt": null,
-      "quizPassed": false,
+      "status": "completed",
+      "startedAt": "2026-03-27",
+      "completedAt": "2026-03-27",
+      "quizPassed": true,
       "sourceFiles": [],
       "description": "Node.js, npm, 터미널 기초, 프로젝트 구조 생성"
     },

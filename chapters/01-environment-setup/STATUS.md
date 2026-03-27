@@ -1,13 +1,18 @@
 ---
 chapter: "01-environment-setup"
-status: "pending"
-startedAt: null
-completedAt: null
-quizPassed: false
+status: "completed"
+startedAt: "2026-03-27"
+completedAt: "2026-03-27"
+quizPassed: true
 ---
 
 ## 실습 체크리스트
-(챕터 시작 시 생성됨)
+- [x] Node.js 설치 확인
+- [x] npm 설치 확인
+- [x] 터미널 기본 명령어 이해
+- [x] 프로젝트 구조 이해
+- [x] package.json 생성 및 이해
+- [x] 퀴즈 통과
 
 ## 퀴즈 결과
-(미실시)
+통과 (2026-03-27)

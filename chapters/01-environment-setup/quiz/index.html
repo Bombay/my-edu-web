@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>챕터 01 퀴즈 - 개발 환경 세팅</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', -apple-system, sans-serif;
+      background: #f5f7fa;
+      color: #333;
+      line-height: 1.6;
+      padding: 2rem;
+    }
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+      color: #2c3e50;
+    }
+    .subtitle {
+      color: #666;
+      margin-bottom: 2rem;
+      font-size: 1rem;
+    }
+    .question-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .question-number {
+      font-size: 0.85rem;
+      color: #888;
+      margin-bottom: 0.3rem;
+    }
+    .question-text {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: #2c3e50;
+    }
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .option {
+      display: flex;
+      align-items: center;
+      padding: 0.8rem 1rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: white;
+    }
+    .option:hover {
+      border-color: #aaa;
+      background: #fafafa;
+    }
+    .option input {
+      margin-right: 0.8rem;
+      accent-color: #3498db;
+      width: 18px;
+      height: 18px;
+    }
+    .option.correct {
+      border-color: #27ae60;
+      background: #eafaf1;
+    }
+    .option.wrong {
+      border-color: #e74c3c;
+      background: #fdf2f2;
+    }
+    .option.disabled {
+      pointer-events: none;
+      opacity: 0.7;
+    }
+    .feedback {
+      margin-top: 0.8rem;
+      padding: 0.8rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      display: none;
+    }
+    .feedback.show { display: block; }
+    .feedback.correct-fb {
+      background: #eafaf1;
+      color: #1e8449;
+      border: 1px solid #a9dfbf;
+    }
+    .feedback.wrong-fb {
+      background: #fdf2f2;
+      color: #c0392b;
+      border: 1px solid #f5b7b1;
+    }
+    .submit-btn {
+      display: block;
+      width: 100%;
+      padding: 1rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: white;
+      background: #3498db;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 1rem;
+      transition: background 0.2s;
+    }
+    .submit-btn:hover { background: #2980b9; }
+    .submit-btn:disabled {
+      background: #bdc3c7;
+      cursor: not-allowed;
+    }
+    .result {
+      text-align: center;
+      padding: 2rem;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      display: none;
+    }
+    .result.show { display: block; }
+    .result h2 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .result .score { font-size: 3rem; font-weight: 700; margin: 1rem 0; }
+    .result .pass { color: #27ae60; }
+    .result .fail { color: #e74c3c; }
+    .result .message { color: #666; margin-bottom: 1rem; }
+    .retry-btn {
+      padding: 0.8rem 2rem;
+      font-size: 1rem;
+      color: white;
+      background: #e74c3c;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 0.5rem;
+    }
+    .pass-code {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #eafaf1;
+      border-radius: 8px;
+      border: 2px dashed #27ae60;
+    }
+    .pass-code code {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #27ae60;
+    }
+    pre {
+      background: #2d2d2d;
+      color: #f8f8f2;
+      padding: 1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 0.5rem 0 1rem;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>챕터 01 퀴즈</h1>
+    <p class="subtitle">개발 환경 세팅 - 4문제 중 3문제 이상 맞추면 통과!</p>
+
+    <form id="quiz-form">
+      <!-- Q1 -->
+      <div class="question-card" data-question="1" data-answer="2">
+        <div class="question-number">Q1</div>
+        <div class="question-text">Node.js의 역할로 가장 적절한 것은?</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="q1" value="1"> 웹 브라우저에서 HTML을 예쁘게 보여주는 프로그램</label>
+          <label class="option"><input type="radio" name="q1" value="2"> JavaScript를 브라우저 밖에서(서버에서) 실행할 수 있게 해주는 프로그램</label>
+          <label class="option"><input type="radio" name="q1" value="3"> 데이터베이스를 관리하는 프로그램</label>
+          <label class="option"><input type="radio" name="q1" value="4"> CSS 스타일을 자동으로 만들어주는 프로그램</label>
+        </div>
+        <div class="feedback"></div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="question-card" data-question="2" data-answer="3">
+        <div class="question-number">Q2</div>
+        <div class="question-text">npm은 무엇의 약자이고, 어떤 역할을 하나요?</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="q2" value="1"> New Programming Method — 새로운 프로그래밍 방법론</label>
+          <label class="option"><input type="radio" name="q2" value="2"> Node Process Manager — Node.js 프로세스를 관리</label>
+          <label class="option"><input type="radio" name="q2" value="3"> Node Package Manager — 다른 사람이 만든 도구(패키지)를 설치하고 관리</label>
+          <label class="option"><input type="radio" name="q2" value="4"> Network Protocol Module — 네트워크 통신을 담당</label>
+        </div>
+        <div class="feedback"></div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="question-card" data-question="3" data-answer="1">
+        <div class="question-number">Q3</div>
+        <div class="question-text">다음 터미널 명령어의 결과로 올바른 것은?</div>
+        <pre>pwd</pre>
+        <div class="options">
+          <label class="option"><input type="radio" name="q3" value="1"> 현재 내가 위치한 폴더(디렉토리) 경로를 보여준다</label>
+          <label class="option"><input type="radio" name="q3" value="2"> 현재 폴더의 파일 목록을 보여준다</label>
+          <label class="option"><input type="radio" name="q3" value="3"> 상위 폴더로 이동한다</label>
+          <label class="option"><input type="radio" name="q3" value="4"> 비밀번호를 변경한다</label>
+        </div>
+        <div class="feedback"></div>
+      </div>
+
+      <!-- Q4 -->
+      <div class="question-card" data-question="4" data-answer="2">
+        <div class="question-number">Q4</div>
+        <div class="question-text">package.json의 역할로 가장 적절한 것은?</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="q4" value="1"> 서버를 실행하는 코드가 들어있는 파일</label>
+          <label class="option"><input type="radio" name="q4" value="2"> 프로젝트의 이름, 사용하는 도구, 실행 명령어 등 프로젝트 정보를 담은 파일</label>
+          <label class="option"><input type="radio" name="q4" value="3"> HTML 페이지를 자동으로 생성해주는 설정 파일</label>
+          <label class="option"><input type="radio" name="q4" value="4"> 데이터베이스 테이블 구조를 정의하는 파일</label>
+        </div>
+        <div class="feedback"></div>
+      </div>
+
+      <button type="button" class="submit-btn" id="submit-btn" onclick="checkAnswers()">제출하기</button>
+    </form>
+
+    <div class="result" id="result">
+      <h2 id="result-title"></h2>
+      <div class="score" id="result-score"></div>
+      <p class="message" id="result-message"></p>
+      <div class="pass-code" id="pass-code" style="display:none;">
+        <p>아래 통과 코드를 Claude에게 알려주세요:</p>
+        <code>CHAPTER01-PASS-ENV-READY</code>
+      </div>
+      <button class="retry-btn" id="retry-btn" style="display:none;" onclick="retry()">다시 도전하기</button>
+    </div>
+  </div>
+
+  <script>
+    function checkAnswers() {
+      const cards = document.querySelectorAll('.question-card');
+      let correct = 0;
+      let allAnswered = true;
+
+      cards.forEach(card => {
+        const q = card.dataset.question;
+        const answer = card.dataset.answer;
+        const selected = document.querySelector(`input[name="q${q}"]:checked`);
+        const feedback = card.querySelector('.feedback');
+        const options = card.querySelectorAll('.option');
+
+        if (!selected) {
+          allAnswered = false;
+          return;
+        }
+
+        options.forEach(opt => opt.classList.add('disabled'));
+
+        if (selected.value === answer) {
+          correct++;
+          selected.closest('.option').classList.add('correct');
+          feedback.textContent = '정답입니다!';
+          feedback.className = 'feedback show correct-fb';
+        } else {
+          selected.closest('.option').classList.add('wrong');
+          options.forEach(opt => {
+            if (opt.querySelector('input').value === answer) {
+              opt.classList.add('correct');
+            }
+          });
+          const explanations = {
+            '1': 'Node.js는 JavaScript를 서버에서 실행할 수 있게 해주는 런타임입니다.',
+            '2': 'npm은 Node Package Manager로, 패키지(도구)를 설치하고 관리합니다.',
+            '3': 'pwd는 Print Working Directory의 약자로, 현재 위치를 보여줍니다.',
+            '4': 'package.json은 프로젝트의 정보(이름, 도구, 명령어 등)를 담은 파일입니다.'
+          };
+          feedback.textContent = '오답! ' + explanations[q];
+          feedback.className = 'feedback show wrong-fb';
+        }
+      });
+
+      if (!allAnswered) {
+        alert('모든 문제에 답해주세요!');
+        return;
+      }
+
+      document.getElementById('submit-btn').disabled = true;
+
+      const result = document.getElementById('result');
+      const title = document.getElementById('result-title');
+      const score = document.getElementById('result-score');
+      const message = document.getElementById('result-message');
+      const passCode = document.getElementById('pass-code');
+      const retryBtn = document.getElementById('retry-btn');
+
+      score.textContent = `${correct} / ${cards.length}`;
+
+      if (correct >= 3) {
+        title.textContent = '축하합니다!';
+        score.className = 'score pass';
+        message.textContent = '챕터 01을 통과했습니다! 아래 코드를 Claude에게 알려주세요.';
+        passCode.style.display = 'block';
+      } else {
+        title.textContent = '아쉽네요!';
+        score.className = 'score fail';
+        message.textContent = `3문제 이상 맞춰야 통과입니다. 다시 도전해보세요!`;
+        retryBtn.style.display = 'inline-block';
+      }
+
+      result.classList.add('show');
+    }
+
+    function retry() {
+      const cards = document.querySelectorAll('.question-card');
+      cards.forEach(card => {
+        const options = card.querySelectorAll('.option');
+        options.forEach(opt => {
+          opt.classList.remove('correct', 'wrong', 'disabled');
+          opt.querySelector('input').checked = false;
+        });
+        card.querySelector('.feedback').className = 'feedback';
+      });
+      document.getElementById('submit-btn').disabled = false;
+      document.getElementById('result').classList.remove('show');
+    }
+  </script>
+</body>
+</html>
