@@ -1,8 +1,8 @@
 {
   "learner": "",
-  "currentChapter": "03-typescript-intro",
+  "currentChapter": "05-sql-basics",
   "totalChapters": 24,
-  "completedChapters": 3,
+  "completedChapters": 5,
   "lastUpdated": "",
   "chapters": {
     "01-environment-setup": {
@@ -30,18 +30,18 @@
       "description": "타입, 인터페이스, JS 서버를 TS로 전환"
     },
     "04-where-to-store-data": {
-      "status": "pending",
-      "startedAt": null,
-      "completedAt": null,
-      "quizPassed": false,
+      "status": "completed",
+      "startedAt": "2026-03-29",
+      "completedAt": "2026-03-29",
+      "quizPassed": true,
       "sourceFiles": ["src/backend/src/data.json"],
       "description": "JSON 파일의 한계 체감, DB 필요성 인식"
     },
     "05-sql-basics": {
-      "status": "pending",
-      "startedAt": null,
-      "completedAt": null,
-      "quizPassed": false,
+      "status": "completed",
+      "startedAt": "2026-03-29",
+      "completedAt": "2026-03-29",
+      "quizPassed": true,
       "sourceFiles": ["src/backend/src/db/schema.sql"],
       "description": "CREATE TABLE, INSERT, SELECT, SQLite 기초"
     },

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>챕터 05 퀴즈: SQL 기초와 SQLite</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; padding: 40px 20px; line-height: 1.6; }
+    .container { max-width: 700px; margin: 0 auto; }
+    h1 { text-align: center; margin-bottom: 8px; color: #1a1a1a; }
+    .subtitle { text-align: center; color: #666; margin-bottom: 32px; }
+    .question { background: #fff; border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .question h3 { margin-bottom: 12px; color: #333; }
+    .question pre { background: #1e1e1e; color: #d4d4d4; padding: 16px; border-radius: 8px; margin: 12px 0; overflow-x: auto; font-size: 14px; }
+    .options { list-style: none; margin-top: 12px; }
+    .options li { margin-bottom: 8px; }
+    .options label { display: block; padding: 12px 16px; background: #f8f8f8; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+    .options label:hover { border-color: #4a90d9; background: #f0f7ff; }
+    .options input[type="radio"] { margin-right: 8px; }
+    .result { display: none; margin-top: 12px; padding: 12px 16px; border-radius: 8px; font-weight: 500; }
+    .result.correct { display: block; background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+    .result.wrong { display: block; background: #fbe9e7; color: #c62828; border: 1px solid #ef9a9a; }
+    .btn { display: block; width: 100%; padding: 16px; margin-top: 32px; background: #4a90d9; color: #fff; border: none; border-radius: 12px; font-size: 18px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+    .btn:hover { background: #357abd; }
+    .score { display: none; text-align: center; background: #fff; border-radius: 12px; padding: 32px; margin-top: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .score h2 { font-size: 28px; margin-bottom: 8px; }
+    .score.pass h2 { color: #2e7d32; }
+    .score.fail h2 { color: #c62828; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>챕터 05 퀴즈</h1>
+    <p class="subtitle">SQL 기초와 SQLite — 5문제</p>
+
+    <!-- Q1 -->
+    <div class="question" id="q1">
+      <h3>Q1. SQLite의 특징으로 맞는 것은?</h3>
+      <ul class="options">
+        <li><label><input type="radio" name="q1" value="a"> 별도의 서버 프로그램을 설치해야 한다</label></li>
+        <li><label><input type="radio" name="q1" value="b"> 파일 하나가 곧 데이터베이스다</label></li>
+        <li><label><input type="radio" name="q1" value="c"> JavaScript로만 사용할 수 있다</label></li>
+        <li><label><input type="radio" name="q1" value="d"> 데이터를 메모리에만 저장한다</label></li>
+      </ul>
+      <div class="result" id="r1"></div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="question" id="q2">
+      <h3>Q2. 다음 SQL의 결과는?</h3>
+      <pre>SELECT * FROM posts WHERE id = 2</pre>
+      <ul class="options">
+        <li><label><input type="radio" name="q2" value="a"> posts 테이블의 모든 글을 가져온다</label></li>
+        <li><label><input type="radio" name="q2" value="b"> posts 테이블에서 id가 2인 글만 가져온다</label></li>
+        <li><label><input type="radio" name="q2" value="c"> posts 테이블에서 2번째 열을 가져온다</label></li>
+        <li><label><input type="radio" name="q2" value="d"> 2개의 글을 가져온다</label></li>
+      </ul>
+      <div class="result" id="r2"></div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="question" id="q3">
+      <h3>Q3. 다음 중 테이블을 만드는 SQL 명령어는?</h3>
+      <ul class="options">
+        <li><label><input type="radio" name="q3" value="a"> <code>INSERT INTO</code></label></li>
+        <li><label><input type="radio" name="q3" value="b"> <code>SELECT FROM</code></label></li>
+        <li><label><input type="radio" name="q3" value="c"> <code>CREATE TABLE</code></label></li>
+        <li><label><input type="radio" name="q3" value="d"> <code>MAKE TABLE</code></label></li>
+      </ul>
+      <div class="result" id="r3"></div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="question" id="q4">
+      <h3>Q4. 아래 코드에서 <code>?</code>의 역할은?</h3>
+      <pre>const insert = db.prepare('INSERT INTO posts (title, content) VALUES (?, ?)');
+insert.run('제목', '내용');</pre>
+      <ul class="options">
+        <li><label><input type="radio" name="q4" value="a"> 에러가 나면 무시하라는 의미</label></li>
+        <li><label><input type="radio" name="q4" value="b"> 나중에 run()에서 전달할 값의 자리를 표시한다</label></li>
+        <li><label><input type="radio" name="q4" value="c"> 랜덤 값을 넣으라는 의미</label></li>
+        <li><label><input type="radio" name="q4" value="d"> NULL 값을 넣으라는 의미</label></li>
+      </ul>
+      <div class="result" id="r4"></div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="question" id="q5">
+      <h3>Q5. <code>INTEGER PRIMARY KEY AUTOINCREMENT</code>의 의미는?</h3>
+      <pre>CREATE TABLE posts (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  title TEXT NOT NULL
+)</pre>
+      <ul class="options">
+        <li><label><input type="radio" name="q5" value="a"> id는 문자열이고 자동으로 생성된다</label></li>
+        <li><label><input type="radio" name="q5" value="b"> id는 정수이고, 고유하며, 자동으로 1씩 증가한다</label></li>
+        <li><label><input type="radio" name="q5" value="c"> id는 정수이고, 직접 입력해야 한다</label></li>
+        <li><label><input type="radio" name="q5" value="d"> id는 자동으로 삭제된다</label></li>
+      </ul>
+      <div class="result" id="r5"></div>
+    </div>
+
+    <button class="btn" onclick="checkAnswers()">제출하기</button>
+    <div class="score" id="score"></div>
+  </div>
+
+  <script>
+    const answers = { q1: 'b', q2: 'b', q3: 'c', q4: 'b', q5: 'b' };
+    const explanations = {
+      q1: { correct: '맞아요! SQLite는 community.db 같은 파일 하나가 곧 데이터베이스입니다. 별도 서버 설치가 필요 없어요.', wrong: 'SQLite는 파일 하나가 곧 데이터베이스예요. MySQL처럼 별도 서버를 설치할 필요가 없습니다.' },
+      q2: { correct: '맞아요! WHERE id = 2는 "id가 2인 것만 가져와"라는 조건이에요.', wrong: 'WHERE id = 2는 조건절이에요. posts 테이블에서 id가 2인 행만 가져옵니다.' },
+      q3: { correct: '맞아요! CREATE TABLE은 새 테이블을 만드는 명령어입니다.', wrong: '테이블을 만드는 건 CREATE TABLE이에요. INSERT는 데이터 추가, SELECT는 데이터 조회입니다.' },
+      q4: { correct: '맞아요! ?는 플레이스홀더(자리 표시)로, run()에서 전달하는 값으로 채워집니다. 보안에도 중요한 역할을 해요.', wrong: '?는 플레이스홀더예요. run("제목", "내용")을 호출하면 첫 번째 ?에 "제목", 두 번째 ?에 "내용"이 들어갑니다.' },
+      q5: { correct: '맞아요! INTEGER는 정수, PRIMARY KEY는 고유 식별자, AUTOINCREMENT는 자동으로 1씩 증가한다는 뜻이에요.', wrong: 'INTEGER는 정수 타입, PRIMARY KEY는 각 행을 고유하게 식별, AUTOINCREMENT는 자동으로 1, 2, 3... 증가합니다.' }
+    };
+
+    function checkAnswers() {
+      let score = 0;
+      const total = 5;
+
+      for (let i = 1; i <= total; i++) {
+        const key = 'q' + i;
+        const selected = document.querySelector(`input[name="${key}"]:checked`);
+        const resultEl = document.getElementById('r' + i);
+
+        if (!selected) {
+          resultEl.className = 'result wrong';
+          resultEl.textContent = '답을 선택해주세요!';
+          resultEl.style.display = 'block';
+          continue;
+        }
+
+        if (selected.value === answers[key]) {
+          score++;
+          resultEl.className = 'result correct';
+          resultEl.textContent = '✅ ' + explanations[key].correct;
+        } else {
+          resultEl.className = 'result wrong';
+          resultEl.textContent = '❌ ' + explanations[key].wrong;
+        }
+        resultEl.style.display = 'block';
+      }
+
+      const scoreEl = document.getElementById('score');
+      scoreEl.style.display = 'block';
+
+      if (score >= 4) {
+        scoreEl.className = 'score pass';
+        scoreEl.innerHTML = `<h2>🎉 ${score}/${total} 통과!</h2><p>챕터 05 완료! 다음 챕터에서 테이블 설계를 배워봅니다.</p>`;
+      } else {
+        scoreEl.className = 'score fail';
+        scoreEl.innerHTML = `<h2>${score}/${total}</h2><p>4문제 이상 맞아야 통과예요. 틀린 문제의 설명을 읽고 다시 도전해보세요!</p>`;
+      }
+    }
+  </script>
+</body>
+</html>
