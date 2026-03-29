@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>챕터 04 퀴즈: 데이터를 어디에 저장하지?</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; padding: 40px 20px; line-height: 1.6; }
+    .container { max-width: 700px; margin: 0 auto; }
+    h1 { text-align: center; margin-bottom: 8px; color: #1a1a1a; }
+    .subtitle { text-align: center; color: #666; margin-bottom: 32px; }
+    .question { background: #fff; border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .question h3 { margin-bottom: 12px; color: #333; }
+    .question pre { background: #1e1e1e; color: #d4d4d4; padding: 16px; border-radius: 8px; margin: 12px 0; overflow-x: auto; font-size: 14px; }
+    .options { list-style: none; margin-top: 12px; }
+    .options li { margin-bottom: 8px; }
+    .options label { display: block; padding: 12px 16px; background: #f8f8f8; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+    .options label:hover { border-color: #4a90d9; background: #f0f7ff; }
+    .options input[type="radio"] { margin-right: 8px; }
+    .result { display: none; margin-top: 12px; padding: 12px 16px; border-radius: 8px; font-weight: 500; }
+    .result.correct { display: block; background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+    .result.wrong { display: block; background: #fbe9e7; color: #c62828; border: 1px solid #ef9a9a; }
+    .btn { display: block; width: 100%; padding: 16px; margin-top: 32px; background: #4a90d9; color: #fff; border: none; border-radius: 12px; font-size: 18px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+    .btn:hover { background: #357abd; }
+    .score { display: none; text-align: center; background: #fff; border-radius: 12px; padding: 32px; margin-top: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .score h2 { font-size: 28px; margin-bottom: 8px; }
+    .score.pass h2 { color: #2e7d32; }
+    .score.fail h2 { color: #c62828; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>챕터 04 퀴즈</h1>
+    <p class="subtitle">데이터를 어디에 저장하지? — 5문제</p>
+
+    <!-- Q1 -->
+    <div class="question" id="q1">
+      <h3>Q1. 변수(메모리)에 데이터를 저장하면 어떤 문제가 있나요?</h3>
+      <ul class="options">
+        <li><label><input type="radio" name="q1" value="a"> 데이터를 읽는 속도가 너무 느리다</label></li>
+        <li><label><input type="radio" name="q1" value="b"> 서버를 끄면 데이터가 사라진다</label></li>
+        <li><label><input type="radio" name="q1" value="c"> 데이터를 추가할 수 없다</label></li>
+        <li><label><input type="radio" name="q1" value="d"> TypeScript에서 사용할 수 없다</label></li>
+      </ul>
+      <div class="result" id="r1"></div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="question" id="q2">
+      <h3>Q2. JSON 파일로 데이터를 저장할 때의 한계가 아닌 것은?</h3>
+      <ul class="options">
+        <li><label><input type="radio" name="q2" value="a"> 특정 데이터만 검색하기 어렵다</label></li>
+        <li><label><input type="radio" name="q2" value="b"> 동시에 여러 명이 쓰면 데이터가 꼬일 수 있다</label></li>
+        <li><label><input type="radio" name="q2" value="c"> 서버를 끄면 데이터가 사라진다</label></li>
+        <li><label><input type="radio" name="q2" value="d"> 데이터가 많아지면 전체를 읽고 써야 해서 느려진다</label></li>
+      </ul>
+      <div class="result" id="r2"></div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="question" id="q3">
+      <h3>Q3. 다음 코드에서 <code>app.use(express.json())</code>의 역할은?</h3>
+      <pre>const app = express();
+app.use(express.json());
+
+app.post('/posts', (req, res) => {
+  const { title, content } = req.body;
+  // ...
+});</pre>
+      <ul class="options">
+        <li><label><input type="radio" name="q3" value="a"> JSON 파일을 자동으로 생성한다</label></li>
+        <li><label><input type="radio" name="q3" value="b"> 클라이언트가 보낸 JSON 데이터를 req.body로 읽을 수 있게 한다</label></li>
+        <li><label><input type="radio" name="q3" value="c"> 응답을 항상 JSON으로 보낸다</label></li>
+        <li><label><input type="radio" name="q3" value="d"> 데이터베이스에 연결한다</label></li>
+      </ul>
+      <div class="result" id="r3"></div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="question" id="q4">
+      <h3>Q4. 데이터베이스가 JSON 파일보다 나은 점으로 가장 적절한 것은?</h3>
+      <ul class="options">
+        <li><label><input type="radio" name="q4" value="a"> 코드가 더 짧아진다</label></li>
+        <li><label><input type="radio" name="q4" value="b"> 특정 데이터를 빠르게 검색하고, 동시 접근도 안전하다</label></li>
+        <li><label><input type="radio" name="q4" value="c"> 설치가 더 쉽다</label></li>
+        <li><label><input type="radio" name="q4" value="d"> TypeScript 없이도 타입 검사를 해준다</label></li>
+      </ul>
+      <div class="result" id="r4"></div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="question" id="q5">
+      <h3>Q5. <code>app.get</code>과 <code>app.post</code>의 차이는?</h3>
+      <ul class="options">
+        <li><label><input type="radio" name="q5" value="a"> get은 빠르고 post는 느리다</label></li>
+        <li><label><input type="radio" name="q5" value="b"> get은 데이터를 가져올 때, post는 데이터를 보낼 때 사용한다</label></li>
+        <li><label><input type="radio" name="q5" value="c"> get은 서버를 시작하고 post는 서버를 멈춘다</label></li>
+        <li><label><input type="radio" name="q5" value="d"> get은 JSON용이고 post는 HTML용이다</label></li>
+      </ul>
+      <div class="result" id="r5"></div>
+    </div>
+
+    <button class="btn" onclick="checkAnswers()">제출하기</button>
+    <div class="score" id="score"></div>
+  </div>
+
+  <script>
+    const answers = { q1: 'b', q2: 'c', q3: 'b', q4: 'b', q5: 'b' };
+    const explanations = {
+      q1: { correct: '맞아요! 변수는 서버 메모리에 있어서, 서버를 끄면 데이터가 사라집니다. 직접 확인했죠!', wrong: '변수는 서버 메모리에 저장돼요. 서버를 끄면 메모리가 초기화되면서 데이터가 사라집니다.' },
+      q2: { correct: '맞아요! JSON 파일은 서버를 꺼도 데이터가 유지됩니다. 그건 JSON의 장점이에요.', wrong: 'JSON 파일은 디스크에 저장되니까 서버를 꺼도 데이터가 남아있어요. 그건 JSON의 장점입니다.' },
+      q3: { correct: '맞아요! express.json()은 클라이언트가 보낸 JSON 데이터를 파싱해서 req.body로 사용할 수 있게 해줍니다.', wrong: 'express.json()은 클라이언트가 보낸 JSON 데이터를 파싱하는 미들웨어예요. 이게 있어야 req.body에서 데이터를 읽을 수 있습니다.' },
+      q4: { correct: '맞아요! DB는 인덱스를 써서 빠르게 검색하고, 동시 접근도 안전하게 처리합니다.', wrong: '데이터베이스의 핵심 강점은 빠른 검색과 안전한 동시 접근이에요. 10만 개 데이터에서 하나를 찾는 것도 순식간입니다.' },
+      q5: { correct: '맞아요! GET은 데이터를 조회(가져오기), POST는 데이터를 생성(보내기)할 때 사용합니다.', wrong: 'GET은 데이터를 가져올 때, POST는 새 데이터를 보낼 때 사용해요. 브라우저 주소창은 항상 GET 요청입니다.' }
+    };
+
+    function checkAnswers() {
+      let score = 0;
+      const total = 5;
+
+      for (let i = 1; i <= total; i++) {
+        const key = 'q' + i;
+        const selected = document.querySelector(`input[name="${key}"]:checked`);
+        const resultEl = document.getElementById('r' + i);
+
+        if (!selected) {
+          resultEl.className = 'result wrong';
+          resultEl.textContent = '답을 선택해주세요!';
+          resultEl.style.display = 'block';
+          continue;
+        }
+
+        if (selected.value === answers[key]) {
+          score++;
+          resultEl.className = 'result correct';
+          resultEl.textContent = '✅ ' + explanations[key].correct;
+        } else {
+          resultEl.className = 'result wrong';
+          resultEl.textContent = '❌ ' + explanations[key].wrong;
+        }
+        resultEl.style.display = 'block';
+      }
+
+      const scoreEl = document.getElementById('score');
+      scoreEl.style.display = 'block';
+
+      if (score >= 4) {
+        scoreEl.className = 'score pass';
+        scoreEl.innerHTML = `<h2>🎉 ${score}/${total} 통과!</h2><p>챕터 04 완료! 다음 챕터에서 드디어 데이터베이스를 다뤄봅니다.</p>`;
+      } else {
+        scoreEl.className = 'score fail';
+        scoreEl.innerHTML = `<h2>${score}/${total}</h2><p>4문제 이상 맞아야 통과예요. 틀린 문제의 설명을 읽고 다시 도전해보세요!</p>`;
+      }
+    }
+  </script>
+</body>
+</html>
