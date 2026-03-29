@@ -1,8 +1,8 @@
 {
   "learner": "",
-  "currentChapter": "01-environment-setup",
+  "currentChapter": "03-typescript-intro",
   "totalChapters": 24,
-  "completedChapters": 1,
+  "completedChapters": 3,
   "lastUpdated": "",
   "chapters": {
     "01-environment-setup": {
@@ -14,18 +14,18 @@
       "description": "Node.js, npm, 터미널 기초, 프로젝트 구조 생성"
     },
     "02-first-server": {
-      "status": "pending",
-      "startedAt": null,
-      "completedAt": null,
-      "quizPassed": false,
+      "status": "completed",
+      "startedAt": "2026-03-29",
+      "completedAt": "2026-03-29",
+      "quizPassed": true,
       "sourceFiles": ["src/backend/src/index.js"],
       "description": "HTTP, 요청/응답, Express 기초, Hello World 서버"
     },
     "03-typescript-intro": {
-      "status": "pending",
-      "startedAt": null,
-      "completedAt": null,
-      "quizPassed": false,
+      "status": "completed",
+      "startedAt": "2026-03-29",
+      "completedAt": "2026-03-29",
+      "quizPassed": true,
       "sourceFiles": ["src/backend/src/index.ts", "src/backend/tsconfig.json"],
       "description": "타입, 인터페이스, JS 서버를 TS로 전환"
     },

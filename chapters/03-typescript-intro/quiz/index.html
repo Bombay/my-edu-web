@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>챕터 03 퀴즈: TypeScript 맛보기</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; padding: 40px 20px; line-height: 1.6; }
+    .container { max-width: 700px; margin: 0 auto; }
+    h1 { text-align: center; margin-bottom: 8px; color: #1a1a1a; }
+    .subtitle { text-align: center; color: #666; margin-bottom: 32px; }
+    .question { background: #fff; border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .question h3 { margin-bottom: 12px; color: #333; }
+    .question pre { background: #1e1e1e; color: #d4d4d4; padding: 16px; border-radius: 8px; margin: 12px 0; overflow-x: auto; font-size: 14px; }
+    .question pre .keyword { color: #569cd6; }
+    .question pre .type { color: #4ec9b0; }
+    .question pre .string { color: #ce9178; }
+    .question pre .comment { color: #6a9955; }
+    .options { list-style: none; margin-top: 12px; }
+    .options li { margin-bottom: 8px; }
+    .options label { display: block; padding: 12px 16px; background: #f8f8f8; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+    .options label:hover { border-color: #4a90d9; background: #f0f7ff; }
+    .options input[type="radio"] { margin-right: 8px; }
+    .result { display: none; margin-top: 12px; padding: 12px 16px; border-radius: 8px; font-weight: 500; }
+    .result.correct { display: block; background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+    .result.wrong { display: block; background: #fbe9e7; color: #c62828; border: 1px solid #ef9a9a; }
+    .btn { display: block; width: 100%; padding: 16px; margin-top: 32px; background: #4a90d9; color: #fff; border: none; border-radius: 12px; font-size: 18px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+    .btn:hover { background: #357abd; }
+    .btn:disabled { background: #ccc; cursor: not-allowed; }
+    .score { display: none; text-align: center; background: #fff; border-radius: 12px; padding: 32px; margin-top: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .score h2 { font-size: 28px; margin-bottom: 8px; }
+    .score.pass h2 { color: #2e7d32; }
+    .score.fail h2 { color: #c62828; }
+    .mermaid { background: #fff; padding: 16px; border-radius: 8px; margin: 12px 0; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>챕터 03 퀴즈</h1>
+    <p class="subtitle">TypeScript 맛보기 — 5문제</p>
+
+    <!-- Q1 -->
+    <div class="question" id="q1">
+      <h3>Q1. TypeScript의 역할로 가장 정확한 것은?</h3>
+      <ul class="options">
+        <li><label><input type="radio" name="q1" value="a"> JavaScript를 완전히 대체하는 새로운 언어다</label></li>
+        <li><label><input type="radio" name="q1" value="b"> 코드를 실행하기 전에 타입 오류를 잡아주는 도구다</label></li>
+        <li><label><input type="radio" name="q1" value="c"> 서버 실행 속도를 빠르게 해주는 도구다</label></li>
+        <li><label><input type="radio" name="q1" value="d"> 브라우저가 직접 실행하는 언어다</label></li>
+      </ul>
+      <div class="result" id="r1"></div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="question" id="q2">
+      <h3>Q2. 아래 코드에서 에러가 나는 이유는?</h3>
+      <pre><span class="keyword">interface</span> <span class="type">Post</span> {
+  title: <span class="type">string</span>;
+  content: <span class="type">string</span>;
+}
+
+<span class="keyword">const</span> post: <span class="type">Post</span> = {
+  title: <span class="string">'안녕하세요'</span>
+};</pre>
+      <ul class="options">
+        <li><label><input type="radio" name="q2" value="a"> interface 문법이 틀렸다</label></li>
+        <li><label><input type="radio" name="q2" value="b"> title의 타입이 잘못되었다</label></li>
+        <li><label><input type="radio" name="q2" value="c"> content 속성이 빠져있다</label></li>
+        <li><label><input type="radio" name="q2" value="d"> const 대신 let을 써야 한다</label></li>
+      </ul>
+      <div class="result" id="r2"></div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="question" id="q3">
+      <h3>Q3. TypeScript 파일(.ts)을 실행하려면 어떤 순서가 맞나요?</h3>
+      <div class="mermaid">
+        <pre>?  →  ?  →  서버 실행</pre>
+      </div>
+      <ul class="options">
+        <li><label><input type="radio" name="q3" value="a"> node index.ts → 끝</label></li>
+        <li><label><input type="radio" name="q3" value="b"> npx tsc (컴파일) → node dist/index.js (실행)</label></li>
+        <li><label><input type="radio" name="q3" value="c"> npm install → node index.ts</label></li>
+        <li><label><input type="radio" name="q3" value="d"> npx tsc → node index.ts</label></li>
+      </ul>
+      <div class="result" id="r3"></div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="question" id="q4">
+      <h3>Q4. 다음 중 올바른 타입 지정은?</h3>
+      <ul class="options">
+        <li><label><input type="radio" name="q4" value="a"> <code>const name: number = '정현'</code></label></li>
+        <li><label><input type="radio" name="q4" value="b"> <code>const age: string = 25</code></label></li>
+        <li><label><input type="radio" name="q4" value="c"> <code>const email: string = 'a@b.com'</code></label></li>
+        <li><label><input type="radio" name="q4" value="d"> <code>const active: number = true</code></label></li>
+      </ul>
+      <div class="result" id="r4"></div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="question" id="q5">
+      <h3>Q5. tsconfig.json에서 <code>"strict": true</code>의 의미는?</h3>
+      <ul class="options">
+        <li><label><input type="radio" name="q5" value="a"> 서버를 엄격 모드로 실행한다</label></li>
+        <li><label><input type="radio" name="q5" value="b"> 타입 검사를 엄격하게 수행한다</label></li>
+        <li><label><input type="radio" name="q5" value="c"> 문법 에러만 검사한다</label></li>
+        <li><label><input type="radio" name="q5" value="d"> JavaScript 파일도 검사한다</label></li>
+      </ul>
+      <div class="result" id="r5"></div>
+    </div>
+
+    <button class="btn" onclick="checkAnswers()">제출하기</button>
+    <div class="score" id="score"></div>
+  </div>
+
+  <script>
+    const answers = { q1: 'b', q2: 'c', q3: 'b', q4: 'c', q5: 'b' };
+    const explanations = {
+      q1: { correct: '맞아요! TypeScript는 실행 전에 타입 오류를 잡아주는 도구입니다. 결국 JavaScript로 변환되어 실행돼요.', wrong: 'TypeScript는 JavaScript를 대체하는 게 아니라, 실행 전에 타입 오류를 잡아주는 도구예요. 결국 JS로 변환됩니다.' },
+      q2: { correct: '맞아요! interface에서 content를 필수로 정의했는데 객체에 빠져있으니 에러가 납니다.', wrong: 'Post interface는 title과 content 두 속성을 필수로 요구해요. content가 빠져있어서 에러가 납니다.' },
+      q3: { correct: '맞아요! .ts를 tsc로 컴파일해서 .js를 만들고, 그 .js를 node로 실행합니다.', wrong: 'Node.js는 .ts 파일을 직접 실행할 수 없어요. npx tsc로 .js로 변환한 뒤, node dist/index.js로 실행합니다.' },
+      q4: { correct: '맞아요! string 타입에 문자열 값을 넣었으니 올바릅니다.', wrong: '타입과 값이 일치해야 해요. string에는 문자열, number에는 숫자, boolean에는 true/false를 넣어야 합니다.' },
+      q5: { correct: '맞아요! strict: true는 타입 검사를 가장 엄격하게 수행하는 설정입니다.', wrong: 'strict: true는 타입 검사를 엄격하게 수행하는 설정이에요. 서버 실행 모드와는 관계없습니다.' }
+    };
+
+    function checkAnswers() {
+      let score = 0;
+      const total = 5;
+
+      for (let i = 1; i <= total; i++) {
+        const key = 'q' + i;
+        const selected = document.querySelector(`input[name="${key}"]:checked`);
+        const resultEl = document.getElementById('r' + i);
+
+        if (!selected) {
+          resultEl.className = 'result wrong';
+          resultEl.textContent = '답을 선택해주세요!';
+          resultEl.style.display = 'block';
+          continue;
+        }
+
+        if (selected.value === answers[key]) {
+          score++;
+          resultEl.className = 'result correct';
+          resultEl.textContent = '✅ ' + explanations[key].correct;
+        } else {
+          resultEl.className = 'result wrong';
+          resultEl.textContent = '❌ ' + explanations[key].wrong;
+        }
+        resultEl.style.display = 'block';
+      }
+
+      const scoreEl = document.getElementById('score');
+      scoreEl.style.display = 'block';
+
+      if (score >= 4) {
+        scoreEl.className = 'score pass';
+        scoreEl.innerHTML = `<h2>🎉 ${score}/${total} 통과!</h2><p>챕터 03 완료! 다음 챕터로 넘어갈 수 있습니다.</p>`;
+      } else {
+        scoreEl.className = 'score fail';
+        scoreEl.innerHTML = `<h2>${score}/${total}</h2><p>4문제 이상 맞아야 통과예요. 틀린 문제의 설명을 읽고 다시 도전해보세요!</p>`;
+      }
+    }
+  </script>
+</body>
+</html>
