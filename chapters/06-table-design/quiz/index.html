@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>챕터 06 퀴즈: 테이블 설계의 기술</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; padding: 40px 20px; line-height: 1.6; }
+    .container { max-width: 700px; margin: 0 auto; }
+    h1 { text-align: center; margin-bottom: 8px; color: #1a1a1a; }
+    .subtitle { text-align: center; color: #666; margin-bottom: 32px; }
+    .question { background: #fff; border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .question h3 { margin-bottom: 12px; color: #333; }
+    .question pre { background: #1e1e1e; color: #d4d4d4; padding: 16px; border-radius: 8px; margin: 12px 0; overflow-x: auto; font-size: 14px; }
+    .options { list-style: none; margin-top: 12px; }
+    .options li { margin-bottom: 8px; }
+    .options label { display: block; padding: 12px 16px; background: #f8f8f8; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+    .options label:hover { border-color: #4a90d9; background: #f0f7ff; }
+    .options input[type="radio"] { margin-right: 8px; }
+    .result { display: none; margin-top: 12px; padding: 12px 16px; border-radius: 8px; font-weight: 500; }
+    .result.correct { display: block; background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+    .result.wrong { display: block; background: #fbe9e7; color: #c62828; border: 1px solid #ef9a9a; }
+    .btn { display: block; width: 100%; padding: 16px; margin-top: 32px; background: #4a90d9; color: #fff; border: none; border-radius: 12px; font-size: 18px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+    .btn:hover { background: #357abd; }
+    .score { display: none; text-align: center; background: #fff; border-radius: 12px; padding: 32px; margin-top: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .score h2 { font-size: 28px; margin-bottom: 8px; }
+    .score.pass h2 { color: #2e7d32; }
+    .score.fail h2 { color: #c62828; }
+    .diagram { background: #fff; border-radius: 8px; padding: 16px; margin: 12px 0; border: 1px solid #e0e0e0; font-family: monospace; font-size: 13px; white-space: pre; overflow-x: auto; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>챕터 06 퀴즈</h1>
+    <p class="subtitle">테이블 설계의 기술 — 5문제</p>
+
+    <!-- Q1 -->
+    <div class="question" id="q1">
+      <h3>Q1. posts 테이블에 작성자 이름, 이메일을 직접 저장하면 생기는 문제가 아닌 것은?</h3>
+      <div class="diagram">posts 테이블
+id | title    | author | email            | content
+1  | 첫 글    | 김철수  | chul@email.com   | 안녕!
+2  | 두번째   | 김철수  | chul@email.com   | 반가워요
+3  | 세번째   | 이영희  | yh@email.com     | 하이!</div>
+      <ul class="options">
+        <li><label><input type="radio" name="q1" value="a"> 같은 유저 정보가 여러 행에 중복 저장된다</label></li>
+        <li><label><input type="radio" name="q1" value="b"> 유저 이메일 변경 시 모든 행을 수정해야 한다</label></li>
+        <li><label><input type="radio" name="q1" value="c"> 글을 조회하는 속도가 느려진다</label></li>
+        <li><label><input type="radio" name="q1" value="d"> 오타로 같은 사람이 다른 사람으로 취급될 수 있다</label></li>
+      </ul>
+      <div class="result" id="r1"></div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="question" id="q2">
+      <h3>Q2. 외래 키(Foreign Key)의 역할은?</h3>
+      <pre>CREATE TABLE posts (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  title TEXT NOT NULL,
+  user_id INTEGER NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+)</pre>
+      <ul class="options">
+        <li><label><input type="radio" name="q2" value="a"> user_id에 아무 값이나 넣을 수 있게 한다</label></li>
+        <li><label><input type="radio" name="q2" value="b"> user_id가 반드시 users 테이블에 존재하는 id여야 한다</label></li>
+        <li><label><input type="radio" name="q2" value="c"> users 테이블을 자동으로 생성한다</label></li>
+        <li><label><input type="radio" name="q2" value="d"> user_id를 자동으로 증가시킨다</label></li>
+      </ul>
+      <div class="result" id="r2"></div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="question" id="q3">
+      <h3>Q3. "한 명의 유저가 여러 개의 글을 쓸 수 있다"는 어떤 관계인가요?</h3>
+      <div class="diagram">users          posts
+──────         ──────────────
+id: 1   ────→  id: 1, user_id: 1
+        ────→  id: 2, user_id: 1
+id: 2   ────→  id: 3, user_id: 2</div>
+      <ul class="options">
+        <li><label><input type="radio" name="q3" value="a"> 1:1 (일대일)</label></li>
+        <li><label><input type="radio" name="q3" value="b"> 1:N (일대다)</label></li>
+        <li><label><input type="radio" name="q3" value="c"> N:M (다대다)</label></li>
+        <li><label><input type="radio" name="q3" value="d"> N:1 (다대일)</label></li>
+      </ul>
+      <div class="result" id="r3"></div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="question" id="q4">
+      <h3>Q4. 테이블을 삭제(DROP)할 때 올바른 순서는?</h3>
+      <pre>-- comments는 posts, users를 참조
+-- posts는 users를 참조</pre>
+      <ul class="options">
+        <li><label><input type="radio" name="q4" value="a"> users → posts → comments</label></li>
+        <li><label><input type="radio" name="q4" value="b"> comments → posts → users</label></li>
+        <li><label><input type="radio" name="q4" value="c"> 순서는 상관없다</label></li>
+        <li><label><input type="radio" name="q4" value="d"> posts → comments → users</label></li>
+      </ul>
+      <div class="result" id="r4"></div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="question" id="q5">
+      <h3>Q5. <code>UNIQUE</code> 제약 조건의 의미는?</h3>
+      <pre>CREATE TABLE users (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL UNIQUE
+)</pre>
+      <ul class="options">
+        <li><label><input type="radio" name="q5" value="a"> email 컬럼에 NULL을 넣을 수 없다</label></li>
+        <li><label><input type="radio" name="q5" value="b"> email 값이 테이블 내에서 중복될 수 없다</label></li>
+        <li><label><input type="radio" name="q5" value="c"> email이 자동으로 생성된다</label></li>
+        <li><label><input type="radio" name="q5" value="d"> email을 수정할 수 없다</label></li>
+      </ul>
+      <div class="result" id="r5"></div>
+    </div>
+
+    <button class="btn" onclick="checkAnswers()">제출하기</button>
+    <div class="score" id="score"></div>
+  </div>
+
+  <script>
+    const answers = { q1: 'c', q2: 'b', q3: 'b', q4: 'b', q5: 'b' };
+    const explanations = {
+      q1: { correct: '맞아요! 조회 속도는 이 구조 때문에 느려지지 않아요. 진짜 문제는 중복, 수정 어려움, 오타 위험(데이터 이상)입니다.', wrong: '조회 속도는 이 구조와 직접적인 관련이 없어요. 진짜 문제는 데이터 중복, 수정의 어려움, 오타로 인한 불일치입니다.' },
+      q2: { correct: '맞아요! 외래 키는 "이 값은 반드시 저 테이블에 있어야 한다"는 규칙이에요. 존재하지 않는 유저에게 글을 연결할 수 없습니다.', wrong: '외래 키는 참조 무결성을 보장해요. user_id에 넣는 값은 반드시 users 테이블의 id에 존재해야 합니다.' },
+      q3: { correct: '맞아요! 한 명(1)의 유저가 여러 개(N)의 글을 쓸 수 있으니 1:N 관계입니다.', wrong: '한 명의 유저가 여러 글을 쓸 수 있으니 1:N(일대다) 관계예요. 유저 쪽이 1, 글 쪽이 N입니다.' },
+      q4: { correct: '맞아요! 참조하는 쪽(comments)부터 먼저 삭제해야 해요. 도서관에서 대출 기록을 먼저 지우고 회원을 삭제하는 것과 같은 원리입니다.', wrong: '참조하는 쪽부터 삭제해야 해요. comments → posts → users 순서가 맞습니다. 아직 참조되고 있는 테이블은 삭제할 수 없어요.' },
+      q5: { correct: '맞아요! UNIQUE는 같은 값이 두 번 들어갈 수 없다는 뜻이에요. 같은 이메일로 두 번 가입을 막을 수 있죠.', wrong: 'UNIQUE는 중복 방지 제약이에요. 같은 email 값을 가진 행이 두 개 이상 존재할 수 없습니다. NOT NULL은 별도의 제약입니다.' }
+    };
+
+    function checkAnswers() {
+      let score = 0;
+      const total = 5;
+
+      for (let i = 1; i <= total; i++) {
+        const key = 'q' + i;
+        const selected = document.querySelector(`input[name="${key}"]:checked`);
+        const resultEl = document.getElementById('r' + i);
+
+        if (!selected) {
+          resultEl.className = 'result wrong';
+          resultEl.textContent = '답을 선택해주세요!';
+          resultEl.style.display = 'block';
+          continue;
+        }
+
+        if (selected.value === answers[key]) {
+          score++;
+          resultEl.className = 'result correct';
+          resultEl.textContent = '✅ ' + explanations[key].correct;
+        } else {
+          resultEl.className = 'result wrong';
+          resultEl.textContent = '❌ ' + explanations[key].wrong;
+        }
+        resultEl.style.display = 'block';
+      }
+
+      const scoreEl = document.getElementById('score');
+      scoreEl.style.display = 'block';
+
+      if (score >= 4) {
+        scoreEl.className = 'score pass';
+        scoreEl.innerHTML = `<h2>🎉 ${score}/${total} 통과!</h2><p>챕터 06 완료! 다음 챕터에서 JOIN, WHERE, 집계 함수를 깊이 다뤄봅니다.</p>`;
+      } else {
+        scoreEl.className = 'score fail';
+        scoreEl.innerHTML = `<h2>${score}/${total}</h2><p>4문제 이상 맞아야 통과예요. 틀린 문제의 설명을 읽고 다시 도전해보세요!</p>`;
+      }
+    }
+  </script>
+</body>
+</html>

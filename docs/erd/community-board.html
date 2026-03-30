@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>커뮤니티 게시판 ERD</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; background: #f9f9f9; }
+    h1 { color: #333; }
+    .mermaid { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .legend { margin-top: 20px; padding: 16px; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .legend h3 { margin-top: 0; }
+    code { background: #e8e8e8; padding: 2px 6px; border-radius: 3px; }
+  </style>
+</head>
+<body>
+  <h1>📊 커뮤니티 게시판 ERD</h1>
+  <p>챕터 06 기준 테이블 관계도</p>
+
+  <div class="mermaid">
+erDiagram
+    users {
+        INTEGER id PK "자동 증가"
+        TEXT name "이름"
+        TEXT email UK "이메일 (고유)"
+        TEXT created_at "가입일"
+    }
+
+    posts {
+        INTEGER id PK "자동 증가"
+        TEXT title "제목"
+        TEXT content "내용"
+        INTEGER user_id FK "작성자"
+        TEXT created_at "작성일"
+    }
+
+    comments {
+        INTEGER id PK "자동 증가"
+        TEXT content "댓글 내용"
+        INTEGER user_id FK "작성자"
+        INTEGER post_id FK "대상 글"
+        TEXT created_at "작성일"
+    }
+
+    users ||--o{ posts : "1명이 N개 글 작성"
+    users ||--o{ comments : "1명이 N개 댓글 작성"
+    posts ||--o{ comments : "1글에 N개 댓글"
+  </div>
+
+  <div class="legend">
+    <h3>📖 읽는 법</h3>
+    <ul>
+      <li><code>PK</code> = Primary Key (고유 식별자)</li>
+      <li><code>FK</code> = Foreign Key (다른 테이블 참조)</li>
+      <li><code>UK</code> = Unique (중복 불가)</li>
+      <li><code>||--o{</code> = 1:N 관계 (1명 → 여러 글)</li>
+    </ul>
+  </div>
+
+  <script>mermaid.initialize({ startOnLoad: true, theme: 'default' });</script>
+</body>
+</html>

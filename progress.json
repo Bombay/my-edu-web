@@ -1,6 +1,6 @@
 {
   "learner": "",
-  "currentChapter": "05-sql-basics",
+  "currentChapter": "06-table-design",
   "totalChapters": 24,
   "completedChapters": 5,
   "lastUpdated": "",
@@ -46,8 +46,8 @@
       "description": "CREATE TABLE, INSERT, SELECT, SQLite 기초"
     },
     "06-table-design": {
-      "status": "pending",
-      "startedAt": null,
+      "status": "in_progress",
+      "startedAt": "2026-03-30",
       "completedAt": null,
       "quizPassed": false,
       "sourceFiles": ["src/backend/src/db/schema.sql", "docs/erd/community-board.md"],
