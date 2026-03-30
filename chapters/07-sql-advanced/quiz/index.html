@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>챕터 07 퀴즈: SQL 심화</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; padding: 40px 20px; line-height: 1.6; }
+    .container { max-width: 700px; margin: 0 auto; }
+    h1 { text-align: center; margin-bottom: 8px; color: #1a1a1a; }
+    .subtitle { text-align: center; color: #666; margin-bottom: 32px; }
+    .question { background: #fff; border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .question h3 { margin-bottom: 12px; color: #333; }
+    .question pre { background: #1e1e1e; color: #d4d4d4; padding: 16px; border-radius: 8px; margin: 12px 0; overflow-x: auto; font-size: 14px; }
+    .options { list-style: none; margin-top: 12px; }
+    .options li { margin-bottom: 8px; }
+    .options label { display: block; padding: 12px 16px; background: #f8f8f8; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+    .options label:hover { border-color: #4a90d9; background: #f0f7ff; }
+    .options input[type="radio"] { margin-right: 8px; }
+    .result { display: none; margin-top: 12px; padding: 12px 16px; border-radius: 8px; font-weight: 500; }
+    .result.correct { display: block; background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+    .result.wrong { display: block; background: #fbe9e7; color: #c62828; border: 1px solid #ef9a9a; }
+    .btn { display: block; width: 100%; padding: 16px; margin-top: 32px; background: #4a90d9; color: #fff; border: none; border-radius: 12px; font-size: 18px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+    .btn:hover { background: #357abd; }
+    .score { display: none; text-align: center; background: #fff; border-radius: 12px; padding: 32px; margin-top: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .score h2 { font-size: 28px; margin-bottom: 8px; }
+    .score.pass h2 { color: #2e7d32; }
+    .score.fail h2 { color: #c62828; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>챕터 07 퀴즈</h1>
+    <p class="subtitle">SQL 심화 — 5문제</p>
+
+    <!-- Q1 -->
+    <div class="question" id="q1">
+      <h3>Q1. JOIN의 역할은?</h3>
+      <pre>SELECT posts.title, users.name
+FROM posts
+JOIN users ON posts.user_id = users.id</pre>
+      <ul class="options">
+        <li><label><input type="radio" name="q1" value="a"> posts 테이블의 데이터를 삭제한다</label></li>
+        <li><label><input type="radio" name="q1" value="b"> 두 테이블을 연결해서 함께 조회한다</label></li>
+        <li><label><input type="radio" name="q1" value="c"> 새로운 테이블을 만든다</label></li>
+        <li><label><input type="radio" name="q1" value="d"> 데이터를 복사한다</label></li>
+      </ul>
+      <div class="result" id="r1"></div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="question" id="q2">
+      <h3>Q2. 다음 SQL의 결과는?</h3>
+      <pre>SELECT title FROM posts
+ORDER BY created_at DESC</pre>
+      <ul class="options">
+        <li><label><input type="radio" name="q2" value="a"> 글을 오래된 순서로 보여준다</label></li>
+        <li><label><input type="radio" name="q2" value="b"> 글을 최신 순서로 보여준다</label></li>
+        <li><label><input type="radio" name="q2" value="c"> 글을 제목 순서로 보여준다</label></li>
+        <li><label><input type="radio" name="q2" value="d"> 글을 랜덤 순서로 보여준다</label></li>
+      </ul>
+      <div class="result" id="r2"></div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="question" id="q3">
+      <h3>Q3. GROUP BY와 함께 조건을 거는 키워드는?</h3>
+      <pre>SELECT user_id, COUNT(*) AS post_count
+FROM posts
+GROUP BY user_id
+_____ post_count >= 2</pre>
+      <ul class="options">
+        <li><label><input type="radio" name="q3" value="a"> WHERE</label></li>
+        <li><label><input type="radio" name="q3" value="b"> HAVING</label></li>
+        <li><label><input type="radio" name="q3" value="c"> FILTER</label></li>
+        <li><label><input type="radio" name="q3" value="d"> LIMIT</label></li>
+      </ul>
+      <div class="result" id="r3"></div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="question" id="q4">
+      <h3>Q4. 다음 SQL에서 <code>AS author</code>의 역할은?</h3>
+      <pre>SELECT users.name AS author FROM users</pre>
+      <ul class="options">
+        <li><label><input type="radio" name="q4" value="a"> users 테이블의 이름을 author로 변경한다</label></li>
+        <li><label><input type="radio" name="q4" value="b"> name 컬럼의 데이터를 수정한다</label></li>
+        <li><label><input type="radio" name="q4" value="c"> 조회 결과에서 컬럼 이름을 author로 표시한다</label></li>
+        <li><label><input type="radio" name="q4" value="d"> author라는 새 컬럼을 추가한다</label></li>
+      </ul>
+      <div class="result" id="r4"></div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="question" id="q5">
+      <h3>Q5. 유저별 글 개수를 구하는 SQL로 올바른 것은?</h3>
+      <ul class="options">
+        <li><label><input type="radio" name="q5" value="a"> <code>SELECT user_id, COUNT(*) FROM posts</code></label></li>
+        <li><label><input type="radio" name="q5" value="b"> <code>SELECT user_id, COUNT(*) FROM posts GROUP BY user_id</code></label></li>
+        <li><label><input type="radio" name="q5" value="c"> <code>SELECT user_id, SUM(*) FROM posts GROUP BY user_id</code></label></li>
+        <li><label><input type="radio" name="q5" value="d"> <code>SELECT COUNT(user_id) FROM posts ORDER BY user_id</code></label></li>
+      </ul>
+      <div class="result" id="r5"></div>
+    </div>
+
+    <button class="btn" onclick="checkAnswers()">제출하기</button>
+    <div class="score" id="score"></div>
+  </div>
+
+  <script>
+    const answers = { q1: 'b', q2: 'b', q3: 'b', q4: 'c', q5: 'b' };
+    const explanations = {
+      q1: { correct: '맞아요! JOIN은 두 테이블을 공통 컬럼(user_id = id)으로 연결해서 함께 조회합니다.', wrong: 'JOIN은 두 테이블을 연결해서 함께 조회하는 명령어예요. ON 뒤에 연결 조건을 씁니다.' },
+      q2: { correct: '맞아요! DESC는 내림차순(큰 값 → 작은 값)이므로, 최신 날짜가 먼저 나옵니다.', wrong: 'ORDER BY는 정렬이고, DESC는 내림차순(큰 → 작은)이에요. 날짜를 내림차순하면 최신이 먼저 나옵니다. ASC는 오름차순(오래된 순)이에요.' },
+      q3: { correct: '맞아요! WHERE는 그룹화 전에, HAVING은 그룹화 후에 조건을 거는 키워드입니다.', wrong: 'GROUP BY 결과에 조건을 거는 건 HAVING이에요. WHERE는 그룹화 전에 개별 행을 필터링합니다.' },
+      q4: { correct: '맞아요! AS는 별칭(alias)으로, 조회 결과의 컬럼 이름을 바꿔서 보여줍니다. 원본 데이터는 변하지 않아요.', wrong: 'AS는 별칭(alias)이에요. 조회 결과에서 컬럼 이름을 다르게 표시할 뿐, 원본 테이블은 변하지 않습니다.' },
+      q5: { correct: '맞아요! GROUP BY user_id로 유저별로 묶고, COUNT(*)로 각 그룹의 행 수를 세는 거예요.', wrong: 'GROUP BY가 있어야 유저별로 묶을 수 있어요. GROUP BY user_id + COUNT(*)가 정답입니다.' }
+    };
+
+    function checkAnswers() {
+      let score = 0;
+      const total = 5;
+
+      for (let i = 1; i <= total; i++) {
+        const key = 'q' + i;
+        const selected = document.querySelector(`input[name="${key}"]:checked`);
+        const resultEl = document.getElementById('r' + i);
+
+        if (!selected) {
+          resultEl.className = 'result wrong';
+          resultEl.textContent = '답을 선택해주세요!';
+          resultEl.style.display = 'block';
+          continue;
+        }
+
+        if (selected.value === answers[key]) {
+          score++;
+          resultEl.className = 'result correct';
+          resultEl.textContent = '✅ ' + explanations[key].correct;
+        } else {
+          resultEl.className = 'result wrong';
+          resultEl.textContent = '❌ ' + explanations[key].wrong;
+        }
+        resultEl.style.display = 'block';
+      }
+
+      const scoreEl = document.getElementById('score');
+      scoreEl.style.display = 'block';
+
+      if (score >= 4) {
+        scoreEl.className = 'score pass';
+        scoreEl.innerHTML = `<h2>🎉 ${score}/${total} 통과!</h2><p>챕터 07 완료! Part 1 기초 다지기를 모두 마쳤습니다. 다음은 Part 2 백엔드 구축이에요!</p>`;
+      } else {
+        scoreEl.className = 'score fail';
+        scoreEl.innerHTML = `<h2>${score}/${total}</h2><p>4문제 이상 맞아야 통과예요. 틀린 문제의 설명을 읽고 다시 도전해보세요!</p>`;
+      }
+    }
+  </script>
+</body>
+</html>

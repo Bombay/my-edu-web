@@ -1,8 +1,8 @@
 {
   "learner": "",
-  "currentChapter": "06-table-design",
+  "currentChapter": "07-sql-advanced",
   "totalChapters": 24,
-  "completedChapters": 6,
+  "completedChapters": 7,
   "lastUpdated": "",
   "chapters": {
     "01-environment-setup": {
@@ -54,10 +54,10 @@
       "description": "관계(1:N, N:M), 정규화, FK, ERD 설계"
     },
     "07-sql-advanced": {
-      "status": "pending",
-      "startedAt": null,
-      "completedAt": null,
-      "quizPassed": false,
+      "status": "completed",
+      "startedAt": "2026-03-30",
+      "completedAt": "2026-03-30",
+      "quizPassed": true,
       "sourceFiles": ["src/backend/src/db/queries.sql"],
       "description": "JOIN, WHERE, ORDER BY, 집계 함수"
     },
