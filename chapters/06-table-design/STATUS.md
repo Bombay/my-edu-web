@@ -1,9 +1,9 @@
 ---
 chapter: "06-table-design"
-status: "in_progress"
+status: "completed"
 startedAt: "2026-03-30"
-completedAt: null
-quizPassed: false
+completedAt: "2026-03-30"
+quizPassed: true
 ---
 
 ## 실습 체크리스트
@@ -13,7 +13,7 @@ quizPassed: false
 - [x] users + posts 테이블 재설계하기
 - [x] ERD 다이어그램으로 시각화
 - [x] 스스로 해보기 과제
-- [ ] 퀴즈 통과
+- [x] 퀴즈 통과
 
 ## 퀴즈 결과
-(미실시)
+- 통과 (2026-03-30)

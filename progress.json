@@ -2,7 +2,7 @@
   "learner": "",
   "currentChapter": "06-table-design",
   "totalChapters": 24,
-  "completedChapters": 5,
+  "completedChapters": 6,
   "lastUpdated": "",
   "chapters": {
     "01-environment-setup": {
@@ -46,10 +46,10 @@
       "description": "CREATE TABLE, INSERT, SELECT, SQLite 기초"
     },
     "06-table-design": {
-      "status": "in_progress",
+      "status": "completed",
       "startedAt": "2026-03-30",
-      "completedAt": null,
-      "quizPassed": false,
+      "completedAt": "2026-03-30",
+      "quizPassed": true,
       "sourceFiles": ["src/backend/src/db/schema.sql", "docs/erd/community-board.md"],
       "description": "관계(1:N, N:M), 정규화, FK, ERD 설계"
     },
