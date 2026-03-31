@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>챕터 09 퀴즈: REST API 설계</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; padding: 40px 20px; line-height: 1.6; }
+    .container { max-width: 700px; margin: 0 auto; }
+    h1 { text-align: center; margin-bottom: 8px; color: #1a1a1a; }
+    .subtitle { text-align: center; color: #666; margin-bottom: 32px; }
+    .question { background: #fff; border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .question h3 { margin-bottom: 12px; color: #333; }
+    .question pre { background: #1e1e1e; color: #d4d4d4; padding: 16px; border-radius: 8px; margin: 12px 0; overflow-x: auto; font-size: 14px; }
+    .options { list-style: none; margin-top: 12px; }
+    .options li { margin-bottom: 8px; }
+    .options label { display: block; padding: 12px 16px; background: #f8f8f8; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+    .options label:hover { border-color: #4a90d9; background: #f0f7ff; }
+    .options input[type="radio"] { margin-right: 8px; }
+    .result { display: none; margin-top: 12px; padding: 12px 16px; border-radius: 8px; font-weight: 500; }
+    .result.correct { display: block; background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+    .result.wrong { display: block; background: #fbe9e7; color: #c62828; border: 1px solid #ef9a9a; }
+    .btn { display: block; width: 100%; padding: 16px; margin-top: 32px; background: #4a90d9; color: #fff; border: none; border-radius: 12px; font-size: 18px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+    .btn:hover { background: #357abd; }
+    .score { display: none; text-align: center; background: #fff; border-radius: 12px; padding: 32px; margin-top: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .score h2 { font-size: 28px; margin-bottom: 8px; }
+    .score.pass h2 { color: #2e7d32; }
+    .score.fail h2 { color: #c62828; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>챕터 09 퀴즈</h1>
+    <p class="subtitle">REST API 설계 (CRUD) — 5문제</p>
+
+    <!-- Q1 -->
+    <div class="question" id="q1">
+      <h3>Q1. REST API에서 글을 수정할 때 올바른 조합은?</h3>
+      <ul class="options">
+        <li><label><input type="radio" name="q1" value="a"> POST /api/posts/3</label></li>
+        <li><label><input type="radio" name="q1" value="b"> GET /api/posts/3</label></li>
+        <li><label><input type="radio" name="q1" value="c"> PATCH /api/posts/3</label></li>
+        <li><label><input type="radio" name="q1" value="d"> DELETE /api/posts/3</label></li>
+      </ul>
+      <div class="result" id="r1"></div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="question" id="q2">
+      <h3>Q2. Express Router를 사용하는 이유는?</h3>
+      <ul class="options">
+        <li><label><input type="radio" name="q2" value="a"> 서버 실행 속도를 빠르게 하기 위해</label></li>
+        <li><label><input type="radio" name="q2" value="b"> 관련 있는 API를 파일로 분리해서 코드를 관리하기 쉽게</label></li>
+        <li><label><input type="radio" name="q2" value="c"> 데이터베이스 연결을 위해 반드시 필요해서</label></li>
+        <li><label><input type="radio" name="q2" value="d"> TypeScript를 사용하려면 필수여서</label></li>
+      </ul>
+      <div class="result" id="r2"></div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="question" id="q3">
+      <h3>Q3. 다음 코드에서 실제 URL은 무엇이 되나요?</h3>
+      <pre>// index.ts
+app.use('/api/posts', postsRouter);
+
+// routes/posts.ts
+router.get('/:id', ...)</pre>
+      <ul class="options">
+        <li><label><input type="radio" name="q3" value="a"> /:id</label></li>
+        <li><label><input type="radio" name="q3" value="b"> /posts/:id</label></li>
+        <li><label><input type="radio" name="q3" value="c"> /api/posts/:id</label></li>
+        <li><label><input type="radio" name="q3" value="d"> /api/:id</label></li>
+      </ul>
+      <div class="result" id="r3"></div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="question" id="q4">
+      <h3>Q4. <code>COALESCE(?, title)</code>의 의미는?</h3>
+      <pre>UPDATE posts SET title = COALESCE(?, title) WHERE id = ?</pre>
+      <ul class="options">
+        <li><label><input type="radio" name="q4" value="a"> 항상 title을 null로 설정한다</label></li>
+        <li><label><input type="radio" name="q4" value="b"> ?가 null이면 기존 title 값을 유지한다</label></li>
+        <li><label><input type="radio" name="q4" value="c"> title과 ?를 합쳐서 저장한다</label></li>
+        <li><label><input type="radio" name="q4" value="d"> 두 값 중 큰 값을 저장한다</label></li>
+      </ul>
+      <div class="result" id="r4"></div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="question" id="q5">
+      <h3>Q5. CRUD와 HTTP 메서드의 올바른 대응은?</h3>
+      <ul class="options">
+        <li><label><input type="radio" name="q5" value="a"> Create=GET, Read=POST, Update=DELETE, Delete=PATCH</label></li>
+        <li><label><input type="radio" name="q5" value="b"> Create=POST, Read=GET, Update=PATCH, Delete=DELETE</label></li>
+        <li><label><input type="radio" name="q5" value="c"> Create=PATCH, Read=DELETE, Update=GET, Delete=POST</label></li>
+        <li><label><input type="radio" name="q5" value="d"> Create=DELETE, Read=PATCH, Update=POST, Delete=GET</label></li>
+      </ul>
+      <div class="result" id="r5"></div>
+    </div>
+
+    <button class="btn" onclick="checkAnswers()">제출하기</button>
+    <div class="score" id="score"></div>
+  </div>
+
+  <script>
+    const answers = { q1: 'c', q2: 'b', q3: 'c', q4: 'b', q5: 'b' };
+    const explanations = {
+      q1: { correct: '맞아요! 수정은 PATCH(부분 수정) 또는 PUT(전체 교체)을 사용합니다.', wrong: '수정은 PATCH를 사용해요. GET은 조회, POST는 생성, DELETE는 삭제입니다.' },
+      q2: { correct: '맞아요! Router로 관련 API를 파일로 분리하면 코드가 깔끔하고 관리하기 쉬워집니다.', wrong: 'Router는 관련 API를 파일로 분리해서 관리하기 쉽게 하는 기능이에요. 필수는 아니지만 코드가 커지면 꼭 필요합니다.' },
+      q3: { correct: '맞아요! app.use의 "/api/posts"와 router.get의 "/:id"가 합쳐져서 /api/posts/:id가 됩니다.', wrong: 'app.use("/api/posts", postsRouter)에서 "/api/posts"가 접두사가 되고, router.get("/:id")의 "/:id"가 뒤에 붙어서 /api/posts/:id가 됩니다.' },
+      q4: { correct: '맞아요! COALESCE(A, B)는 A가 null이면 B를 쓴다는 뜻이에요. PATCH에서 보내지 않은 필드의 기존 값을 유지하는 데 사용합니다.', wrong: 'COALESCE(A, B)는 "A가 있으면 A, A가 null이면 B"라는 뜻이에요. 부분 수정에서 안 보낸 필드의 기존 값을 유지해줍니다.' },
+      q5: { correct: '맞아요! Create=POST, Read=GET, Update=PATCH, Delete=DELETE입니다.', wrong: 'CRUD의 올바른 대응: Create=POST(생성), Read=GET(조회), Update=PATCH(수정), Delete=DELETE(삭제)입니다.' }
+    };
+
+    function checkAnswers() {
+      let score = 0;
+      const total = 5;
+
+      for (let i = 1; i <= total; i++) {
+        const key = 'q' + i;
+        const selected = document.querySelector(`input[name="${key}"]:checked`);
+        const resultEl = document.getElementById('r' + i);
+
+        if (!selected) {
+          resultEl.className = 'result wrong';
+          resultEl.textContent = '답을 선택해주세요!';
+          resultEl.style.display = 'block';
+          continue;
+        }
+
+        if (selected.value === answers[key]) {
+          score++;
+          resultEl.className = 'result correct';
+          resultEl.textContent = '✅ ' + explanations[key].correct;
+        } else {
+          resultEl.className = 'result wrong';
+          resultEl.textContent = '❌ ' + explanations[key].wrong;
+        }
+        resultEl.style.display = 'block';
+      }
+
+      const scoreEl = document.getElementById('score');
+      scoreEl.style.display = 'block';
+
+      if (score >= 4) {
+        scoreEl.className = 'score pass';
+        scoreEl.innerHTML = `<h2>🎉 ${score}/${total} 통과!</h2><p>챕터 09 완료! 다음 챕터에서 회원가입 API를 만들어봅니다.</p>`;
+      } else {
+        scoreEl.className = 'score fail';
+        scoreEl.innerHTML = `<h2>${score}/${total}</h2><p>4문제 이상 맞아야 통과예요. 틀린 문제의 설명을 읽고 다시 도전해보세요!</p>`;
+      }
+    }
+  </script>
+</body>
+</html>

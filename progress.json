@@ -1,8 +1,8 @@
 {
   "learner": "",
-  "currentChapter": "08-db-server-connect",
+  "currentChapter": "09-rest-api-design",
   "totalChapters": 24,
-  "completedChapters": 8,
+  "completedChapters": 9,
   "lastUpdated": "",
   "chapters": {
     "01-environment-setup": {
@@ -70,10 +70,10 @@
       "description": "better-sqlite3로 Express에서 SQLite 연동"
     },
     "09-rest-api-design": {
-      "status": "pending",
-      "startedAt": null,
-      "completedAt": null,
-      "quizPassed": false,
+      "status": "completed",
+      "startedAt": "2026-03-31",
+      "completedAt": "2026-03-31",
+      "quizPassed": true,
       "sourceFiles": ["src/backend/src/routes/posts.ts"],
       "description": "REST 원칙, 라우팅, 게시글 CRUD API"
     },
