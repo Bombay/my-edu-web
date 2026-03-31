@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>챕터 08 퀴즈: DB와 서버 연결</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; padding: 40px 20px; line-height: 1.6; }
+    .container { max-width: 700px; margin: 0 auto; }
+    h1 { text-align: center; margin-bottom: 8px; color: #1a1a1a; }
+    .subtitle { text-align: center; color: #666; margin-bottom: 32px; }
+    .question { background: #fff; border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .question h3 { margin-bottom: 12px; color: #333; }
+    .question pre { background: #1e1e1e; color: #d4d4d4; padding: 16px; border-radius: 8px; margin: 12px 0; overflow-x: auto; font-size: 14px; }
+    .options { list-style: none; margin-top: 12px; }
+    .options li { margin-bottom: 8px; }
+    .options label { display: block; padding: 12px 16px; background: #f8f8f8; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+    .options label:hover { border-color: #4a90d9; background: #f0f7ff; }
+    .options input[type="radio"] { margin-right: 8px; }
+    .result { display: none; margin-top: 12px; padding: 12px 16px; border-radius: 8px; font-weight: 500; }
+    .result.correct { display: block; background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+    .result.wrong { display: block; background: #fbe9e7; color: #c62828; border: 1px solid #ef9a9a; }
+    .btn { display: block; width: 100%; padding: 16px; margin-top: 32px; background: #4a90d9; color: #fff; border: none; border-radius: 12px; font-size: 18px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+    .btn:hover { background: #357abd; }
+    .score { display: none; text-align: center; background: #fff; border-radius: 12px; padding: 32px; margin-top: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .score h2 { font-size: 28px; margin-bottom: 8px; }
+    .score.pass h2 { color: #2e7d32; }
+    .score.fail h2 { color: #c62828; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>챕터 08 퀴즈</h1>
+    <p class="subtitle">DB와 서버 연결 — 5문제</p>
+
+    <!-- Q1 -->
+    <div class="question" id="q1">
+      <h3>Q1. Express 서버에서 SQLite를 사용하면 JSON 파일 방식보다 좋은 점은?</h3>
+      <ul class="options">
+        <li><label><input type="radio" name="q1" value="a"> 코드가 더 길어진다</label></li>
+        <li><label><input type="radio" name="q1" value="b"> 검색, 정렬, 저장이 SQL 한 줄로 간결하게 처리된다</label></li>
+        <li><label><input type="radio" name="q1" value="c"> 서버를 끄면 데이터가 사라진다</label></li>
+        <li><label><input type="radio" name="q1" value="d"> 파일을 직접 관리해야 한다</label></li>
+      </ul>
+      <div class="result" id="r1"></div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="question" id="q2">
+      <h3>Q2. 다음 라우트에서 <code>:id</code>의 역할은?</h3>
+      <pre>app.get('/posts/:id', (req, res) => {
+  const post = db.prepare('SELECT * FROM posts WHERE id = ?')
+    .get(req.params.id);
+});</pre>
+      <ul class="options">
+        <li><label><input type="radio" name="q2" value="a"> 고정된 문자열 ":id"를 의미한다</label></li>
+        <li><label><input type="radio" name="q2" value="b"> URL에서 동적으로 바뀌는 값을 받아 req.params.id로 사용한다</label></li>
+        <li><label><input type="radio" name="q2" value="c"> 자동으로 1부터 증가하는 숫자다</label></li>
+        <li><label><input type="radio" name="q2" value="d"> 데이터베이스의 id 컬럼을 자동으로 연결한다</label></li>
+      </ul>
+      <div class="result" id="r2"></div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="question" id="q3">
+      <h3>Q3. <code>res.status(404).json({error: '...'})</code>의 의미는?</h3>
+      <ul class="options">
+        <li><label><input type="radio" name="q3" value="a"> 서버가 에러로 종료된다</label></li>
+        <li><label><input type="radio" name="q3" value="b"> 404(찾을 수 없음) 상태코드와 함께 에러 메시지를 응답한다</label></li>
+        <li><label><input type="radio" name="q3" value="c"> 데이터베이스에서 404번 데이터를 찾는다</label></li>
+        <li><label><input type="radio" name="q3" value="d"> 404번 포트로 서버를 재시작한다</label></li>
+      </ul>
+      <div class="result" id="r3"></div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="question" id="q4">
+      <h3>Q4. HTTP 메서드와 용도가 올바르게 짝지어진 것은?</h3>
+      <ul class="options">
+        <li><label><input type="radio" name="q4" value="a"> GET = 삭제, POST = 조회, DELETE = 추가</label></li>
+        <li><label><input type="radio" name="q4" value="b"> GET = 조회, POST = 추가, DELETE = 삭제</label></li>
+        <li><label><input type="radio" name="q4" value="c"> GET = 추가, POST = 삭제, DELETE = 조회</label></li>
+        <li><label><input type="radio" name="q4" value="d"> GET = 조회, POST = 삭제, DELETE = 추가</label></li>
+      </ul>
+      <div class="result" id="r4"></div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="question" id="q5">
+      <h3>Q5. <code>result.lastInsertRowid</code>는 무엇을 반환하나요?</h3>
+      <pre>const result = db.prepare(
+  'INSERT INTO posts (title, content, author) VALUES (?, ?, ?)'
+).run(title, content, author);
+
+const newPost = db.prepare('SELECT * FROM posts WHERE id = ?')
+  .get(result.lastInsertRowid);</pre>
+      <ul class="options">
+        <li><label><input type="radio" name="q5" value="a"> 테이블의 전체 행 수</label></li>
+        <li><label><input type="radio" name="q5" value="b"> 방금 INSERT한 행의 id 값</label></li>
+        <li><label><input type="radio" name="q5" value="c"> 마지막으로 삭제된 행의 id</label></li>
+        <li><label><input type="radio" name="q5" value="d"> 다음에 추가될 행의 id</label></li>
+      </ul>
+      <div class="result" id="r5"></div>
+    </div>
+
+    <button class="btn" onclick="checkAnswers()">제출하기</button>
+    <div class="score" id="score"></div>
+  </div>
+
+  <script>
+    const answers = { q1: 'b', q2: 'b', q3: 'b', q4: 'b', q5: 'b' };
+    const explanations = {
+      q1: { correct: '맞아요! SQL 한 줄로 검색, 정렬, 저장이 가능하고 코드도 더 간결해집니다.', wrong: 'SQLite를 쓰면 SELECT, INSERT, WHERE, ORDER BY 같은 SQL 한 줄로 간결하게 처리할 수 있어요. JSON 방식보다 코드가 더 짧아집니다.' },
+      q2: { correct: '맞아요! :id는 URL 파라미터예요. /posts/3이면 req.params.id가 3이 됩니다.', wrong: ':id는 URL 파라미터예요. /posts/3으로 접속하면 req.params.id에 3이 들어갑니다. 동적으로 바뀌는 값을 받는 거죠.' },
+      q3: { correct: '맞아요! 404는 "찾을 수 없음"이라는 HTTP 상태 코드이고, json()으로 에러 메시지를 보냅니다.', wrong: '404는 HTTP 상태 코드로 "찾을 수 없음"을 의미해요. 서버가 종료되는 게 아니라, 클라이언트에게 "요청한 리소스가 없다"고 알려주는 겁니다.' },
+      q4: { correct: '맞아요! GET은 조회, POST는 추가(생성), DELETE는 삭제입니다.', wrong: 'HTTP 메서드의 기본 용도: GET = 조회, POST = 추가(생성), DELETE = 삭제, PUT/PATCH = 수정입니다.' },
+      q5: { correct: '맞아요! lastInsertRowid는 방금 INSERT한 행의 id를 반환합니다. 새로 만든 글을 바로 조회할 때 유용해요.', wrong: 'lastInsertRowid는 방금 INSERT로 추가한 행의 id 값이에요. 이걸로 새로 추가된 데이터를 바로 조회할 수 있습니다.' }
+    };
+
+    function checkAnswers() {
+      let score = 0;
+      const total = 5;
+
+      for (let i = 1; i <= total; i++) {
+        const key = 'q' + i;
+        const selected = document.querySelector(`input[name="${key}"]:checked`);
+        const resultEl = document.getElementById('r' + i);
+
+        if (!selected) {
+          resultEl.className = 'result wrong';
+          resultEl.textContent = '답을 선택해주세요!';
+          resultEl.style.display = 'block';
+          continue;
+        }
+
+        if (selected.value === answers[key]) {
+          score++;
+          resultEl.className = 'result correct';
+          resultEl.textContent = '✅ ' + explanations[key].correct;
+        } else {
+          resultEl.className = 'result wrong';
+          resultEl.textContent = '❌ ' + explanations[key].wrong;
+        }
+        resultEl.style.display = 'block';
+      }
+
+      const scoreEl = document.getElementById('score');
+      scoreEl.style.display = 'block';
+
+      if (score >= 4) {
+        scoreEl.className = 'score pass';
+        scoreEl.innerHTML = `<h2>🎉 ${score}/${total} 통과!</h2><p>챕터 08 완료! 다음 챕터에서 REST API를 본격적으로 설계합니다.</p>`;
+      } else {
+        scoreEl.className = 'score fail';
+        scoreEl.innerHTML = `<h2>${score}/${total}</h2><p>4문제 이상 맞아야 통과예요. 틀린 문제의 설명을 읽고 다시 도전해보세요!</p>`;
+      }
+    }
+  </script>
+</body>
+</html>

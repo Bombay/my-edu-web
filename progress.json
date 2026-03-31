@@ -1,8 +1,8 @@
 {
   "learner": "",
-  "currentChapter": "07-sql-advanced",
+  "currentChapter": "08-db-server-connect",
   "totalChapters": 24,
-  "completedChapters": 7,
+  "completedChapters": 8,
   "lastUpdated": "",
   "chapters": {
     "01-environment-setup": {
@@ -62,10 +62,10 @@
       "description": "JOIN, WHERE, ORDER BY, 집계 함수"
     },
     "08-db-server-connect": {
-      "status": "pending",
-      "startedAt": null,
-      "completedAt": null,
-      "quizPassed": false,
+      "status": "completed",
+      "startedAt": "2026-03-31",
+      "completedAt": "2026-03-31",
+      "quizPassed": true,
       "sourceFiles": ["src/backend/src/db/index.ts"],
       "description": "better-sqlite3로 Express에서 SQLite 연동"
     },
