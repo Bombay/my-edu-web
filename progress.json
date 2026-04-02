@@ -1,8 +1,8 @@
 {
   "learner": "",
-  "currentChapter": "09-rest-api-design",
+  "currentChapter": "10-signup-api",
   "totalChapters": 24,
-  "completedChapters": 9,
+  "completedChapters": 10,
   "lastUpdated": "",
   "chapters": {
     "01-environment-setup": {
@@ -78,10 +78,10 @@
       "description": "REST 원칙, 라우팅, 게시글 CRUD API"
     },
     "10-signup-api": {
-      "status": "pending",
-      "startedAt": null,
-      "completedAt": null,
-      "quizPassed": false,
+      "status": "completed",
+      "startedAt": "2026-04-01",
+      "completedAt": "2026-04-02",
+      "quizPassed": true,
       "sourceFiles": ["src/backend/src/routes/auth.ts", "src/backend/src/db/migrations/001-users.sql"],
       "description": "비밀번호 해싱, 입력 검증, POST /api/auth/register"
     },
