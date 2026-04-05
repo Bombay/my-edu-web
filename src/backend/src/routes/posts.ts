@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';                                                 
-  import db from '../db';                                                                              
+  import db from '../db';   
+  import { authMiddleware } from '../middleware/auth';                                                                           
                                                                                                        
   const router = Router();                                                                             
                                                                                                        
@@ -19,18 +20,18 @@ import { Router, Request, Response } from 'express';
   });                                                                                                  
                                                                                                      
   // 글 작성
-  router.post('/', (req: Request, res: Response) => {
-      const { title, content, author } = req.body;                                                     
+  router.post('/', authMiddleware, (req: Request, res: Response) => {
+      const { title, content } = req.body;                                                     
       const result = db.prepare(                                                                       
         'INSERT INTO posts (title, content, author) VALUES (?, ?, ?)'                                  
-      ).run(title, content, author);                                                                   
+      ).run(title, content, req.user!.email);                                                                   
                                                                                                        
       const newPost = db.prepare('SELECT * FROM posts WHERE id = ?').get(result.lastInsertRowid);      
       res.status(201).json(newPost);                                                                   
   });                                                                                                  
                                                                                                        
   // 글 수정 (PATCH - 부분 수정)                                                                       
-  router.patch('/:id', (req: Request, res: Response) => {                                              
+  router.patch('/:id', authMiddleware, (req: Request, res: Response) => {                                              
       const post = db.prepare('SELECT * FROM posts WHERE id = ?').get(req.params.id);                  
       if (!post) {                                                                                     
           res.status(404).json({ error: '글을 찾을 수 없습니다'});                                     
@@ -46,7 +47,7 @@ import { Router, Request, Response } from 'express';
   });                                                                                                  
                                                                                                        
   // 글 삭제                                                                                           
-  router.delete('/:id', (req: Request, res: Response) => {                                             
+  router.delete('/:id', authMiddleware, (req: Request, res: Response) => {                                             
       const post = db.prepare('SELECT * FROM posts WHERE id = ?').get(req.params.id);                
       if (!post) {                                                                                     
         res.status(404).json({ error: '글을 찾을 수 없습니다' });                                      

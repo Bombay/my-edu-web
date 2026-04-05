@@ -1,8 +1,8 @@
 {
   "learner": "",
-  "currentChapter": "10-signup-api",
+  "currentChapter": "11-login-auth",
   "totalChapters": 24,
-  "completedChapters": 10,
+  "completedChapters": 11,
   "lastUpdated": "",
   "chapters": {
     "01-environment-setup": {
@@ -86,10 +86,10 @@
       "description": "비밀번호 해싱, 입력 검증, POST /api/auth/register"
     },
     "11-login-auth": {
-      "status": "pending",
-      "startedAt": null,
-      "completedAt": null,
-      "quizPassed": false,
+      "status": "completed",
+      "startedAt": "2026-04-05",
+      "completedAt": "2026-04-05",
+      "quizPassed": true,
       "sourceFiles": ["src/backend/src/routes/auth.ts", "src/backend/src/middleware/auth.ts"],
       "description": "세션/토큰, JWT, 로그인 API + 인증 미들웨어"
     },

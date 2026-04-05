@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';                                                 
   import bcrypt from 'bcrypt';                                                                         
   import db from '../db';                                                                              
+  import jwt from 'jsonwebtoken';                                                                     
                                                                                                        
   const router = Router();                                                                             
                                                                                                        
@@ -49,6 +50,42 @@ import { Router, Request, Response } from 'express';
           .get(result.lastInsertRowid);                                                                
                                                                                                        
       res.status(201).json(user);                                                                      
-  });                                                                                                  
+  });      
+  
+  // POST /api/auth/login                                                                              
+  router.post('/login', (req: Request, res: Response) => {                                             
+    const { email, password } = req.body;                                                            
+                                                                                                     
+    // 1) 필수 항목 체크                                                                             
+    if (!email || !password) {                                                                       
+        res.status(400).json({ error: '이메일과 비밀번호를 입력해주세요' });                         
+        return;                                                                                      
+    }                                                                                                
+                                                                                                     
+    // 2) 이메일로 유저 찾기                                                                         
+    const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email) as any;                
+    if (!user) {                                                                                     
+        res.status(401).json({ error: '이메일 또는 비밀번호가 틀렸습니다' });                        
+        return;                                                                                      
+    }                                                                                                
+                                                                                                     
+    // 3) 비밀번호 비교 (챕터 10에서 배운 compareSync!)                                              
+    if (!bcrypt.compareSync(password, user.password_hash)) {                                         
+        res.status(401).json({ error: '이메일 또는 비밀번호가 틀렸습니다' });                        
+        return;                                                                                      
+    }                                                                                                
+                                                                                                     
+    // 4) JWT 발급 (팔찌 만들기!)                                                                    
+    const token = jwt.sign(                                                                          
+        { userId: user.id, email: user.email },                                                      
+        'my-secret-key',                                                                             
+        { expiresIn: '24h' }                                                                         
+    );                                                                                               
+                                                                                                     
+    res.json({                                                                                       
+        token,                                                                                     
+        user: { id: user.id, email: user.email, nickname: user.nickname }                            
+    });                                                                                              
+});    
                                                                                                      
   export default router;
