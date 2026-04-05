@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>챕터 12 퀴즈 - 게시판 API</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; padding: 2rem; }
+        .container { max-width: 720px; margin: 0 auto; }
+        h1 { text-align: center; margin-bottom: 0.5rem; font-size: 1.8rem; color: #f8fafc; }
+        .subtitle { text-align: center; color: #94a3b8; margin-bottom: 2rem; }
+        .question { background: #1e293b; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; border: 1px solid #334155; }
+        .question h3 { color: #38bdf8; margin-bottom: 1rem; font-size: 1.05rem; }
+        .question pre { background: #0f172a; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; overflow-x: auto; font-size: 0.9rem; color: #a5f3fc; }
+        .options { display: flex; flex-direction: column; gap: 0.5rem; }
+        .option { padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid #475569; cursor: pointer; transition: all 0.2s; background: #1e293b; }
+        .option:hover { border-color: #38bdf8; background: #1e3a5f; }
+        .option.selected { border-color: #38bdf8; background: #1e3a5f; }
+        .option.correct { border-color: #4ade80; background: #14532d; }
+        .option.wrong { border-color: #f87171; background: #7f1d1d; }
+        .feedback { margin-top: 0.75rem; padding: 0.75rem; border-radius: 8px; display: none; font-size: 0.95rem; line-height: 1.5; }
+        .feedback.show { display: block; }
+        .feedback.correct { background: #14532d; color: #bbf7d0; border: 1px solid #4ade80; }
+        .feedback.wrong { background: #7f1d1d; color: #fecaca; border: 1px solid #f87171; }
+        .result { background: #1e293b; border-radius: 12px; padding: 2rem; text-align: center; margin-top: 2rem; display: none; border: 1px solid #334155; }
+        .result h2 { font-size: 1.5rem; margin-bottom: 1rem; }
+        .result.pass { border-color: #4ade80; }
+        .result.fail { border-color: #f87171; }
+        .score { font-size: 3rem; font-weight: bold; }
+        .score.pass { color: #4ade80; }
+        .score.fail { color: #f87171; }
+        .btn { padding: 0.75rem 2rem; border-radius: 8px; border: none; font-size: 1rem; cursor: pointer; margin-top: 1rem; font-weight: 600; }
+        .btn-submit { background: #3b82f6; color: white; }
+        .btn-submit:hover { background: #2563eb; }
+        .btn-submit:disabled { background: #475569; cursor: not-allowed; }
+        .btn-retry { background: #f87171; color: white; }
+        .btn-retry:hover { background: #ef4444; }
+        .btn-area { text-align: center; margin-top: 1.5rem; }
+        .q-number { display: inline-block; background: #3b82f6; color: white; width: 28px; height: 28px; border-radius: 50%; text-align: center; line-height: 28px; font-size: 0.85rem; margin-right: 0.5rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Chapter 12 Quiz</h1>
+        <p class="subtitle">게시판 API - 카테고리와 페이지네이션</p>
+
+        <!-- Q1 -->
+        <div class="question" data-answer="2">
+            <h3><span class="q-number">1</span>boards와 posts의 관계는?</h3>
+            <pre>boards: 자유게시판, 질문게시판
+posts:  글A(board_id:1), 글B(board_id:2), 글C(board_id:1)</pre>
+            <div class="options">
+                <div class="option" data-value="1">N:M — 하나의 글이 여러 게시판에 속할 수 있다</div>
+                <div class="option" data-value="2">1:N — 하나의 게시판에 여러 글이 속한다</div>
+                <div class="option" data-value="3">1:1 — 하나의 게시판에 하나의 글만 속한다</div>
+                <div class="option" data-value="4">N:1 — 여러 게시판이 하나의 글을 공유한다</div>
+            </div>
+            <div class="feedback correct">정답! 하나의 게시판(board)에 여러 글(posts)이 속하는 1:N 관계입니다. posts 테이블의 board_id가 이 관계를 표현합니다.</div>
+            <div class="feedback wrong">오답! 자유게시판에 글A, 글C가 속하고, 질문게시판에 글B가 속합니다. 하나의 게시판에 여러 글 — 1:N 관계예요.</div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="question" data-answer="3">
+            <h3><span class="q-number">2</span>3페이지의 글을 가져오려면? (페이지당 10개)</h3>
+            <div class="options">
+                <div class="option" data-value="1"><pre>SELECT * FROM posts LIMIT 10 OFFSET 10</pre></div>
+                <div class="option" data-value="2"><pre>SELECT * FROM posts LIMIT 30 OFFSET 0</pre></div>
+                <div class="option" data-value="3"><pre>SELECT * FROM posts LIMIT 10 OFFSET 20</pre></div>
+                <div class="option" data-value="4"><pre>SELECT * FROM posts LIMIT 20 OFFSET 10</pre></div>
+            </div>
+            <div class="feedback correct">정답! offset = (page - 1) * limit = (3 - 1) * 10 = 20. 앞의 20개를 건너뛰고 10개를 가져옵니다. 즉 21~30번째 글이 나옵니다.</div>
+            <div class="feedback wrong">오답! 공식은 offset = (page - 1) * limit입니다. 3페이지면 (3-1) * 10 = 20개를 건너뛰고(OFFSET 20), 10개를 가져옵니다(LIMIT 10).</div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="question" data-answer="4">
+            <h3><span class="q-number">3</span>전체 글이 25개이고 페이지당 10개일 때, 총 페이지 수는?</h3>
+            <pre>const totalPages = Math.ceil(total / limit);
+// Math.ceil = 올림 함수</pre>
+            <div class="options">
+                <div class="option" data-value="1">2 페이지</div>
+                <div class="option" data-value="2">2.5 페이지</div>
+                <div class="option" data-value="3">25 페이지</div>
+                <div class="option" data-value="4">3 페이지</div>
+            </div>
+            <div class="feedback correct">정답! 25 / 10 = 2.5인데, Math.ceil(올림)하면 3입니다. 마지막 페이지에 5개만 있더라도 1페이지로 쳐야 하니까요.</div>
+            <div class="feedback wrong">오답! 25 / 10 = 2.5이고, Math.ceil(올림)하면 3입니다. 1페이지(10개) + 2페이지(10개) + 3페이지(5개) = 총 3페이지가 필요해요.</div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="question" data-answer="1">
+            <h3><span class="q-number">4</span>기존 posts 테이블에 board_id 컬럼을 추가할 때 사용하는 SQL은?</h3>
+            <div class="options">
+                <div class="option" data-value="1"><pre>ALTER TABLE posts ADD COLUMN board_id INTEGER REFERENCES boards(id);</pre></div>
+                <div class="option" data-value="2"><pre>CREATE TABLE posts ADD board_id INTEGER;</pre></div>
+                <div class="option" data-value="3"><pre>UPDATE posts SET board_id = INTEGER;</pre></div>
+                <div class="option" data-value="4"><pre>INSERT INTO posts (board_id) VALUES (INTEGER);</pre></div>
+            </div>
+            <div class="feedback correct">정답! ALTER TABLE은 이미 존재하는 테이블의 구조를 변경합니다. ADD COLUMN으로 새 컬럼을 추가하고, REFERENCES로 외래 키 관계를 설정합니다.</div>
+            <div class="feedback wrong">오답! 이미 존재하는 테이블에 컬럼을 추가하려면 ALTER TABLE ... ADD COLUMN을 씁니다. CREATE는 새 테이블 생성, UPDATE는 데이터 수정, INSERT는 데이터 삽입이에요.</div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="question" data-answer="2">
+            <h3><span class="q-number">5</span>게시판별 글 목록 API의 URL 설계로 가장 적절한 것은?</h3>
+            <div class="options">
+                <div class="option" data-value="1">GET /api/posts?board=1</div>
+                <div class="option" data-value="2">GET /api/boards/1/posts</div>
+                <div class="option" data-value="3">GET /api/getPosts/board/1</div>
+                <div class="option" data-value="4">POST /api/boards/1/list</div>
+            </div>
+            <div class="feedback correct">정답! REST 원칙에서 "1번 게시판에 속한 글 목록"은 /api/boards/1/posts로 표현합니다. 리소스의 계층 관계(게시판 → 글)가 URL에 자연스럽게 드러나죠.</div>
+            <div class="feedback wrong">오답! REST에서는 리소스의 계층 관계를 URL로 표현합니다. "1번 게시판의 글 목록"은 /api/boards/1/posts가 가장 자연스럽습니다. GET은 조회, 동사(getPosts)는 URL에 넣지 않아요.</div>
+        </div>
+
+        <div class="btn-area">
+            <button class="btn btn-submit" id="submitBtn" disabled>제출하기</button>
+        </div>
+
+        <div class="result" id="result">
+            <h2 id="resultTitle"></h2>
+            <div class="score" id="resultScore"></div>
+            <p id="resultMsg" style="margin-top: 1rem; color: #94a3b8;"></p>
+            <button class="btn btn-retry" id="retryBtn" style="display:none;" onclick="location.reload()">다시 풀기</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = document.querySelectorAll('.question');
+        const submitBtn = document.getElementById('submitBtn');
+        const answers = {};
+
+        questions.forEach((q, idx) => {
+            const options = q.querySelectorAll('.option');
+            options.forEach(opt => {
+                opt.addEventListener('click', () => {
+                    if (opt.classList.contains('correct') || opt.classList.contains('wrong')) return;
+                    options.forEach(o => o.classList.remove('selected'));
+                    opt.classList.add('selected');
+                    answers[idx] = opt.dataset.value;
+                    submitBtn.disabled = Object.keys(answers).length < questions.length;
+                });
+            });
+        });
+
+        submitBtn.addEventListener('click', () => {
+            let correct = 0;
+            questions.forEach((q, idx) => {
+                const answer = q.dataset.answer;
+                const selected = answers[idx];
+                const options = q.querySelectorAll('.option');
+                const feedbackCorrect = q.querySelector('.feedback.correct');
+                const feedbackWrong = q.querySelector('.feedback.wrong');
+
+                options.forEach(o => {
+                    o.style.pointerEvents = 'none';
+                    if (o.dataset.value === answer) o.classList.add('correct');
+                    if (o.dataset.value === selected && selected !== answer) o.classList.add('wrong');
+                });
+
+                if (selected === answer) {
+                    correct++;
+                    feedbackCorrect.classList.add('show');
+                } else {
+                    feedbackWrong.classList.add('show');
+                }
+            });
+
+            submitBtn.style.display = 'none';
+            const result = document.getElementById('result');
+            const title = document.getElementById('resultTitle');
+            const score = document.getElementById('resultScore');
+            const msg = document.getElementById('resultMsg');
+            const retryBtn = document.getElementById('retryBtn');
+
+            result.style.display = 'block';
+            score.textContent = `${correct} / ${questions.length}`;
+
+            if (correct === questions.length) {
+                result.classList.add('pass');
+                score.classList.add('pass');
+                title.textContent = '완벽합니다!';
+                msg.textContent = '게시판 API와 페이지네이션을 정확히 이해하고 있습니다. 챕터 12 완료!';
+            } else if (correct >= 4) {
+                result.classList.add('pass');
+                score.classList.add('pass');
+                title.textContent = '통과!';
+                msg.textContent = '잘 이해하고 있습니다. 틀린 문제의 해설을 확인해보세요.';
+            } else {
+                result.classList.add('fail');
+                score.classList.add('fail');
+                title.textContent = '아쉽습니다';
+                msg.textContent = '4문제 이상 맞아야 통과입니다. 해설을 확인하고 다시 도전해보세요!';
+                retryBtn.style.display = 'inline-block';
+            }
+        });
+    </script>
+</body>
+</html>

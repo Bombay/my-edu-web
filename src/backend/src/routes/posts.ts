@@ -21,10 +21,23 @@ import { Router, Request, Response } from 'express';
                                                                                                      
   // 글 작성
   router.post('/', authMiddleware, (req: Request, res: Response) => {
-      const { title, content } = req.body;                                                     
+      const { title, content, board_id } = req.body;    
+      
+      if (!title || !content || !board_id) {
+        res.status(400).json({ error: '제목, 내용, 게이판을 모두 입력하세요.'});
+        return;
+      }
+
+      // 게시판 존재 확인
+      const board = db.prepare('SELECT id FROM boards WHERE id = ?').get(board_id);
+      if (!board) {
+        res.status(404).json({ error: '존재하지 않는 게시판입니다'});
+        return;
+      }
+
       const result = db.prepare(                                                                       
-        'INSERT INTO posts (title, content, author) VALUES (?, ?, ?)'                                  
-      ).run(title, content, req.user!.email);                                                                   
+        'INSERT INTO posts (title, content, author, board_id) VALUES (?, ?, ?, ?)'                                  
+      ).run(title, content, req.user!.email, board_id);                                                                   
                                                                                                        
       const newPost = db.prepare('SELECT * FROM posts WHERE id = ?').get(result.lastInsertRowid);      
       res.status(201).json(newPost);                                                                   

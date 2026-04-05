@@ -1,8 +1,8 @@
 {
   "learner": "",
-  "currentChapter": "11-login-auth",
+  "currentChapter": "12-board-api",
   "totalChapters": 24,
-  "completedChapters": 11,
+  "completedChapters": 12,
   "lastUpdated": "",
   "chapters": {
     "01-environment-setup": {
@@ -94,10 +94,10 @@
       "description": "세션/토큰, JWT, 로그인 API + 인증 미들웨어"
     },
     "12-board-api": {
-      "status": "pending",
-      "startedAt": null,
-      "completedAt": null,
-      "quizPassed": false,
+      "status": "completed",
+      "startedAt": "2026-04-05",
+      "completedAt": "2026-04-05",
+      "quizPassed": true,
       "sourceFiles": ["src/backend/src/routes/boards.ts", "src/backend/src/routes/posts.ts", "src/backend/src/db/migrations/002-boards.sql"],
       "description": "게시판 생성/목록/상세, 카테고리, 페이지네이션"
     },
