@@ -18,7 +18,14 @@ import Database from 'better-sqlite3';
                                                                                                        
     for (const file of files) {                                                                        
       const sql = fs.readFileSync(path.join(migrationsDir, file), 'utf-8');                            
-      db.exec(sql);                                                                                    
+      try {                                                                                                                                                                
+          db.exec(sql);                                                                                                                                                    
+      } catch (err: any) {                                                                                                                                                 
+          // "duplicate column" 같은 이미 적용된 마이그레이션은 무시                                                                                                       
+          if (!err.message.includes('duplicate column')) {                                                                                                                 
+              throw err;                                                                                                                                                   
+          }                                                                                                                                                                
+      }                                                                                          
     }                                                                                                  
   }                                                                                                  
 
