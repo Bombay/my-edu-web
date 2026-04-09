@@ -1,8 +1,8 @@
 {
   "learner": "",
-  "currentChapter": "14-vue-intro",
+  "currentChapter": "15-routing",
   "totalChapters": 24,
-  "completedChapters": 14,
+  "completedChapters": 15,
   "lastUpdated": "",
   "chapters": {
     "01-environment-setup": {
@@ -118,10 +118,10 @@
       "description": "Vue.js 컴포넌트, 반응성, 템플릿, 프로젝트 생성"
     },
     "15-routing": {
-      "status": "pending",
-      "startedAt": null,
-      "completedAt": null,
-      "quizPassed": false,
+      "status": "completed",
+      "startedAt": "2026-04-09",
+      "completedAt": "2026-04-09",
+      "quizPassed": true,
       "sourceFiles": ["src/frontend/src/router/index.ts", "src/frontend/src/views/HomeView.vue"],
       "description": "Vue Router, SPA 개념, 페이지 골격"
     },

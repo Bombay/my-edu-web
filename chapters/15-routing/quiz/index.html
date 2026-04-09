@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>챕터 15 퀴즈 - 페이지와 라우팅</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; padding: 2rem; }
+        .container { max-width: 720px; margin: 0 auto; }
+        h1 { text-align: center; margin-bottom: 0.5rem; font-size: 1.8rem; color: #f8fafc; }
+        .subtitle { text-align: center; color: #94a3b8; margin-bottom: 2rem; }
+        .question { background: #1e293b; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; border: 1px solid #334155; }
+        .question h3 { color: #38bdf8; margin-bottom: 1rem; font-size: 1.05rem; }
+        .question pre { background: #0f172a; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; overflow-x: auto; font-size: 0.9rem; color: #a5f3fc; }
+        .options { display: flex; flex-direction: column; gap: 0.5rem; }
+        .option { padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid #475569; cursor: pointer; transition: all 0.2s; background: #1e293b; }
+        .option:hover { border-color: #38bdf8; background: #1e3a5f; }
+        .option.selected { border-color: #38bdf8; background: #1e3a5f; }
+        .option.correct { border-color: #4ade80; background: #14532d; }
+        .option.wrong { border-color: #f87171; background: #7f1d1d; }
+        .feedback { margin-top: 0.75rem; padding: 0.75rem; border-radius: 8px; display: none; font-size: 0.95rem; line-height: 1.5; }
+        .feedback.show { display: block; }
+        .feedback.correct { background: #14532d; color: #bbf7d0; border: 1px solid #4ade80; }
+        .feedback.wrong { background: #7f1d1d; color: #fecaca; border: 1px solid #f87171; }
+        .result { background: #1e293b; border-radius: 12px; padding: 2rem; text-align: center; margin-top: 2rem; display: none; border: 1px solid #334155; }
+        .result h2 { font-size: 1.5rem; margin-bottom: 1rem; }
+        .result.pass { border-color: #4ade80; }
+        .result.fail { border-color: #f87171; }
+        .score { font-size: 3rem; font-weight: bold; }
+        .score.pass { color: #4ade80; }
+        .score.fail { color: #f87171; }
+        .pass-code { margin-top: 1rem; padding: 1rem; background: #14532d; border: 2px dashed #4ade80; border-radius: 8px; font-size: 1.5rem; font-weight: bold; color: #4ade80; letter-spacing: 0.1em; }
+        .pass-code-hint { margin-top: 0.5rem; font-size: 0.9rem; color: #94a3b8; }
+        .btn { padding: 0.75rem 2rem; border-radius: 8px; border: none; font-size: 1rem; cursor: pointer; margin-top: 1rem; font-weight: 600; }
+        .btn-submit { background: #3b82f6; color: white; }
+        .btn-submit:hover { background: #2563eb; }
+        .btn-submit:disabled { background: #475569; cursor: not-allowed; }
+        .btn-retry { background: #f87171; color: white; }
+        .btn-retry:hover { background: #ef4444; }
+        .btn-area { text-align: center; margin-top: 1.5rem; }
+        .q-number { display: inline-block; background: #3b82f6; color: white; width: 28px; height: 28px; border-radius: 50%; text-align: center; line-height: 28px; font-size: 0.85rem; margin-right: 0.5rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Chapter 15 Quiz</h1>
+        <p class="subtitle">페이지와 라우팅 - Vue Router</p>
+
+        <!-- Q1 -->
+        <div class="question" data-answer="2">
+            <h3><span class="q-number">1</span>SPA(Single Page Application)에서 페이지를 이동하면 무슨 일이 일어나나요?</h3>
+            <div class="options">
+                <div class="option" data-value="1">서버에서 새로운 HTML 파일을 받아와서 전체 페이지가 새로고침된다</div>
+                <div class="option" data-value="2">HTML은 그대로이고, 화면의 일부(RouterView)만 바뀐다</div>
+                <div class="option" data-value="3">브라우저가 완전히 닫혔다가 다시 열린다</div>
+                <div class="option" data-value="4">JavaScript가 비활성화되고 순수 HTML로 전환된다</div>
+            </div>
+            <div class="feedback correct">정답! SPA는 하나의 HTML 페이지 안에서 RouterView 부분만 교체합니다. 그래서 깜빡임 없이 부드럽게 화면이 전환되죠.</div>
+            <div class="feedback wrong">오답! SPA는 Single Page Application — 하나의 페이지 안에서 필요한 부분(RouterView)만 바꿉니다. 서버에 새 HTML을 요청하지 않아요.</div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="question" data-answer="3">
+            <h3><span class="q-number">2</span><code>&lt;RouterView /&gt;</code>의 역할은?</h3>
+            <pre>&lt;template&gt;
+  &lt;nav&gt;...메뉴...&lt;/nav&gt;
+  &lt;main&gt;
+    &lt;RouterView /&gt;
+  &lt;/main&gt;
+&lt;/template&gt;</pre>
+            <div class="options">
+                <div class="option" data-value="1">메뉴(nav)를 화면에 표시한다</div>
+                <div class="option" data-value="2">페이지를 새로고침한다</div>
+                <div class="option" data-value="3">현재 URL에 맞는 컴포넌트를 여기에 표시한다</div>
+                <div class="option" data-value="4">모든 라우트의 컴포넌트를 동시에 표시한다</div>
+            </div>
+            <div class="feedback correct">정답! RouterView는 액자 틀 같은 역할입니다. URL이 /login이면 LoginView를, /boards면 BoardsView를 그 자리에 표시합니다.</div>
+            <div class="feedback wrong">오답! RouterView는 현재 URL에 해당하는 컴포넌트를 표시하는 자리입니다. URL이 바뀌면 이 자리의 내용만 교체되고, nav 같은 주변 요소는 그대로 유지됩니다.</div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="question" data-answer="1">
+            <h3><span class="q-number">3</span><code>&lt;RouterLink&gt;</code>와 일반 <code>&lt;a&gt;</code> 태그의 차이는?</h3>
+            <div class="options">
+                <div class="option" data-value="1">RouterLink는 페이지 새로고침 없이 이동하고, a 태그는 전체 페이지를 새로 불러온다</div>
+                <div class="option" data-value="2">RouterLink는 외부 사이트로 이동하고, a 태그는 내부 페이지로 이동한다</div>
+                <div class="option" data-value="3">둘 다 완전히 동일하게 동작한다</div>
+                <div class="option" data-value="4">RouterLink는 스타일이 자동 적용되고, a 태그는 스타일이 없다</div>
+            </div>
+            <div class="feedback correct">정답! RouterLink는 Vue Router를 통해 클라이언트 측에서 URL만 바꾸고 컴포넌트를 교체합니다. a 태그는 브라우저가 서버에 새 HTML을 요청하여 전체 페이지를 다시 불러옵니다.</div>
+            <div class="feedback wrong">오답! 핵심 차이는 페이지 새로고침 여부입니다. RouterLink는 SPA 방식으로 화면의 일부만 바꾸고, a 태그는 전체 페이지를 새로 불러옵니다.</div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="question" data-answer="4">
+            <h3><span class="q-number">4</span>URL이 <code>/boards/42</code>일 때, 42를 컴포넌트에서 가져오는 방법은?</h3>
+            <pre>// router/index.ts
+{ path: '/boards/:id', component: BoardDetailView }</pre>
+            <div class="options">
+                <div class="option" data-value="1">req.params.id</div>
+                <div class="option" data-value="2">this.$id</div>
+                <div class="option" data-value="3">window.location.id</div>
+                <div class="option" data-value="4">route.params.id (useRoute() 사용)</div>
+            </div>
+            <div class="feedback correct">정답! Vue에서는 useRoute()로 현재 라우트 정보를 가져오고, route.params.id로 동적 라우트의 값에 접근합니다. req.params.id는 Express(백엔드)에서 쓰는 방식이에요.</div>
+            <div class="feedback wrong">오답! req.params.id는 Express(백엔드)에서 쓰는 방식입니다. Vue(프론트엔드)에서는 useRoute()를 호출하고 route.params.id로 접근합니다.</div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="question" data-answer="2">
+            <h3><span class="q-number">5</span>다음 라우터 설정에서 URL <code>/boards/7</code>에 매칭되는 라우트는?</h3>
+            <pre>routes: [
+  { path: '/', component: HomeView },
+  { path: '/boards', component: BoardsView },
+  { path: '/boards/:id', component: BoardDetailView },
+  { path: '/login', component: LoginView },
+]</pre>
+            <div class="options">
+                <div class="option" data-value="1">path: '/boards' → BoardsView</div>
+                <div class="option" data-value="2">path: '/boards/:id' → BoardDetailView (id = "7")</div>
+                <div class="option" data-value="3">path: '/' → HomeView</div>
+                <div class="option" data-value="4">매칭되는 라우트가 없어서 에러 발생</div>
+            </div>
+            <div class="feedback correct">정답! /boards/7은 /boards/:id 패턴과 매칭되고, :id에 "7"이 들어갑니다. /boards는 정확히 /boards일 때만 매칭됩니다.</div>
+            <div class="feedback wrong">오답! /boards는 정확히 /boards일 때만 매칭됩니다. /boards/7은 /boards/:id 패턴과 매칭되어 BoardDetailView가 표시되고, id 파라미터에 "7"이 들어갑니다.</div>
+        </div>
+
+        <div class="btn-area">
+            <button class="btn btn-submit" id="submitBtn" disabled>제출하기</button>
+        </div>
+
+        <div class="result" id="result">
+            <h2 id="resultTitle"></h2>
+            <div class="score" id="resultScore"></div>
+            <p id="resultMsg" style="margin-top: 1rem; color: #94a3b8;"></p>
+            <div class="pass-code" id="passCode" style="display:none;"></div>
+            <p class="pass-code-hint" id="passCodeHint" style="display:none;">이 코드를 Claude에게 보내주세요</p>
+            <button class="btn btn-retry" id="retryBtn" style="display:none;" onclick="location.reload()">다시 풀기</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = document.querySelectorAll('.question');
+        const submitBtn = document.getElementById('submitBtn');
+        const answers = {};
+
+        questions.forEach((q, idx) => {
+            const options = q.querySelectorAll('.option');
+            options.forEach(opt => {
+                opt.addEventListener('click', () => {
+                    if (opt.classList.contains('correct') || opt.classList.contains('wrong')) return;
+                    options.forEach(o => o.classList.remove('selected'));
+                    opt.classList.add('selected');
+                    answers[idx] = opt.dataset.value;
+                    submitBtn.disabled = Object.keys(answers).length < questions.length;
+                });
+            });
+        });
+
+        submitBtn.addEventListener('click', () => {
+            let correct = 0;
+            questions.forEach((q, idx) => {
+                const answer = q.dataset.answer;
+                const selected = answers[idx];
+                const options = q.querySelectorAll('.option');
+                const feedbackCorrect = q.querySelector('.feedback.correct');
+                const feedbackWrong = q.querySelector('.feedback.wrong');
+
+                options.forEach(o => {
+                    o.style.pointerEvents = 'none';
+                    if (o.dataset.value === answer) o.classList.add('correct');
+                    if (o.dataset.value === selected && selected !== answer) o.classList.add('wrong');
+                });
+
+                if (selected === answer) {
+                    correct++;
+                    feedbackCorrect.classList.add('show');
+                } else {
+                    feedbackWrong.classList.add('show');
+                }
+            });
+
+            submitBtn.style.display = 'none';
+            const result = document.getElementById('result');
+            const title = document.getElementById('resultTitle');
+            const score = document.getElementById('resultScore');
+            const msg = document.getElementById('resultMsg');
+            const passCode = document.getElementById('passCode');
+            const passCodeHint = document.getElementById('passCodeHint');
+            const retryBtn = document.getElementById('retryBtn');
+
+            result.style.display = 'block';
+            score.textContent = `${correct} / ${questions.length}`;
+
+            if (correct >= 4) {
+                result.classList.add('pass');
+                score.classList.add('pass');
+                title.textContent = correct === questions.length ? '완벽합니다!' : '통과!';
+                msg.textContent = 'Vue Router의 핵심을 잘 이해하고 있습니다.';
+                passCode.textContent = 'PASS-15-M3Q8';
+                passCode.style.display = 'block';
+                passCodeHint.style.display = 'block';
+            } else {
+                result.classList.add('fail');
+                score.classList.add('fail');
+                title.textContent = '아쉽습니다';
+                msg.textContent = '4문제 이상 맞아야 통과입니다. 해설을 확인하고 다시 도전해보세요!';
+                retryBtn.style.display = 'inline-block';
+            }
+        });
+    </script>
+</body>
+</html>
