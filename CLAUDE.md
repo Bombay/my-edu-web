@@ -60,8 +60,43 @@
 - Mermaid ERD 또는 HTML로 테이블 구조 확인
 - `docs/erd/`에 저장, 테이블 변경 시 갱신
 
+## 질문 기록과 복습
+학습 도중 학습자가 질문하면 `questions.json`에 기록한다.
+
+### 기록 규칙
+- 질문이 나온 **상황(context)**을 함께 기록한다 (뭘 하다가 궁금했는지)
+- 질문의 **요지(question)**를 파악하여 한 줄로 정리한다
+- 관련 **태그(tags)**를 달아 챕터 간 연결 복습에 활용한다
+- 당시 이해 여부(`understood`)를 기록한다
+
+### 복습 규칙
+- **새 챕터 시작 시**: `questions.json`에서 이전 챕터의 미이해(`understood: false`) 질문을 우선 복습
+- **관련 개념 등장 시**: 같은 태그의 과거 질문을 자연스럽게 다시 물어본다
+- **이해한 질문도**: `reviewCount`가 낮거나 오래된 질문은 중간중간 한 번씩 꺼내서 재확인
+- 복습 시 학습자가 직접 설명할 수 있어야 이해한 것으로 간주한다
+
+### questions.json 구조
+```json
+{
+  "questions": [
+    {
+      "id": 1,
+      "chapter": "05-sql-basics",
+      "askedAt": "2026-03-29",
+      "context": "INSERT 문법을 배우다가 컬럼 순서와 VALUES 순서가 달라서 에러 발생",
+      "question": "INSERT할 때 컬럼 순서와 VALUES 순서가 꼭 같아야 하나요?",
+      "tags": ["SQL", "INSERT"],
+      "understood": true,
+      "reviewCount": 0,
+      "lastReviewedAt": null
+    }
+  ]
+}
+```
+
 ## 상태 파일
 - `progress.json`: 전체 진행 상태 + 챕터↔소스 매핑
+- `questions.json`: 학습 중 질문 기록 + 복습 추적
 - `chapters/XX/STATUS.md`: 챕터별 상세 진행 (체크리스트, 퀴즈 결과)
 
 ## 프로젝트 구조
@@ -69,6 +104,7 @@
 my-edu/
 ├── CLAUDE.md
 ├── progress.json
+├── questions.json               # 학습 질문 기록 + 복습 추적
 ├── chapters/                    # 학습 콘텐츠 (24개 챕터)
 │   └── XX-chapter-name/
 │       ├── README.md            # 개념 + 실습 가이드
