@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>챕터 16 퀴즈 - API 연동 기초</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; padding: 2rem; }
+        .container { max-width: 760px; margin: 0 auto; }
+        h1 { text-align: center; margin-bottom: 0.5rem; font-size: 1.8rem; color: #f8fafc; }
+        .subtitle { text-align: center; color: #94a3b8; margin-bottom: 2rem; }
+        .question { background: #1e293b; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; border: 1px solid #334155; }
+        .question h3 { color: #38bdf8; margin-bottom: 1rem; font-size: 1.05rem; line-height: 1.5; }
+        .question pre { background: #0f172a; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; overflow-x: auto; font-size: 0.88rem; color: #a5f3fc; line-height: 1.5; }
+        .options { display: flex; flex-direction: column; gap: 0.5rem; }
+        .option { padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid #475569; cursor: pointer; transition: all 0.2s; background: #1e293b; }
+        .option:hover { border-color: #38bdf8; background: #1e3a5f; }
+        .option.selected { border-color: #38bdf8; background: #1e3a5f; }
+        .option.correct { border-color: #4ade80; background: #14532d; }
+        .option.wrong { border-color: #f87171; background: #7f1d1d; }
+        .feedback { margin-top: 0.75rem; padding: 0.75rem; border-radius: 8px; display: none; font-size: 0.95rem; line-height: 1.5; }
+        .feedback.show { display: block; }
+        .feedback.correct { background: #14532d; color: #bbf7d0; border: 1px solid #4ade80; }
+        .feedback.wrong { background: #7f1d1d; color: #fecaca; border: 1px solid #f87171; }
+        .result { background: #1e293b; border-radius: 12px; padding: 2rem; text-align: center; margin-top: 2rem; display: none; border: 1px solid #334155; }
+        .result h2 { font-size: 1.5rem; margin-bottom: 1rem; }
+        .result.pass { border-color: #4ade80; }
+        .result.fail { border-color: #f87171; }
+        .score { font-size: 3rem; font-weight: bold; }
+        .score.pass { color: #4ade80; }
+        .score.fail { color: #f87171; }
+        .pass-code { margin-top: 1rem; padding: 1rem; background: #14532d; border: 2px dashed #4ade80; border-radius: 8px; font-size: 1.5rem; font-weight: bold; color: #4ade80; letter-spacing: 0.1em; display: none; }
+        .pass-code-hint { margin-top: 0.5rem; font-size: 0.9rem; color: #94a3b8; display: none; }
+        .btn { padding: 0.75rem 2rem; border-radius: 8px; border: none; font-size: 1rem; cursor: pointer; margin-top: 1rem; font-weight: 600; }
+        .btn-submit { background: #3b82f6; color: white; }
+        .btn-submit:hover { background: #2563eb; }
+        .btn-submit:disabled { background: #475569; cursor: not-allowed; }
+        .btn-retry { background: #f87171; color: white; display: none; }
+        .btn-retry:hover { background: #ef4444; }
+        .btn-area { text-align: center; margin-top: 1.5rem; }
+        .q-number { display: inline-block; background: #3b82f6; color: white; width: 28px; height: 28px; border-radius: 50%; text-align: center; line-height: 28px; font-size: 0.85rem; margin-right: 0.5rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Chapter 16 Quiz</h1>
+        <p class="subtitle">API 연동 기초 — fetch · async/await · CORS · onMounted</p>
+
+        <!-- Q1 -->
+        <div class="question" data-answer="3">
+            <h3><span class="q-number">1</span>다음 코드에서 <code>console.log(result)</code>는 무엇을 출력할까요?</h3>
+            <pre>const result = fetch('http://localhost:3000/api/boards')
+console.log(result)</pre>
+            <div class="options">
+                <div class="option" data-value="1">서버에서 받은 게시판 배열 (예: [{id:1,...}])</div>
+                <div class="option" data-value="2">undefined</div>
+                <div class="option" data-value="3">Promise { &lt;pending&gt; } — 약속 쪽지 (아직 결과 없음)</div>
+                <div class="option" data-value="4">에러: TypeError</div>
+            </div>
+            <div class="feedback correct">정답! fetch는 호출 즉시 Promise를 반환합니다. await 없이 받으면 아직 응답이 도착하지 않은 "pending" 상태의 Promise만 손에 쥐게 돼요. JavaScript는 응답을 기다리지 않고 다음 줄로 넘어갑니다.</div>
+            <div class="feedback wrong">오답! fetch는 응답이 올 때까지 기다리지 않아요. 즉시 Promise(약속 쪽지)를 반환하고, await로 명시적으로 기다리지 않으면 pending 상태의 Promise가 그대로 변수에 담깁니다.</div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="question" data-answer="2">
+            <h3><span class="q-number">2</span>JavaScript가 fetch 같은 네트워크 요청을 <strong>비동기로</strong> 처리하는 가장 큰 이유는?</h3>
+            <div class="options">
+                <div class="option" data-value="1">동기 방식이 기술적으로 불가능해서</div>
+                <div class="option" data-value="2">브라우저의 JS는 싱글 스레드라, 동기로 기다리면 그 동안 화면 전체가 멈추기 때문</div>
+                <div class="option" data-value="3">비동기가 동기보다 항상 빠르기 때문</div>
+                <div class="option" data-value="4">서버가 동기 요청을 받지 못하기 때문</div>
+            </div>
+            <div class="feedback correct">정답! 브라우저 JS는 일꾼이 한 명(싱글 스레드)이라 그 일꾼이 응답을 기다리며 멈추면 클릭, 스크롤, 애니메이션 등 모든 UI가 함께 얼어붙어요. 그래서 오래 걸리는 작업은 비동기로 설계된 거예요.</div>
+            <div class="feedback wrong">오답! 핵심은 "싱글 스레드"예요. JS 일꾼이 응답을 기다리며 멈추면 화면이 통째로 얼어붙기 때문에, 네트워크처럼 오래 걸리는 일은 비동기로 처리하도록 설계됐어요.</div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="question" data-answer="4">
+            <h3><span class="q-number">3</span>http://localhost:5173 에서 실행되는 Vue 앱이 http://localhost:3000/api/boards 로 fetch했을 때 "Failed to fetch / CORS" 에러가 나는 이유는?</h3>
+            <div class="options">
+                <div class="option" data-value="1">서버가 다운되어 있어서</div>
+                <div class="option" data-value="2">URL의 철자가 틀려서</div>
+                <div class="option" data-value="3">백엔드가 HTTPS가 아니어서</div>
+                <div class="option" data-value="4">포트가 다르면 출처(origin)가 달라서, 브라우저가 JS의 cross-origin 요청을 기본적으로 차단하기 때문</div>
+            </div>
+            <div class="feedback correct">정답! 출처(origin)는 프로토콜+호스트+포트로 구성되고, 셋 중 하나라도 다르면 다른 출처입니다. 5173과 3000은 포트가 다르므로 다른 출처고, 브라우저는 보안상 JS의 cross-origin 요청을 기본 차단합니다. 서버가 CORS 헤더로 명시적으로 허락해줘야 통과돼요.</div>
+            <div class="feedback wrong">오답! CORS 에러의 원인은 "출처가 다름"이에요. 프로토콜·호스트·포트 중 하나라도 다르면 다른 출처고, 브라우저는 보안상 JS의 cross-origin 요청을 기본적으로 막습니다. 서버가 cors 미들웨어로 허락해줘야 풀려요.</div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="question" data-answer="2">
+            <h3><span class="q-number">4</span>다음 코드에서 <code>boards.value = data</code> 줄을 <strong>지우면</strong> 어떻게 되나요?</h3>
+            <pre>const boards = ref&lt;any[]&gt;([])
+
+onMounted(async () =&gt; {
+  const response = await fetch('http://localhost:3000/api/boards')
+  const data = await response.json()
+  boards.value = data   // ← 이 줄을 지우면?
+})</pre>
+            <div class="options">
+                <div class="option" data-value="1">에러가 나면서 페이지가 멈춘다</div>
+                <div class="option" data-value="2">fetch는 정상적으로 일어나지만, boards가 빈 배열 그대로라 화면에 아무것도 안 나온다</div>
+                <div class="option" data-value="3">data가 자동으로 boards에 들어간다 (Vue가 알아서 처리)</div>
+                <div class="option" data-value="4">서버에서 데이터를 받아오지 못한다</div>
+            </div>
+            <div class="feedback correct">정답! 데이터를 "가져오는 것"과 "화면에 반영되는 것"은 별개예요. ref.value에 새 값을 대입해야 Vue의 반응성 시스템이 작동해서 화면을 다시 그립니다. 지역 변수 data에만 담아두면 아무 일도 안 일어나요.</div>
+            <div class="feedback wrong">오답! fetch는 잘 일어나고 data 변수에도 값이 들어가지만, ref인 boards는 그대로 빈 배열이에요. Vue는 ref의 .value가 바뀔 때만 화면을 다시 그리기 때문에, 대입하지 않으면 화면이 업데이트되지 않습니다.</div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="question" data-answer="3">
+            <h3><span class="q-number">5</span>fetch에 대한 설명 중 <strong>맞는 것</strong>은?</h3>
+            <div class="options">
+                <div class="option" data-value="1">서버가 404나 500을 반환하면 fetch의 Promise가 자동으로 reject되어 catch로 빠진다</div>
+                <div class="option" data-value="2">fetch는 응답 본문을 자동으로 JSON으로 파싱해서 돌려준다</div>
+                <div class="option" data-value="3">fetch는 4xx/5xx를 에러로 보지 않으므로, response.ok로 직접 확인해서 throw해야 catch로 흐른다</div>
+                <div class="option" data-value="4">fetch는 await가 필요 없다 (동기로 동작한다)</div>
+            </div>
+            <div class="feedback correct">정답! 이건 진짜 자주 실수하는 함정이에요. fetch 입장에선 "응답을 받았다"는 사실 자체가 성공이라, 4xx/5xx도 정상 응답으로 취급해요. 그래서 if (!response.ok) throw new Error(...) 패턴으로 직접 챙겨야 catch 블록으로 흐릅니다.</div>
+            <div class="feedback wrong">오답! fetch는 4xx/5xx를 에러로 취급하지 않아요. 응답을 받았다는 것 자체를 성공으로 봅니다. 그래서 response.ok를 직접 확인해서 throw해줘야 catch 블록으로 흘려보낼 수 있어요. .json()도 별도로 await 해야 본문이 파싱돼요.</div>
+        </div>
+
+        <!-- Q6 -->
+        <div class="question" data-answer="4">
+            <h3><span class="q-number">6</span>아래 패턴에서 <code>finally</code> 블록의 역할은?</h3>
+            <pre>try {
+  const res = await fetch('/api/boards')
+  boards.value = await res.json()
+} catch (err) {
+  error.value = '에러'
+} finally {
+  loading.value = false
+}</pre>
+            <div class="options">
+                <div class="option" data-value="1">에러가 났을 때만 실행된다</div>
+                <div class="option" data-value="2">성공했을 때만 실행된다</div>
+                <div class="option" data-value="3">try 블록보다 먼저 실행된다</div>
+                <div class="option" data-value="4">성공이든 실패든 무조건 실행되어, 로딩 상태를 항상 꺼지게 보장한다</div>
+            </div>
+            <div class="feedback correct">정답! finally는 try가 성공했든 catch로 빠졌든 무조건 실행돼요. 그래서 "성공/실패와 무관하게 반드시 해야 할 정리 작업"에 딱 맞아요. 로딩 상태 끄기, 연결 닫기, 임시 파일 지우기 같은 데 자주 쓰입니다.</div>
+            <div class="feedback wrong">오답! finally는 try가 성공했든 catch로 빠졌든 무조건 실행돼요. 그래서 "어떤 경우에도 반드시 해야 할 정리"에 적합해요. 로딩 상태 끄기가 대표 예시예요.</div>
+        </div>
+
+        <div class="btn-area">
+            <button class="btn btn-submit" id="submitBtn" disabled>제출하기</button>
+            <button class="btn btn-retry" id="retryBtn" onclick="location.reload()">다시 풀기</button>
+        </div>
+
+        <div class="result" id="result">
+            <h2 id="resultTitle"></h2>
+            <div class="score" id="resultScore"></div>
+            <p id="resultMsg" style="margin-top: 1rem; color: #94a3b8;"></p>
+            <div class="pass-code" id="passCode"></div>
+            <div class="pass-code-hint" id="passCodeHint">↑ 이 코드를 Claude에게 보내주세요</div>
+        </div>
+    </div>
+
+    <script>
+        const questions = document.querySelectorAll('.question');
+        const submitBtn = document.getElementById('submitBtn');
+        const answers = {};
+
+        questions.forEach((q, idx) => {
+            const options = q.querySelectorAll('.option');
+            options.forEach(opt => {
+                opt.addEventListener('click', () => {
+                    if (opt.classList.contains('correct') || opt.classList.contains('wrong')) return;
+                    options.forEach(o => o.classList.remove('selected'));
+                    opt.classList.add('selected');
+                    answers[idx] = opt.dataset.value;
+                    submitBtn.disabled = Object.keys(answers).length < questions.length;
+                });
+            });
+        });
+
+        submitBtn.addEventListener('click', () => {
+            let correct = 0;
+            questions.forEach((q, idx) => {
+                const answer = q.dataset.answer;
+                const selected = answers[idx];
+                const options = q.querySelectorAll('.option');
+                const feedbackCorrect = q.querySelector('.feedback.correct');
+                const feedbackWrong = q.querySelector('.feedback.wrong');
+
+                options.forEach(o => {
+                    o.style.pointerEvents = 'none';
+                    if (o.dataset.value === answer) o.classList.add('correct');
+                    if (o.dataset.value === selected && selected !== answer) o.classList.add('wrong');
+                });
+
+                if (selected === answer) {
+                    correct++;
+                    feedbackCorrect.classList.add('show');
+                } else {
+                    feedbackWrong.classList.add('show');
+                }
+            });
+
+            submitBtn.style.display = 'none';
+            const result = document.getElementById('result');
+            const title = document.getElementById('resultTitle');
+            const score = document.getElementById('resultScore');
+            const msg = document.getElementById('resultMsg');
+            const passCode = document.getElementById('passCode');
+            const passCodeHint = document.getElementById('passCodeHint');
+            const retryBtn = document.getElementById('retryBtn');
+
+            result.style.display = 'block';
+            score.textContent = `${correct} / ${questions.length}`;
+
+            if (correct >= 5) {
+                result.classList.add('pass');
+                score.classList.add('pass');
+                title.textContent = correct === questions.length ? '완벽합니다!' : '통과!';
+                msg.textContent = 'API 연동의 핵심을 잘 이해하고 있습니다.';
+                passCode.textContent = 'PASS-16-F9R3';
+                passCode.style.display = 'block';
+                passCodeHint.style.display = 'block';
+            } else {
+                result.classList.add('fail');
+                score.classList.add('fail');
+                title.textContent = '아쉽습니다';
+                msg.textContent = '5문제 이상 맞아야 통과입니다. 해설을 확인하고 다시 도전해보세요!';
+                retryBtn.style.display = 'inline-block';
+            }
+        });
+    </script>
+</body>
+</html>

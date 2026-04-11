@@ -1,8 +1,8 @@
 {
   "learner": "",
-  "currentChapter": "15-routing",
+  "currentChapter": "16-api-integration",
   "totalChapters": 24,
-  "completedChapters": 15,
+  "completedChapters": 16,
   "lastUpdated": "",
   "chapters": {
     "01-environment-setup": {
@@ -126,12 +126,12 @@
       "description": "Vue Router, SPA 개념, 페이지 골격"
     },
     "16-api-integration": {
-      "status": "pending",
-      "startedAt": null,
-      "completedAt": null,
-      "quizPassed": false,
-      "sourceFiles": ["src/frontend/src/api/index.ts"],
-      "description": "fetch/axios, async/await, 서버 데이터 표시"
+      "status": "completed",
+      "startedAt": "2026-04-10",
+      "completedAt": "2026-04-10",
+      "quizPassed": true,
+      "sourceFiles": ["src/frontend/src/views/BoardsView.vue", "src/backend/src/index.ts"],
+      "description": "fetch, async/await, CORS, onMounted, ref 반응성, try/catch/finally"
     },
     "17-auth-views": {
       "status": "pending",
