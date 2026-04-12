@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>챕터 17 퀴즈 - 회원가입/로그인 화면</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; padding: 2rem; }
+        .container { max-width: 760px; margin: 0 auto; }
+        h1 { text-align: center; margin-bottom: 0.5rem; font-size: 1.8rem; color: #f8fafc; }
+        .subtitle { text-align: center; color: #94a3b8; margin-bottom: 2rem; }
+        .question { background: #1e293b; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; border: 1px solid #334155; }
+        .question h3 { color: #38bdf8; margin-bottom: 1rem; font-size: 1.05rem; line-height: 1.5; }
+        .question pre { background: #0f172a; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; overflow-x: auto; font-size: 0.88rem; color: #a5f3fc; line-height: 1.5; }
+        .options { display: flex; flex-direction: column; gap: 0.5rem; }
+        .option { padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid #475569; cursor: pointer; transition: all 0.2s; background: #1e293b; }
+        .option:hover { border-color: #38bdf8; background: #1e3a5f; }
+        .option.selected { border-color: #38bdf8; background: #1e3a5f; }
+        .option.correct { border-color: #4ade80; background: #14532d; }
+        .option.wrong { border-color: #f87171; background: #7f1d1d; }
+        .feedback { margin-top: 0.75rem; padding: 0.75rem; border-radius: 8px; display: none; font-size: 0.95rem; line-height: 1.5; }
+        .feedback.show { display: block; }
+        .feedback.correct { background: #14532d; color: #bbf7d0; border: 1px solid #4ade80; }
+        .feedback.wrong { background: #7f1d1d; color: #fecaca; border: 1px solid #f87171; }
+        .result { background: #1e293b; border-radius: 12px; padding: 2rem; text-align: center; margin-top: 2rem; display: none; border: 1px solid #334155; }
+        .result h2 { font-size: 1.5rem; margin-bottom: 1rem; }
+        .result.pass { border-color: #4ade80; }
+        .result.fail { border-color: #f87171; }
+        .score { font-size: 3rem; font-weight: bold; }
+        .score.pass { color: #4ade80; }
+        .score.fail { color: #f87171; }
+        .pass-code { margin-top: 1rem; padding: 1rem; background: #14532d; border: 2px dashed #4ade80; border-radius: 8px; font-size: 1.5rem; font-weight: bold; color: #4ade80; letter-spacing: 0.1em; display: none; }
+        .pass-code-hint { margin-top: 0.5rem; font-size: 0.9rem; color: #94a3b8; display: none; }
+        .btn { padding: 0.75rem 2rem; border-radius: 8px; border: none; font-size: 1rem; cursor: pointer; margin-top: 1rem; font-weight: 600; }
+        .btn-submit { background: #3b82f6; color: white; }
+        .btn-submit:hover { background: #2563eb; }
+        .btn-submit:disabled { background: #475569; cursor: not-allowed; }
+        .btn-retry { background: #f87171; color: white; display: none; }
+        .btn-retry:hover { background: #ef4444; }
+        .btn-area { text-align: center; margin-top: 1.5rem; }
+        .q-number { display: inline-block; background: #3b82f6; color: white; width: 28px; height: 28px; border-radius: 50%; text-align: center; line-height: 28px; font-size: 0.85rem; margin-right: 0.5rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Chapter 17 Quiz</h1>
+        <p class="subtitle">회원가입/로그인 화면 — v-model · POST · API 모듈 · useRouter</p>
+
+        <!-- Q1 -->
+        <div class="question" data-answer="3">
+            <h3><span class="q-number">1</span><code>v-model</code>이 하는 일은?</h3>
+            <pre>&lt;input v-model="email" /&gt;</pre>
+            <div class="options">
+                <div class="option" data-value="1">데이터 → 화면 방향으로만 동기화 (단방향)</div>
+                <div class="option" data-value="2">화면 → 데이터 방향으로만 동기화 (단방향)</div>
+                <div class="option" data-value="3">데이터 ↔ 화면 양방향 동기화 — 사용자가 치면 ref가 바뀌고, ref를 바꾸면 input이 바뀐다</div>
+                <div class="option" data-value="4">input의 값을 서버로 자동 전송한다</div>
+            </div>
+            <div class="feedback correct">정답! v-model은 양방향 바인딩(two-way binding)입니다. input에 뭘 치든 ref.value가 자동으로 바뀌고, 코드에서 ref.value를 바꾸면 input 안의 글자도 자동으로 바뀌어요. 거울처럼요!</div>
+            <div class="feedback wrong">오답! v-model은 양방향이에요. {{ }} 는 데이터→화면 단방향이고, @input 같은 이벤트는 화면→데이터 단방향이지만, v-model은 이 둘을 합친 양방향 동기화예요.</div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="question" data-answer="2">
+            <h3><span class="q-number">2</span>GET 요청과 POST 요청의 가장 큰 차이는?</h3>
+            <div class="options">
+                <div class="option" data-value="1">GET은 느리고 POST는 빠르다</div>
+                <div class="option" data-value="2">GET은 데이터를 가져오고, POST는 데이터를 보낸다 (body에 담아서)</div>
+                <div class="option" data-value="3">GET은 브라우저에서만, POST는 서버에서만 사용할 수 있다</div>
+                <div class="option" data-value="4">GET은 JSON만, POST는 HTML만 처리할 수 있다</div>
+            </div>
+            <div class="feedback correct">정답! GET은 "줘" (서버에서 데이터를 가져옴), POST는 "받아" (서버에 데이터를 보냄)예요. POST에는 method, headers, body를 추가로 지정해야 해요.</div>
+            <div class="feedback wrong">오답! GET은 서버에서 데이터를 "가져오는" 요청, POST는 서버에 데이터를 "보내는" 요청이에요. POST는 body에 데이터를 담아 보내고, Content-Type 헤더로 형식을 알려줘야 해요.</div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="question" data-answer="1">
+            <h3><span class="q-number">3</span>다음 코드에서 <code>@submit.prevent</code>의 <code>.prevent</code>가 하는 일은?</h3>
+            <pre>&lt;form @submit.prevent="handleRegister"&gt;</pre>
+            <div class="options">
+                <div class="option" data-value="1">브라우저의 기본 폼 제출 동작(페이지 새로고침)을 막는다</div>
+                <div class="option" data-value="2">폼 제출을 완전히 차단하여 handleRegister가 실행되지 않게 한다</div>
+                <div class="option" data-value="3">폼 입력값이 비어있으면 제출을 막는다</div>
+                <div class="option" data-value="4">서버 에러가 발생하면 제출을 취소한다</div>
+            </div>
+            <div class="feedback correct">정답! 브라우저는 원래 form을 제출하면 페이지 전체를 새로고침해요. SPA에서는 이러면 안 되니까 .prevent로 기본 동작을 막고, 대신 우리가 정의한 handleRegister 함수가 JavaScript로 처리하는 거예요.</div>
+            <div class="feedback wrong">오답! .prevent는 event.preventDefault()를 자동 호출하는 Vue의 이벤트 수식어예요. 폼의 기본 동작(페이지 새로고침)을 막고, 대신 JavaScript 함수가 요청을 처리하게 해요. SPA에서 필수적인 패턴이에요.</div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="question" data-answer="4">
+            <h3><span class="q-number">4</span>API 모듈(<code>api/index.ts</code>)을 따로 만드는 가장 큰 이유는?</h3>
+            <pre>// 각 컴포넌트에서 이렇게 쓰던 걸:
+await fetch('http://localhost:3000/api/boards')
+await fetch('http://localhost:3000/api/auth/login', { ... })
+
+// 이렇게 바꿈:
+await api('/boards')
+await api('/auth/login', { ... })</pre>
+            <div class="options">
+                <div class="option" data-value="1">보안을 위해 URL을 숨기려고</div>
+                <div class="option" data-value="2">fetch보다 api 함수가 더 빠르게 동작해서</div>
+                <div class="option" data-value="3">TypeScript가 반드시 모듈로 분리하도록 강제해서</div>
+                <div class="option" data-value="4">BASE_URL, 헤더, 에러 처리를 한 곳에서 관리하여 중복을 없애고 변경 시 한 곳만 수정하면 되니까</div>
+            </div>
+            <div class="feedback correct">정답! 도메인이 바뀌면 BASE_URL 한 줄만 수정, 헤더 추가도 한 곳에서, 에러 처리 패턴도 한 곳에서. 10개 컴포넌트에서 같은 코드를 반복하지 않아도 돼요. 이런 "공통 로직 한 곳에 모으기"는 개발의 기본 원칙이에요.</div>
+            <div class="feedback wrong">오답! 핵심은 "중복 제거 + 변경 용이성"이에요. URL, 헤더, 에러 처리를 한 곳에서 관리하면 수정할 때 한 파일만 고치면 되고, 각 컴포넌트 코드도 간결해져요.</div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="question" data-answer="3">
+            <h3><span class="q-number">5</span>다음 코드에서 <code>const data = await api(...)</code>로 값을 받는 이유는?</h3>
+            <pre>// 회원가입 — 값을 안 받음
+await api('/auth/register', { ... })
+
+// 로그인 — 값을 받음
+const data = await api('/auth/login', { ... })
+console.log(data.token)</pre>
+            <div class="options">
+                <div class="option" data-value="1">회원가입 API는 return이 없고, 로그인 API만 return이 있어서</div>
+                <div class="option" data-value="2">const를 붙이지 않으면 에러가 나서</div>
+                <div class="option" data-value="3">로그인 응답에는 토큰이 포함되어 있어서, 나중에 사용하려면 변수에 받아둬야 하니까</div>
+                <div class="option" data-value="4">await는 반드시 const로 받아야 동작한다</div>
+            </div>
+            <div class="feedback correct">정답! 함수가 return하는 값은 받아도 되고 안 받아도 돼요. 회원가입은 "성공 여부"만 알면 되니까 안 받았고, 로그인은 토큰을 나중에 써야 하니까 변수에 받은 거예요. 필요에 따라 선택하면 됩니다.</div>
+            <div class="feedback wrong">오답! await api(...)는 값을 받든 안 받든 동작해요. 차이는 "그 응답을 나중에 쓸 일이 있느냐"예요. 로그인은 토큰(data.token)을 저장해야 하니까 변수로 받은 거고, 회원가입은 응답 데이터가 딱히 필요 없어서 안 받은 거예요.</div>
+        </div>
+
+        <!-- Q6 -->
+        <div class="question" data-answer="2">
+            <h3><span class="q-number">6</span><code>router.push('/login')</code>은 어떤 상황에서 사용하나요?</h3>
+            <div class="options">
+                <div class="option" data-value="1">사용자가 링크를 클릭할 때 (템플릿에서 페이지 이동)</div>
+                <div class="option" data-value="2">JavaScript 코드 안에서 프로그래밍적으로 페이지를 이동할 때 (예: 회원가입 성공 후 자동 이동)</div>
+                <div class="option" data-value="3">브라우저 뒤로가기 버튼을 누를 때</div>
+                <div class="option" data-value="4">서버에서 리다이렉트 응답을 보낼 때</div>
+            </div>
+            <div class="feedback correct">정답! RouterLink는 템플릿(HTML)에서 클릭으로 이동할 때, router.push()는 JavaScript 코드 안에서 조건에 따라 이동할 때 써요. "회원가입 성공하면 로그인 페이지로" 같은 로직은 코드에서 처리해야 하니까 router.push()가 필요해요.</div>
+            <div class="feedback wrong">오답! 링크 클릭은 &lt;RouterLink&gt;의 영역이에요. router.push()는 코드 안에서 "어떤 조건이 충족되면 페이지를 이동시켜라" 할 때 써요. 대표 예시: 회원가입/로그인 성공 후 자동 이동.</div>
+        </div>
+
+        <div class="btn-area">
+            <button class="btn btn-submit" id="submitBtn" disabled>제출하기</button>
+            <button class="btn btn-retry" id="retryBtn" onclick="location.reload()">다시 풀기</button>
+        </div>
+
+        <div class="result" id="result">
+            <h2 id="resultTitle"></h2>
+            <div class="score" id="resultScore"></div>
+            <p id="resultMsg" style="margin-top: 1rem; color: #94a3b8;"></p>
+            <div class="pass-code" id="passCode"></div>
+            <div class="pass-code-hint" id="passCodeHint">↑ 이 코드를 Claude에게 보내주세요</div>
+        </div>
+    </div>
+
+    <script>
+        const questions = document.querySelectorAll('.question');
+        const submitBtn = document.getElementById('submitBtn');
+        const answers = {};
+
+        questions.forEach((q, idx) => {
+            const options = q.querySelectorAll('.option');
+            options.forEach(opt => {
+                opt.addEventListener('click', () => {
+                    if (opt.classList.contains('correct') || opt.classList.contains('wrong')) return;
+                    options.forEach(o => o.classList.remove('selected'));
+                    opt.classList.add('selected');
+                    answers[idx] = opt.dataset.value;
+                    submitBtn.disabled = Object.keys(answers).length < questions.length;
+                });
+            });
+        });
+
+        submitBtn.addEventListener('click', () => {
+            let correct = 0;
+            questions.forEach((q, idx) => {
+                const answer = q.dataset.answer;
+                const selected = answers[idx];
+                const options = q.querySelectorAll('.option');
+                const feedbackCorrect = q.querySelector('.feedback.correct');
+                const feedbackWrong = q.querySelector('.feedback.wrong');
+
+                options.forEach(o => {
+                    o.style.pointerEvents = 'none';
+                    if (o.dataset.value === answer) o.classList.add('correct');
+                    if (o.dataset.value === selected && selected !== answer) o.classList.add('wrong');
+                });
+
+                if (selected === answer) {
+                    correct++;
+                    feedbackCorrect.classList.add('show');
+                } else {
+                    feedbackWrong.classList.add('show');
+                }
+            });
+
+            submitBtn.style.display = 'none';
+            const result = document.getElementById('result');
+            const title = document.getElementById('resultTitle');
+            const score = document.getElementById('resultScore');
+            const msg = document.getElementById('resultMsg');
+            const passCode = document.getElementById('passCode');
+            const passCodeHint = document.getElementById('passCodeHint');
+            const retryBtn = document.getElementById('retryBtn');
+
+            result.style.display = 'block';
+            score.textContent = `${correct} / ${questions.length}`;
+
+            if (correct >= 5) {
+                result.classList.add('pass');
+                score.classList.add('pass');
+                title.textContent = correct === questions.length ? '완벽합니다!' : '통과!';
+                msg.textContent = '회원가입/로그인 화면의 핵심을 잘 이해하고 있습니다.';
+                passCode.textContent = 'PASS-17-W4K7';
+                passCode.style.display = 'block';
+                passCodeHint.style.display = 'block';
+            } else {
+                result.classList.add('fail');
+                score.classList.add('fail');
+                title.textContent = '아쉽습니다';
+                msg.textContent = '5문제 이상 맞아야 통과입니다. 해설을 확인하고 다시 도전해보세요!';
+                retryBtn.style.display = 'inline-block';
+            }
+        });
+    </script>
+</body>
+</html>

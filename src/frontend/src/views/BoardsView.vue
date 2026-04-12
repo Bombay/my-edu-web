@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { api } from '../api'
 
 const boards = ref<any[]>([])
 const loading = ref(true)
@@ -7,11 +8,7 @@ const error = ref<string | null>(null)
 
 onMounted(async () => {
   try {
-    const response = await fetch('http://localhost:3000/api/boards')
-    if (!response.ok) {
-      throw new Error(`서버 오류 : ${response.status}`)
-    }
-    const data = await response.json()
+    const data = await api('/boards')
     boards.value = data
   } catch (err) {
     error.value = err instanceof Error ? err.message : '알수 없는 오류'

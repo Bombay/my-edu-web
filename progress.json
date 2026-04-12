@@ -1,8 +1,8 @@
 {
   "learner": "",
-  "currentChapter": "16-api-integration",
+  "currentChapter": "17-auth-views",
   "totalChapters": 24,
-  "completedChapters": 16,
+  "completedChapters": 17,
   "lastUpdated": "",
   "chapters": {
     "01-environment-setup": {
@@ -134,12 +134,12 @@
       "description": "fetch, async/await, CORS, onMounted, ref 반응성, try/catch/finally"
     },
     "17-auth-views": {
-      "status": "pending",
-      "startedAt": null,
-      "completedAt": null,
-      "quizPassed": false,
-      "sourceFiles": ["src/frontend/src/views/LoginView.vue", "src/frontend/src/views/RegisterView.vue"],
-      "description": "폼, v-model, 회원가입/로그인 폼 구현"
+      "status": "completed",
+      "startedAt": "2026-04-12",
+      "completedAt": "2026-04-12",
+      "quizPassed": true,
+      "sourceFiles": ["src/frontend/src/views/LoginView.vue", "src/frontend/src/views/RegisterView.vue", "src/frontend/src/api/index.ts", "src/frontend/src/views/BoardsView.vue"],
+      "description": "v-model 양방향 바인딩, POST fetch, API 모듈 분리, useRouter, 폼 구현"
     },
     "18-auth-state": {
       "status": "pending",
