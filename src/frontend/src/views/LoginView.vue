@@ -2,8 +2,10 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { api } from '../api'
+import { useAuthStore } from '../stores/auth'
 
 const router = useRouter()
+const authStore = useAuthStore()
 
 const email = ref('')
 const password = ref('')
@@ -22,8 +24,9 @@ async function handleLogin() {
         password: password.value,
       }),
     })
-    console.log(data)
-    alert('로그인 성공 @ 홈으로 이동합니다.')
+
+    authStore.login(data.token, data.user)
+
     router.push('/')
   } catch (err) {
     error.value = err instanceof Error ? err.message : '로그인 실패'

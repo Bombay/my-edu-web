@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>챕터 18 퀴즈 - 인증 상태 관리</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; padding: 2rem; }
+        .container { max-width: 760px; margin: 0 auto; }
+        h1 { text-align: center; margin-bottom: 0.5rem; font-size: 1.8rem; color: #f8fafc; }
+        .subtitle { text-align: center; color: #94a3b8; margin-bottom: 2rem; }
+        .question { background: #1e293b; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; border: 1px solid #334155; }
+        .question h3 { color: #38bdf8; margin-bottom: 1rem; font-size: 1.05rem; line-height: 1.5; }
+        .question pre { background: #0f172a; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; overflow-x: auto; font-size: 0.88rem; color: #a5f3fc; line-height: 1.5; }
+        .options { display: flex; flex-direction: column; gap: 0.5rem; }
+        .option { padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid #475569; cursor: pointer; transition: all 0.2s; background: #1e293b; }
+        .option:hover { border-color: #38bdf8; background: #1e3a5f; }
+        .option.selected { border-color: #38bdf8; background: #1e3a5f; }
+        .option.correct { border-color: #4ade80; background: #14532d; }
+        .option.wrong { border-color: #f87171; background: #7f1d1d; }
+        .feedback { margin-top: 0.75rem; padding: 0.75rem; border-radius: 8px; display: none; font-size: 0.95rem; line-height: 1.5; }
+        .feedback.show { display: block; }
+        .feedback.correct { background: #14532d; color: #bbf7d0; border: 1px solid #4ade80; }
+        .feedback.wrong { background: #7f1d1d; color: #fecaca; border: 1px solid #f87171; }
+        .result { background: #1e293b; border-radius: 12px; padding: 2rem; text-align: center; margin-top: 2rem; display: none; border: 1px solid #334155; }
+        .result h2 { font-size: 1.5rem; margin-bottom: 1rem; }
+        .result.pass { border-color: #4ade80; }
+        .result.fail { border-color: #f87171; }
+        .score { font-size: 3rem; font-weight: bold; }
+        .score.pass { color: #4ade80; }
+        .score.fail { color: #f87171; }
+        .pass-code { margin-top: 1rem; padding: 1rem; background: #14532d; border: 2px dashed #4ade80; border-radius: 8px; font-size: 1.5rem; font-weight: bold; color: #4ade80; letter-spacing: 0.1em; display: none; }
+        .pass-code-hint { margin-top: 0.5rem; font-size: 0.9rem; color: #94a3b8; display: none; }
+        .btn { padding: 0.75rem 2rem; border-radius: 8px; border: none; font-size: 1rem; cursor: pointer; margin-top: 1rem; font-weight: 600; }
+        .btn-submit { background: #3b82f6; color: white; }
+        .btn-submit:hover { background: #2563eb; }
+        .btn-submit:disabled { background: #475569; cursor: not-allowed; }
+        .btn-retry { background: #f87171; color: white; display: none; }
+        .btn-retry:hover { background: #ef4444; }
+        .btn-area { text-align: center; margin-top: 1.5rem; }
+        .q-number { display: inline-block; background: #3b82f6; color: white; width: 28px; height: 28px; border-radius: 50%; text-align: center; line-height: 28px; font-size: 0.85rem; margin-right: 0.5rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Chapter 18 Quiz</h1>
+        <p class="subtitle">인증 상태 관리 — Pinia · localStorage · 라우트 가드</p>
+
+        <!-- Q1 -->
+        <div class="question" data-answer="2">
+            <h3><span class="q-number">1</span>Pinia 스토어가 필요한 이유는?</h3>
+            <div class="options">
+                <div class="option" data-value="1">ref가 너무 느려서 더 빠른 상태 관리가 필요하다</div>
+                <div class="option" data-value="2">여러 컴포넌트가 같은 데이터(예: 로그인 토큰)를 공유해야 하는데, 각 컴포넌트의 ref는 자기 안에서만 존재하기 때문</div>
+                <div class="option" data-value="3">Vue가 Pinia 없이는 ref를 사용할 수 없어서</div>
+                <div class="option" data-value="4">서버와 통신하려면 반드시 Pinia를 거쳐야 해서</div>
+            </div>
+            <div class="feedback correct">정답! ref는 컴포넌트 안에서만 사는 "책상 서랍"이에요. LoginView에서 받은 토큰을 App.vue 네비나 BoardsView에서도 쓰려면 "공용 사물함"(Pinia 스토어)이 필요해요.</div>
+            <div class="feedback wrong">오답! 핵심은 "데이터 공유"예요. 각 컴포넌트의 ref는 자기 안에서만 존재하므로, 여러 컴포넌트가 같은 데이터를 봐야 할 때 Pinia 같은 전역 상태 관리가 필요합니다.</div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="question" data-answer="3">
+            <h3><span class="q-number">2</span><code>ref</code>와 <code>localStorage</code>의 차이는?</h3>
+            <div class="options">
+                <div class="option" data-value="1">ref는 문자열만, localStorage는 객체도 저장할 수 있다</div>
+                <div class="option" data-value="2">ref는 서버에, localStorage는 브라우저에 저장된다</div>
+                <div class="option" data-value="3">ref는 메모리에 저장되어 새로고침하면 사라지고, localStorage는 디스크에 저장되어 새로고침해도 유지된다</div>
+                <div class="option" data-value="4">둘 다 같은 곳에 저장되지만 문법만 다르다</div>
+            </div>
+            <div class="feedback correct">정답! ref는 JavaScript 메모리(화이트보드) — 새로고침하면 지워져요. localStorage는 브라우저 디스크(서랍 메모지) — 새로고침, 브라우저 닫기에도 살아남아요. 그래서 둘 다에 저장하면 반응성(ref) + 영속성(localStorage) 모두 챙길 수 있어요.</div>
+            <div class="feedback wrong">오답! ref는 JavaScript 메모리에 저장돼서 새로고침하면 사라져요. localStorage는 브라우저의 영구 저장소에 저장돼서 새로고침이나 브라우저를 닫아도 유지돼요. 참고로 localStorage는 문자열만 저장 가능하고, ref는 어떤 타입이든 가능해요.</div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="question" data-answer="4">
+            <h3><span class="q-number">3</span>다음 코드에서 <code>loadFromStorage()</code>를 App.vue에서 호출하는 이유는?</h3>
+            <pre>// App.vue
+const authStore = useAuthStore()
+authStore.loadFromStorage()  // ← 이걸 왜 여기서?</pre>
+            <div class="options">
+                <div class="option" data-value="1">Pinia가 자동으로 localStorage를 읽지 못해서 에러가 나기 때문</div>
+                <div class="option" data-value="2">LoginView에서는 호출할 수 없기 때문</div>
+                <div class="option" data-value="3">서버에서 토큰을 다시 발급받기 위해</div>
+                <div class="option" data-value="4">새로고침하면 ref(메모리)가 비워지므로, 앱 시작 시 localStorage에서 토큰을 꺼내 ref에 복원해야 로그인 상태를 유지할 수 있으니까</div>
+            </div>
+            <div class="feedback correct">정답! 새로고침하면 JavaScript 메모리(ref)는 싹 비워져요. 하지만 localStorage에는 이전에 저장한 토큰이 남아있어요. 앱이 시작될 때 loadFromStorage()로 그걸 다시 ref에 복원하면 로그인 상태가 유지돼요.</div>
+            <div class="feedback wrong">오답! 새로고침하면 ref(메모리)는 초기화돼요. localStorage에 남아있는 토큰을 앱 시작 시 ref에 복원해줘야 로그인 상태가 유지됩니다. App.vue는 모든 페이지에서 항상 실행되므로 여기서 호출하는 게 적절해요.</div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="question" data-answer="1">
+            <h3><span class="q-number">4</span>api 모듈에서 <code>Authorization: Bearer ${token}</code> 헤더를 보내는 이유는?</h3>
+            <div class="options">
+                <div class="option" data-value="1">서버의 authMiddleware가 이 헤더를 확인하여 "로그인한 사용자"인지 검증하기 때문</div>
+                <div class="option" data-value="2">CORS 에러를 방지하기 위해</div>
+                <div class="option" data-value="3">localStorage에 접근하기 위한 권한을 얻기 위해</div>
+                <div class="option" data-value="4">브라우저가 이 헤더 없이는 fetch를 거부하기 때문</div>
+            </div>
+            <div class="feedback correct">정답! 게시판 생성, 글쓰기 같은 인증이 필요한 API는 서버의 authMiddleware가 Authorization 헤더에서 JWT 토큰을 꺼내 검증해요. "이 요청을 보낸 사람이 누구인지" 확인하는 신분증 같은 거예요.</div>
+            <div class="feedback wrong">오답! Authorization 헤더는 서버에게 "나 로그인한 사람이에요"를 증명하는 용도예요. 서버의 authMiddleware(Chapter 11에서 만든 것)가 이 헤더에서 JWT 토큰을 꺼내 검증합니다.</div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="question" data-answer="2">
+            <h3><span class="q-number">5</span>라우트 가드 <code>router.beforeEach</code>에 대한 설명 중 맞는 것은?</h3>
+            <pre>router.beforeEach((to) => {
+  const token = localStorage.getItem('token')
+  if (to.meta.requiresAuth && !token) {
+    return '/login'
+  }
+})</pre>
+            <div class="options">
+                <div class="option" data-value="1">meta.requiresAuth가 없는 페이지에도 토큰을 검사하여 모든 페이지를 차단한다</div>
+                <div class="option" data-value="2">모든 페이지 이동 전에 실행되지만, meta.requiresAuth가 true이고 토큰이 없을 때만 /login으로 보낸다</div>
+                <div class="option" data-value="3">서버에 토큰 유효성을 확인한 뒤 결과에 따라 차단한다</div>
+                <div class="option" data-value="4">한 번만 실행되고 이후 페이지 이동에는 영향을 주지 않는다</div>
+            </div>
+            <div class="feedback correct">정답! beforeEach는 "모든" 페이지 이동 전에 실행되지만, if 조건 덕분에 requiresAuth가 true인 페이지에서만 토큰을 확인해요. 홈, 로그인, 회원가입 페이지는 meta가 없으니까 자유롭게 통과합니다.</div>
+            <div class="feedback wrong">오답! beforeEach는 매 페이지 이동마다 실행돼요. 하지만 if 조건문 때문에 실제로 차단되는 건 meta.requiresAuth가 true이고 토큰이 없을 때뿐이에요. 그 외 페이지는 자유롭게 접근 가능합니다.</div>
+        </div>
+
+        <!-- Q6 -->
+        <div class="question" data-answer="3">
+            <h3><span class="q-number">6</span>다음 두 줄의 관계는?</h3>
+            <pre>import { useAuthStore } from '../stores/auth'
+const authStore = useAuthStore()</pre>
+            <div class="options">
+                <div class="option" data-value="1">두 줄은 같은 일을 하는 중복 코드다</div>
+                <div class="option" data-value="2">useAuthStore는 스토어의 데이터이고, authStore는 그 복사본이다</div>
+                <div class="option" data-value="3">useAuthStore는 스토어를 여는 "열쇠"(함수)이고, 호출해야 실제 스토어 객체(authStore)를 얻는다</div>
+                <div class="option" data-value="4">import는 서버에서 데이터를 가져오고, const는 로컬에 저장한다</div>
+            </div>
+            <div class="feedback correct">정답! import로 가져오는 useAuthStore는 함수(열쇠)예요. 이 함수를 호출(괄호!)해야 실제 스토어 객체가 반환돼요. 변수 이름(authStore)은 자유롭게 정할 수 있어요.</div>
+            <div class="feedback wrong">오답! useAuthStore는 함수예요. import로 가져오기만 해서는 스토어를 쓸 수 없고, 괄호를 붙여 호출해야(useAuthStore()) 실제 스토어 객체를 얻어요. "열쇠를 가져온 것"과 "열쇠로 문을 연 것"의 차이예요.</div>
+        </div>
+
+        <div class="btn-area">
+            <button class="btn btn-submit" id="submitBtn" disabled>제출하기</button>
+            <button class="btn btn-retry" id="retryBtn" onclick="location.reload()">다시 풀기</button>
+        </div>
+
+        <div class="result" id="result">
+            <h2 id="resultTitle"></h2>
+            <div class="score" id="resultScore"></div>
+            <p id="resultMsg" style="margin-top: 1rem; color: #94a3b8;"></p>
+            <div class="pass-code" id="passCode"></div>
+            <div class="pass-code-hint" id="passCodeHint">↑ 이 코드를 Claude에게 보내주세요</div>
+        </div>
+    </div>
+
+    <script>
+        const questions = document.querySelectorAll('.question');
+        const submitBtn = document.getElementById('submitBtn');
+        const answers = {};
+
+        questions.forEach((q, idx) => {
+            const options = q.querySelectorAll('.option');
+            options.forEach(opt => {
+                opt.addEventListener('click', () => {
+                    if (opt.classList.contains('correct') || opt.classList.contains('wrong')) return;
+                    options.forEach(o => o.classList.remove('selected'));
+                    opt.classList.add('selected');
+                    answers[idx] = opt.dataset.value;
+                    submitBtn.disabled = Object.keys(answers).length < questions.length;
+                });
+            });
+        });
+
+        submitBtn.addEventListener('click', () => {
+            let correct = 0;
+            questions.forEach((q, idx) => {
+                const answer = q.dataset.answer;
+                const selected = answers[idx];
+                const options = q.querySelectorAll('.option');
+                const feedbackCorrect = q.querySelector('.feedback.correct');
+                const feedbackWrong = q.querySelector('.feedback.wrong');
+
+                options.forEach(o => {
+                    o.style.pointerEvents = 'none';
+                    if (o.dataset.value === answer) o.classList.add('correct');
+                    if (o.dataset.value === selected && selected !== answer) o.classList.add('wrong');
+                });
+
+                if (selected === answer) {
+                    correct++;
+                    feedbackCorrect.classList.add('show');
+                } else {
+                    feedbackWrong.classList.add('show');
+                }
+            });
+
+            submitBtn.style.display = 'none';
+            const result = document.getElementById('result');
+            const title = document.getElementById('resultTitle');
+            const score = document.getElementById('resultScore');
+            const msg = document.getElementById('resultMsg');
+            const passCode = document.getElementById('passCode');
+            const passCodeHint = document.getElementById('passCodeHint');
+            const retryBtn = document.getElementById('retryBtn');
+
+            result.style.display = 'block';
+            score.textContent = `${correct} / ${questions.length}`;
+
+            if (correct >= 5) {
+                result.classList.add('pass');
+                score.classList.add('pass');
+                title.textContent = correct === questions.length ? '완벽합니다!' : '통과!';
+                msg.textContent = '인증 상태 관리의 핵심을 잘 이해하고 있습니다.';
+                passCode.textContent = 'PASS-18-J6T2';
+                passCode.style.display = 'block';
+                passCodeHint.style.display = 'block';
+            } else {
+                result.classList.add('fail');
+                score.classList.add('fail');
+                title.textContent = '아쉽습니다';
+                msg.textContent = '5문제 이상 맞아야 통과입니다. 해설을 확인하고 다시 도전해보세요!';
+                retryBtn.style.display = 'inline-block';
+            }
+        });
+    </script>
+</body>
+</html>

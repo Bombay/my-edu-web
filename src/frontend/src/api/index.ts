@@ -1,9 +1,11 @@
 const BASE_URL = 'http://localhost:3000/api'
 
 export async function api(endpoint: string, options: RequestInit = {}) {
+  const token = localStorage.getItem('token')
   const response = await fetch(`${BASE_URL}${endpoint}`, {
     headers: {
       'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...options.headers,
     },
     ...options,

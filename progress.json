@@ -1,8 +1,8 @@
 {
   "learner": "",
-  "currentChapter": "17-auth-views",
+  "currentChapter": "18-auth-state",
   "totalChapters": 24,
-  "completedChapters": 17,
+  "completedChapters": 18,
   "lastUpdated": "",
   "chapters": {
     "01-environment-setup": {
@@ -142,12 +142,12 @@
       "description": "v-model 양방향 바인딩, POST fetch, API 모듈 분리, useRouter, 폼 구현"
     },
     "18-auth-state": {
-      "status": "pending",
-      "startedAt": null,
-      "completedAt": null,
-      "quizPassed": false,
-      "sourceFiles": ["src/frontend/src/stores/auth.ts", "src/frontend/src/router/index.ts"],
-      "description": "Pinia, 토큰 저장, 라우트 가드, 비로그인 접근 차단"
+      "status": "completed",
+      "startedAt": "2026-04-13",
+      "completedAt": "2026-04-13",
+      "quizPassed": true,
+      "sourceFiles": ["src/frontend/src/stores/auth.ts", "src/frontend/src/router/index.ts", "src/frontend/src/App.vue", "src/frontend/src/api/index.ts", "src/frontend/src/views/LoginView.vue"],
+      "description": "Pinia 전역 상태, localStorage 영속성, 라우트 가드, Authorization 헤더 자동 첨부"
     },
     "19-board-views": {
       "status": "pending",

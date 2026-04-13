@@ -1,5 +1,16 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
+import { useAuthStore } from './stores/auth'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+const authStore = useAuthStore()
+authStore.loadFromStorage()
+
+function handleLogout() {
+  authStore.logout()
+  router.push('/login')
+}
 </script>
 
 <template>
@@ -7,8 +18,14 @@ import { RouterLink, RouterView } from 'vue-router'
     <nav>
       <RouterLink to="/">홈</RouterLink>
       <RouterLink to="/boards">게시판</RouterLink>
-      <RouterLink to="/login">로그인</RouterLink>
-      <RouterLink to="/register">회원가입</RouterLink>
+      <template v-if="authStore.isLoggedIn">
+        <span>{{ authStore.user?.nickname }}님</span>
+        <button @click="handleLogout">로그아웃</button>
+      </template>
+      <template v-else>
+        <RouterLink to="/login">로그인</RouterLink>
+        <RouterLink to="/register">회원가입</RouterLink>
+      </template>
     </nav>
 
     <main>
