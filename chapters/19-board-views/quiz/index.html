@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>챕터 19 퀴즈 - 게시판 목록과 생성</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; padding: 2rem; }
+        .container { max-width: 760px; margin: 0 auto; }
+        h1 { text-align: center; margin-bottom: 0.5rem; font-size: 1.8rem; color: #f8fafc; }
+        .subtitle { text-align: center; color: #94a3b8; margin-bottom: 2rem; }
+        .question { background: #1e293b; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; border: 1px solid #334155; }
+        .question h3 { color: #38bdf8; margin-bottom: 1rem; font-size: 1.05rem; line-height: 1.5; }
+        .question pre { background: #0f172a; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; overflow-x: auto; font-size: 0.88rem; color: #a5f3fc; line-height: 1.5; }
+        .options { display: flex; flex-direction: column; gap: 0.5rem; }
+        .option { padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid #475569; cursor: pointer; transition: all 0.2s; background: #1e293b; }
+        .option:hover { border-color: #38bdf8; background: #1e3a5f; }
+        .option.selected { border-color: #38bdf8; background: #1e3a5f; }
+        .option.correct { border-color: #4ade80; background: #14532d; }
+        .option.wrong { border-color: #f87171; background: #7f1d1d; }
+        .feedback { margin-top: 0.75rem; padding: 0.75rem; border-radius: 8px; display: none; font-size: 0.95rem; line-height: 1.5; }
+        .feedback.show { display: block; }
+        .feedback.correct { background: #14532d; color: #bbf7d0; border: 1px solid #4ade80; }
+        .feedback.wrong { background: #7f1d1d; color: #fecaca; border: 1px solid #f87171; }
+        .result { background: #1e293b; border-radius: 12px; padding: 2rem; text-align: center; margin-top: 2rem; display: none; border: 1px solid #334155; }
+        .result h2 { font-size: 1.5rem; margin-bottom: 1rem; }
+        .result.pass { border-color: #4ade80; }
+        .result.fail { border-color: #f87171; }
+        .score { font-size: 3rem; font-weight: bold; }
+        .score.pass { color: #4ade80; }
+        .score.fail { color: #f87171; }
+        .pass-code { margin-top: 1rem; padding: 1rem; background: #14532d; border: 2px dashed #4ade80; border-radius: 8px; font-size: 1.5rem; font-weight: bold; color: #4ade80; letter-spacing: 0.1em; display: none; }
+        .pass-code-hint { margin-top: 0.5rem; font-size: 0.9rem; color: #94a3b8; display: none; }
+        .btn { padding: 0.75rem 2rem; border-radius: 8px; border: none; font-size: 1rem; cursor: pointer; margin-top: 1rem; font-weight: 600; }
+        .btn-submit { background: #3b82f6; color: white; }
+        .btn-submit:hover { background: #2563eb; }
+        .btn-submit:disabled { background: #475569; cursor: not-allowed; }
+        .btn-retry { background: #f87171; color: white; display: none; }
+        .btn-retry:hover { background: #ef4444; }
+        .btn-area { text-align: center; margin-top: 1.5rem; }
+        .q-number { display: inline-block; background: #3b82f6; color: white; width: 28px; height: 28px; border-radius: 50%; text-align: center; line-height: 28px; font-size: 0.85rem; margin-right: 0.5rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Chapter 19 Quiz</h1>
+        <p class="subtitle">게시판 목록과 생성 — 동적 속성 바인딩 · 반응성 · 조합</p>
+
+        <!-- Q1 -->
+        <div class="question" data-answer="2">
+            <h3><span class="q-number">1</span>다음 두 코드의 차이는?</h3>
+            <pre>&lt;RouterLink to="/boards"&gt;게시판&lt;/RouterLink&gt;
+&lt;RouterLink :to="`/boards/${board.id}`"&gt;{{ board.name }}&lt;/RouterLink&gt;</pre>
+            <div class="options">
+                <div class="option" data-value="1">첫 번째는 버튼이고 두 번째는 링크다</div>
+                <div class="option" data-value="2">콜론(:)이 붙으면 값을 JavaScript 표현식으로 해석하므로, 두 번째는 board.id 값에 따라 동적으로 URL이 생성된다</div>
+                <div class="option" data-value="3">두 번째는 문법 오류로 작동하지 않는다</div>
+                <div class="option" data-value="4">첫 번째는 SPA, 두 번째는 전체 새로고침이 일어난다</div>
+            </div>
+            <div class="feedback correct">정답! 콜론(:)은 v-bind의 축약형이에요. 붙으면 값을 JavaScript로 해석하므로 템플릿 리터럴 같은 표현식을 쓸 수 있어요. 붙지 않으면 그냥 문자열 리터럴.</div>
+            <div class="feedback wrong">오답! 콜론(:)은 속성을 동적으로 바인딩하는 v-bind의 축약형이에요. 붙이면 JS 표현식으로, 안 붙이면 문자열 리터럴로 해석돼요. :to, :src, :disabled 등 어떤 속성에도 적용 가능합니다.</div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="question" data-answer="3">
+            <h3><span class="q-number">2</span>게시판 생성 후 <code>boards.value.push(newBoard)</code>를 쓰는 이유는?</h3>
+            <div class="options">
+                <div class="option" data-value="1">서버에 데이터가 저장되지 않으므로 프론트에서라도 보여주려고</div>
+                <div class="option" data-value="2">Pinia에 저장하기 위한 필수 문법이다</div>
+                <div class="option" data-value="3">서버에서 목록을 다시 fetch하지 않고도 Vue의 반응성으로 화면을 즉시 갱신할 수 있어서 (서버 요청 절약 + 빠른 UX)</div>
+                <div class="option" data-value="4">localStorage에 저장하기 위해서</div>
+            </div>
+            <div class="feedback correct">정답! 서버가 방금 만든 게시판 객체를 돌려주니까, 그걸 배열에 push만 하면 Vue가 자동으로 &lt;li&gt;를 하나 더 추가해요. GET /api/boards를 또 호출할 필요가 없어서 효율적이에요.</div>
+            <div class="feedback wrong">오답! 서버는 이미 데이터를 저장했고 새 게시판 객체를 응답으로 돌려줬어요. 그걸 배열에 push만 하면 Vue 반응성 덕분에 화면이 즉시 갱신돼요. 서버에 불필요한 GET 요청을 또 보낼 필요가 없으니 효율적이에요.</div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="question" data-answer="4">
+            <h3><span class="q-number">3</span>게시판 생성 코드에는 토큰 관련 코드가 전혀 없는데 서버 인증은 어떻게 통과될까요?</h3>
+            <pre>await api('/boards', {
+  method: 'POST',
+  body: JSON.stringify({ name, description })
+})
+// 어디에도 token을 직접 다루는 코드가 없음!</pre>
+            <div class="options">
+                <div class="option" data-value="1">POST 요청은 토큰 없이도 통과된다</div>
+                <div class="option" data-value="2">Vue가 자동으로 토큰을 첨부한다</div>
+                <div class="option" data-value="3">브라우저가 fetch에 자동으로 토큰을 포함시킨다</div>
+                <div class="option" data-value="4">Ch.18에서 api 모듈을 수정해, localStorage에서 토큰을 읽어 Authorization 헤더에 자동 첨부하도록 만들어뒀기 때문</div>
+            </div>
+            <div class="feedback correct">정답! api 모듈이 중앙에서 토큰을 붙여주니까, 각 컴포넌트는 토큰을 의식하지 않고도 인증된 요청을 보낼 수 있어요. 이게 "공통 로직을 한 곳에 모으기"의 힘이에요.</div>
+            <div class="feedback wrong">오답! Vue도, 브라우저도 토큰을 자동으로 붙여주지 않아요. Ch.18에서 api 모듈 안에 localStorage.getItem('token')으로 토큰을 꺼내 Authorization: Bearer ${token} 헤더를 추가하는 로직을 넣어뒀기 때문이에요.</div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="question" data-answer="3">
+            <h3><span class="q-number">4</span>로그인한 사용자에게만 생성 폼이 보이게 하려면?</h3>
+            <div class="options">
+                <div class="option" data-value="1">라우트 가드를 추가한다</div>
+                <div class="option" data-value="2">CSS로 display: none 처리한다</div>
+                <div class="option" data-value="3">authStore.isLoggedIn을 v-if로 확인하여 폼 섹션을 조건부 렌더링한다</div>
+                <div class="option" data-value="4">서버에서 HTML을 다르게 내려준다</div>
+            </div>
+            <div class="feedback correct">정답! 라우트 가드는 페이지 접근 자체를 막는 용도고, 같은 페이지 안에서 일부 UI를 숨기는 건 v-if가 적합해요. authStore.isLoggedIn은 computed라 로그인 상태가 바뀌면 자동으로 UI가 반응해요.</div>
+            <div class="feedback wrong">오답! 라우트 가드는 페이지 "접근" 차단용이에요. 페이지 안에서 특정 UI만 조건부로 보이려면 v-if가 적합합니다. authStore.isLoggedIn은 computed라 반응형으로 동작해서 로그아웃하면 폼이 자동으로 사라져요.</div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="question" data-answer="2">
+            <h3><span class="q-number">5</span>이번 챕터에 새로운 Vue 개념이 거의 없었던 이유는?</h3>
+            <div class="options">
+                <div class="option" data-value="1">게시판 기능이 단순해서 새 기술이 필요 없기 때문</div>
+                <div class="option" data-value="2">이전 챕터들에서 배운 v-if, v-model, api 모듈, authStore, try/catch 등을 조합하여 실전 기능을 구성하는 단계이기 때문</div>
+                <div class="option" data-value="3">Vue는 더 이상 배울 게 없기 때문</div>
+                <div class="option" data-value="4">선생님이 가르칠 내용을 빼먹었기 때문</div>
+            </div>
+            <div class="feedback correct">정답! 프레임워크 학습의 특징이에요. 초반엔 개념이 많이 쏟아지지만, 어느 시점부터는 배운 것들을 "조합"해서 실전 기능을 만드는 단계로 넘어가요. 지금이 그 전환점이에요.</div>
+            <div class="feedback wrong">오답! Vue에는 아직 더 많은 기능이 있지만, 커뮤니티 게시판을 만들기엔 지금까지 배운 것들로 충분해요. 이번 챕터는 "조합의 단계" — 쌓아온 조각들로 실전 기능을 만드는 시점이에요.</div>
+        </div>
+
+        <div class="btn-area">
+            <button class="btn btn-submit" id="submitBtn" disabled>제출하기</button>
+            <button class="btn btn-retry" id="retryBtn" onclick="location.reload()">다시 풀기</button>
+        </div>
+
+        <div class="result" id="result">
+            <h2 id="resultTitle"></h2>
+            <div class="score" id="resultScore"></div>
+            <p id="resultMsg" style="margin-top: 1rem; color: #94a3b8;"></p>
+            <div class="pass-code" id="passCode"></div>
+            <div class="pass-code-hint" id="passCodeHint">↑ 이 코드를 Claude에게 보내주세요</div>
+        </div>
+    </div>
+
+    <script>
+        const questions = document.querySelectorAll('.question');
+        const submitBtn = document.getElementById('submitBtn');
+        const answers = {};
+
+        questions.forEach((q, idx) => {
+            const options = q.querySelectorAll('.option');
+            options.forEach(opt => {
+                opt.addEventListener('click', () => {
+                    if (opt.classList.contains('correct') || opt.classList.contains('wrong')) return;
+                    options.forEach(o => o.classList.remove('selected'));
+                    opt.classList.add('selected');
+                    answers[idx] = opt.dataset.value;
+                    submitBtn.disabled = Object.keys(answers).length < questions.length;
+                });
+            });
+        });
+
+        submitBtn.addEventListener('click', () => {
+            let correct = 0;
+            questions.forEach((q, idx) => {
+                const answer = q.dataset.answer;
+                const selected = answers[idx];
+                const options = q.querySelectorAll('.option');
+                const feedbackCorrect = q.querySelector('.feedback.correct');
+                const feedbackWrong = q.querySelector('.feedback.wrong');
+
+                options.forEach(o => {
+                    o.style.pointerEvents = 'none';
+                    if (o.dataset.value === answer) o.classList.add('correct');
+                    if (o.dataset.value === selected && selected !== answer) o.classList.add('wrong');
+                });
+
+                if (selected === answer) {
+                    correct++;
+                    feedbackCorrect.classList.add('show');
+                } else {
+                    feedbackWrong.classList.add('show');
+                }
+            });
+
+            submitBtn.style.display = 'none';
+            const result = document.getElementById('result');
+            const title = document.getElementById('resultTitle');
+            const score = document.getElementById('resultScore');
+            const msg = document.getElementById('resultMsg');
+            const passCode = document.getElementById('passCode');
+            const passCodeHint = document.getElementById('passCodeHint');
+            const retryBtn = document.getElementById('retryBtn');
+
+            result.style.display = 'block';
+            score.textContent = `${correct} / ${questions.length}`;
+
+            if (correct >= 4) {
+                result.classList.add('pass');
+                score.classList.add('pass');
+                title.textContent = correct === questions.length ? '완벽합니다!' : '통과!';
+                msg.textContent = '지금까지 배운 것들을 잘 조합하고 있어요!';
+                passCode.textContent = 'PASS-19-H5B8';
+                passCode.style.display = 'block';
+                passCodeHint.style.display = 'block';
+            } else {
+                result.classList.add('fail');
+                score.classList.add('fail');
+                title.textContent = '아쉽습니다';
+                msg.textContent = '4문제 이상 맞아야 통과입니다. 해설을 확인하고 다시 도전해보세요!';
+                retryBtn.style.display = 'inline-block';
+            }
+        });
+    </script>
+</body>
+</html>
