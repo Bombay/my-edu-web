@@ -13,7 +13,7 @@ export async function api(endpoint: string, options: RequestInit = {}) {
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => null)
-    throw new Error(errorData?.message || `서버 오류: ${response.status}`)
+    throw new Error(errorData?.error || errorData?.message || `서버 오류: ${response.status}`)
   }
 
   return response.json()

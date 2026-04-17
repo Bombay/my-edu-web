@@ -1,9 +1,9 @@
 {
   "learner": "",
-  "currentChapter": "19-board-views",
+  "currentChapter": "20-post-views",
   "totalChapters": 24,
-  "completedChapters": 19,
-  "lastUpdated": "",
+  "completedChapters": 20,
+  "lastUpdated": "2026-04-17",
   "chapters": {
     "01-environment-setup": {
       "status": "completed",
@@ -158,12 +158,12 @@
       "description": "동적 속성 바인딩(:to), 인라인 생성 폼, 반응성 push, v-if 조건부 UI — 조합으로 실전 기능 완성"
     },
     "20-post-views": {
-      "status": "pending",
-      "startedAt": null,
-      "completedAt": null,
-      "quizPassed": false,
-      "sourceFiles": ["src/frontend/src/views/PostListView.vue", "src/frontend/src/views/PostDetailView.vue", "src/frontend/src/views/PostCreateView.vue"],
-      "description": "에디터, 동적 라우트, 글 작성/목록/상세 화면"
+      "status": "completed",
+      "startedAt": "2026-04-17",
+      "completedAt": "2026-04-17",
+      "quizPassed": true,
+      "sourceFiles": ["src/frontend/src/views/BoardDetailView.vue", "src/frontend/src/views/PostDetailView.vue", "src/frontend/src/router/index.ts", "src/backend/src/routes/posts.ts", "src/frontend/src/api/index.ts"],
+      "description": "동적 라우트 + URL 변수, 쿼리 파라미터(req.query), textarea v-model, push/unshift, API 응답 키 약속 디버깅"
     },
     "21-ui-polish": {
       "status": "pending",
