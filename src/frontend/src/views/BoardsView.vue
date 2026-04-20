@@ -54,20 +54,13 @@ async function handleCreate() {
     <h1>게시판 목록</h1>
 
     <!-- 새 게시판 생성 폼 (로그인 시에만) -->
-    <section
-      v-if="authStore.isLoggedIn"
-      style="margin-bottom: 2rem; padding: 1rem; border: 1px solid #ccc; border-radius: 8px"
-    >
+    <section v-if="authStore.isLoggedIn" class="card">
       <h2>새 게시판 만들기</h2>
       <form @submit.prevent="handleCreate">
-        <div>
-          <input v-model="newName" placeholder="게시판 이름" required />
-        </div>
-        <div>
-          <input v-model="newDescription" placeholder="설명 (선택)" />
-        </div>
-        <p v-if="createError" style="color: red">{{ createError }}</p>
-        <button type="submit" :disabled="creating">
+        <input v-model="newName" class="input" placeholder="게시판 이름" required />
+        <input v-model="newDescription" class="input" placeholder="설명 (선택)" />
+        <p v-if="createError" class="text-danger">{{ createError }}</p>
+        <button type="submit" class="btn" :disabled="creating">
           {{ creating ? '만드는 중...' : '만들기' }}
         </button>
       </form>
@@ -75,13 +68,13 @@ async function handleCreate() {
 
     <!-- 게시판 목록 -->
     <p v-if="loading">불러오는 중...</p>
-    <p v-else-if="error" style="color: red">에러: {{ error }}</p>
-    <ul v-else>
+    <p v-else-if="error" class="text-danger">에러: {{ error }}</p>
+    <ul v-else class="list card">
       <li v-for="board in boards" :key="board.id">
         <RouterLink :to="`/boards/${board.id}`">
           {{ board.name }}
         </RouterLink>
-        - {{ board.description }}
+        <span class="text-muted"> — {{ board.description }}</span>
       </li>
     </ul>
   </div>

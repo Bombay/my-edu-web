@@ -40,20 +40,16 @@ async function handleLogin() {
   <div>
     <h1>로그인</h1>
 
-    <form @submit.prevent="handleLogin">
-      <div>
-        <label>이메일</label>
-        <input v-model="email" type="email" placeholder="example@email.com" />
-      </div>
+    <form @submit.prevent="handleLogin" class="card">
+      <label>이메일</label>
+      <input v-model="email" type="email" class="input" placeholder="example@email.com" />
 
-      <div>
-        <label>비밀번호</label>
-        <input v-model="password" type="password" placeholder="6자 이상입력" />
-      </div>
+      <label>비밀번호</label>
+      <input v-model="password" type="password" class="input" placeholder="6자 이상 입력" />
 
-      <p v-if="error" style="color: red">{{ error }}</p>
+      <p v-if="error" class="text-danger">{{ error }}</p>
 
-      <button type="submit" :disabled="loading">
+      <button type="submit" class="btn" :disabled="loading">
         {{ loading ? '로그인 중...' : '로그인' }}
       </button>
     </form>

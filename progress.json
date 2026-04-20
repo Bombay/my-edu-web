@@ -1,9 +1,9 @@
 {
   "learner": "",
-  "currentChapter": "20-post-views",
+  "currentChapter": "21-ui-polish",
   "totalChapters": 24,
-  "completedChapters": 20,
-  "lastUpdated": "2026-04-17",
+  "completedChapters": 21,
+  "lastUpdated": "2026-04-20",
   "chapters": {
     "01-environment-setup": {
       "status": "completed",
@@ -166,12 +166,12 @@
       "description": "동적 라우트 + URL 변수, 쿼리 파라미터(req.query), textarea v-model, push/unshift, API 응답 키 약속 디버깅"
     },
     "21-ui-polish": {
-      "status": "pending",
-      "startedAt": null,
-      "completedAt": null,
-      "quizPassed": false,
-      "sourceFiles": ["src/frontend/src/assets/main.css"],
-      "description": "CSS 기초 복습, 반응형, 전체 화면 스타일링"
+      "status": "completed",
+      "startedAt": "2026-04-20",
+      "completedAt": "2026-04-20",
+      "quizPassed": true,
+      "sourceFiles": ["src/frontend/src/assets/main.css", "src/frontend/src/main.ts", "src/frontend/src/App.vue", "src/frontend/src/views/HomeView.vue", "src/frontend/src/views/BoardsView.vue", "src/frontend/src/views/BoardDetailView.vue", "src/frontend/src/views/PostDetailView.vue", "src/frontend/src/views/LoginView.vue", "src/frontend/src/views/RegisterView.vue"],
+      "description": "전역 CSS + 디자인 토큰(CSS 변수), 공통 클래스(.card/.btn/.input), 미디어쿼리 반응형, 인라인 style 제거"
     },
     "22-integration-test": {
       "status": "pending",

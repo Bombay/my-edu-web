@@ -38,25 +38,19 @@ async function handleRegister() {
   <div>
     <h1>회원가입</h1>
 
-    <form @submit.prevent="handleRegister">
-      <div>
-        <label>이메일</label>
-        <input v-model="email" type="email" placeholder="example@email.com" />
-      </div>
+    <form @submit.prevent="handleRegister" class="card">
+      <label>이메일</label>
+      <input v-model="email" type="email" class="input" placeholder="example@email.com" />
 
-      <div>
-        <label>닉네임</label>
-        <input v-model="nickname" type="text" placeholder="닉네임 입력" />
-      </div>
+      <label>닉네임</label>
+      <input v-model="nickname" type="text" class="input" placeholder="닉네임 입력" />
 
-      <div>
-        <label>비밀번호</label>
-        <input v-model="password" type="password" placeholder="6자 이상입력" />
-      </div>
+      <label>비밀번호</label>
+      <input v-model="password" type="password" class="input" placeholder="6자 이상 입력" />
 
-      <p v-if="error" style="color: red">{{ error }}</p>
+      <p v-if="error" class="text-danger">{{ error }}</p>
 
-      <button type="submit" :disabled="loading">
+      <button type="submit" class="btn" :disabled="loading">
         {{ loading ? '가입 중...' : '회원가입' }}
       </button>
     </form>

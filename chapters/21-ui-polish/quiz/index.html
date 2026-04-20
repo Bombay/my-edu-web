@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>챕터 21 퀴즈 - UI 다듬기</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; padding: 2rem; }
+        .container { max-width: 760px; margin: 0 auto; }
+        h1 { text-align: center; margin-bottom: 0.5rem; font-size: 1.8rem; color: #f8fafc; }
+        .subtitle { text-align: center; color: #94a3b8; margin-bottom: 2rem; }
+        .question { background: #1e293b; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; border: 1px solid #334155; }
+        .question h3 { color: #38bdf8; margin-bottom: 1rem; font-size: 1.05rem; line-height: 1.5; }
+        .question pre { background: #0f172a; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; overflow-x: auto; font-size: 0.88rem; color: #a5f3fc; line-height: 1.5; }
+        .options { display: flex; flex-direction: column; gap: 0.5rem; }
+        .option { padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid #475569; cursor: pointer; transition: all 0.2s; background: #1e293b; }
+        .option:hover { border-color: #38bdf8; background: #1e3a5f; }
+        .option.selected { border-color: #38bdf8; background: #1e3a5f; }
+        .option.correct { border-color: #4ade80; background: #14532d; }
+        .option.wrong { border-color: #f87171; background: #7f1d1d; }
+        .feedback { margin-top: 0.75rem; padding: 0.75rem; border-radius: 8px; display: none; font-size: 0.95rem; line-height: 1.5; }
+        .feedback.show { display: block; }
+        .feedback.correct { background: #14532d; color: #bbf7d0; border: 1px solid #4ade80; }
+        .feedback.wrong { background: #7f1d1d; color: #fecaca; border: 1px solid #f87171; }
+        .result { background: #1e293b; border-radius: 12px; padding: 2rem; text-align: center; margin-top: 2rem; display: none; border: 1px solid #334155; }
+        .result h2 { font-size: 1.5rem; margin-bottom: 1rem; }
+        .result.pass { border-color: #4ade80; }
+        .result.fail { border-color: #f87171; }
+        .score { font-size: 3rem; font-weight: bold; }
+        .score.pass { color: #4ade80; }
+        .score.fail { color: #f87171; }
+        .pass-code { margin-top: 1rem; padding: 1rem; background: #14532d; border: 2px dashed #4ade80; border-radius: 8px; font-size: 1.5rem; font-weight: bold; color: #4ade80; letter-spacing: 0.1em; display: none; }
+        .pass-code-hint { margin-top: 0.5rem; font-size: 0.9rem; color: #94a3b8; display: none; }
+        .btn { padding: 0.75rem 2rem; border-radius: 8px; border: none; font-size: 1rem; cursor: pointer; margin-top: 1rem; font-weight: 600; }
+        .btn-submit { background: #3b82f6; color: white; }
+        .btn-submit:hover { background: #2563eb; }
+        .btn-submit:disabled { background: #475569; cursor: not-allowed; }
+        .btn-retry { background: #f87171; color: white; display: none; }
+        .btn-retry:hover { background: #ef4444; }
+        .btn-area { text-align: center; margin-top: 1.5rem; }
+        .q-number { display: inline-block; background: #3b82f6; color: white; width: 28px; height: 28px; border-radius: 50%; text-align: center; line-height: 28px; font-size: 0.85rem; margin-right: 0.5rem; }
+        code { background: #0f172a; padding: 0.1rem 0.4rem; border-radius: 4px; color: #a5f3fc; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Chapter 21 Quiz</h1>
+        <p class="subtitle">UI 다듬기 — 전역 CSS · CSS 변수 · 미디어쿼리 · 스코프 분리</p>
+
+        <!-- Q1 -->
+        <div class="question" data-answer="3">
+            <h3><span class="q-number">1</span><code>main.ts</code>에 <code>import './assets/main.css'</code> 한 줄을 추가했더니 모든 컴포넌트에서 <code>.card</code> 클래스를 쓸 수 있게 됐습니다. 이게 가능한 이유는?</h3>
+            <div class="options">
+                <div class="option" data-value="1">Vue가 자동으로 모든 .vue 파일을 스캔해서 클래스를 등록한다</div>
+                <div class="option" data-value="2">main.ts에서 import한 모든 변수는 컴포넌트에 자동 주입된다</div>
+                <div class="option" data-value="3">Vite가 import된 CSS를 빌드 시 하나의 스타일시트로 묶어 페이지에 주입하므로, 같은 페이지의 모든 컴포넌트가 그 규칙을 공유함</div>
+                <div class="option" data-value="4">CSS 파일은 어디서나 자동으로 읽혀서 import가 사실 필요 없다</div>
+            </div>
+            <div class="feedback correct">정답! Vite/Webpack 같은 번들러가 import된 CSS를 모아 하나의 시트로 만들고 &lt;head&gt;에 주입해요. 그래서 어떤 컴포넌트에서든 같은 클래스 이름을 쓸 수 있는 거예요. 이게 "전역 CSS"가 동작하는 원리.</div>
+            <div class="feedback wrong">오답! Vue는 .vue 파일을 자동 스캔하지 않고, JS 변수 import와 CSS는 다르게 동작해요. 핵심은 번들러(Vite)가 import된 CSS를 하나의 스타일시트로 묶어 페이지에 주입한다는 점입니다. 그래서 모든 컴포넌트가 같은 클래스를 공유할 수 있어요.</div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="question" data-answer="2">
+            <h3><span class="q-number">2</span>다음 코드의 의도와 효과는?</h3>
+            <pre>:root {
+  --color-primary: #3b82f6;
+}
+.btn { background: var(--color-primary); }
+.list a { color: var(--color-primary); }</pre>
+            <div class="options">
+                <div class="option" data-value="1">버튼과 링크 색을 다르게 만들기 위해</div>
+                <div class="option" data-value="2">색을 한 곳(변수 선언)에서 관리하여, 한 줄만 바꾸면 그 변수를 쓰는 모든 요소의 색이 함께 바뀌게 하기 위해</div>
+                <div class="option" data-value="3">JavaScript에서 색을 동적으로 바꾸기 위해 필수로 필요한 문법</div>
+                <div class="option" data-value="4">CSS 성능을 향상시키는 최적화 기법</div>
+            </div>
+            <div class="feedback correct">정답! CSS 변수(--color-primary)는 디자인 토큰의 핵심 도구예요. 한 곳만 바꾸면 그 변수를 쓰는 모든 요소가 자동 반영. "테마 색 살짝 어둡게" 한 마디를 5초만에 처리할 수 있어요.</div>
+            <div class="feedback wrong">오답! :root에 정의한 CSS 변수는 디자인 토큰 역할이에요. 변수 선언 한 줄만 바꾸면 var(--color-primary)를 쓰는 모든 곳의 색이 일괄 변경됩니다. JS 없이 CSS만으로 가능하고, 성능 최적화와는 무관해요.</div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="question" data-answer="3">
+            <h3><span class="q-number">3</span>이 미디어쿼리는 어떤 화면에서 활성화되나요?</h3>
+            <pre>.btn { width: auto; }
+
+@media (max-width: 768px) {
+  .btn { width: 100%; }
+}</pre>
+            <div class="options">
+                <div class="option" data-value="1">모든 화면에서 항상 <code>width: 100%</code>가 적용된다</div>
+                <div class="option" data-value="2">화면이 768px 이상일 때 <code>width: 100%</code>가 적용된다</div>
+                <div class="option" data-value="3">화면이 768px 이하일 때만 <code>width: 100%</code>가 적용되고, 그보다 넓으면 <code>width: auto</code>가 적용된다</div>
+                <div class="option" data-value="4">미디어쿼리는 데스크탑 브라우저에선 무시된다</div>
+            </div>
+            <div class="feedback correct">정답! @media (max-width: 768px)는 "최대 768px까지" — 즉 768px 이하인 좁은 화면에서만 활성화돼요. 평소엔 .btn { width: auto }가 살아있고, 좁아지면 100%로 덮어써집니다. 모바일 우선 사고에서 자주 쓰는 패턴.</div>
+            <div class="feedback wrong">오답! max-width는 "최대 너비"라는 조건 — 768px 이하인 화면에서만 안쪽 규칙이 활성화돼요. 평소엔 바깥의 .btn { width: auto }가 적용되고, 좁아지면 width: 100%가 그것을 덮어씁니다. 데스크탑에서도 화면을 좁히면 적용돼요.</div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="question" data-answer="2">
+            <h3><span class="q-number">4</span>PostDetailView의 본문에 줄바꿈을 살리는 <code>white-space: pre-wrap</code> 스타일을 어디에 두는 것이 가장 적절한가요?</h3>
+            <div class="options">
+                <div class="option" data-value="1">전역 main.css에 .post-content 클래스로 추가한다 — 어차피 한 곳만 쓰니 안 보이게 두자</div>
+                <div class="option" data-value="2">PostDetailView.vue 안에 <code>&lt;style scoped&gt;</code>로 둔다 — 그 컴포넌트에서만 의미 있는 좁은 스타일이므로</div>
+                <div class="option" data-value="3">인라인 style로 그대로 둔다 — 어차피 한 줄이니까</div>
+                <div class="option" data-value="4">JavaScript로 동적으로 적용한다</div>
+            </div>
+            <div class="feedback correct">정답! "전역엔 여러 곳에서 쓰는 것, 스코프엔 그 컴포넌트만의 것" — 이게 좋은 분리 기준이에요. 글 본문 줄바꿈은 PostDetailView에서만 의미 있으니 scoped가 적절. 전역 CSS가 비대해지는 것도 막아줘요.</div>
+            <div class="feedback wrong">오답! 한 컴포넌트에서만 의미 있는 좁은 스타일을 전역 CSS에 넣으면 시간이 갈수록 main.css가 비대해지고 어디서 쓰는지 추적하기 어려워져요. 인라인은 문법 강조도 안 되고 재사용도 안 됩니다. <code>&lt;style scoped&gt;</code>가 정답 — Vue가 자동으로 그 컴포넌트에만 적용되는 고유 클래스를 붙여줘요.</div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="question" data-answer="4">
+            <h3><span class="q-number">5</span><code>.container { max-width: 800px; margin: 0 auto; }</code>를 <code>&lt;main&gt;</code>에 적용한 효과는?</h3>
+            <div class="options">
+                <div class="option" data-value="1">main 영역이 항상 800px 폭을 차지한다 (화면이 좁아도 800px 유지 → 가로 스크롤)</div>
+                <div class="option" data-value="2">main이 화면 좌측에 800px 폭으로 붙는다</div>
+                <div class="option" data-value="3">main의 글자 크기가 800px이 된다</div>
+                <div class="option" data-value="4">main이 최대 800px까지 커지지만 그보다 좁은 화면에선 화면 너비에 맞춰 줄어들고, 좌우 여백은 자동으로 균등 분배되어 가운데 정렬된다</div>
+            </div>
+            <div class="feedback correct">정답! max-width는 "최대 그 값까지만 커진다"는 의미 — 화면이 좁으면 그에 맞춰 줄어들어요. margin: 0 auto는 좌우 여백을 동일하게 자동 계산 → 가운데 정렬. 이 두 줄 조합이 "콘텐츠 가운데 모으기"의 표준 패턴이에요.</div>
+            <div class="feedback wrong">오답! max-width는 "최대" — 항상 그 폭이 아니라, 화면이 좁아지면 함께 줄어들어 가로 스크롤이 안 생겨요. margin: 0 auto는 좌우 여백 자동 분배로 가운데 정렬을 만듭니다. 이 두 줄 조합이 반응형 콘텐츠 정렬의 표준 패턴이에요.</div>
+        </div>
+
+        <div class="btn-area">
+            <button class="btn btn-submit" id="submitBtn" disabled>제출하기</button>
+            <button class="btn btn-retry" id="retryBtn" onclick="location.reload()">다시 풀기</button>
+        </div>
+
+        <div class="result" id="result">
+            <h2 id="resultTitle"></h2>
+            <div class="score" id="resultScore"></div>
+            <p id="resultMsg" style="margin-top: 1rem; color: #94a3b8;"></p>
+            <div class="pass-code" id="passCode"></div>
+            <div class="pass-code-hint" id="passCodeHint">↑ 이 코드를 Claude에게 보내주세요</div>
+        </div>
+    </div>
+
+    <script>
+        const questions = document.querySelectorAll('.question');
+        const submitBtn = document.getElementById('submitBtn');
+        const answers = {};
+
+        questions.forEach((q, idx) => {
+            const options = q.querySelectorAll('.option');
+            options.forEach(opt => {
+                opt.addEventListener('click', () => {
+                    if (opt.classList.contains('correct') || opt.classList.contains('wrong')) return;
+                    options.forEach(o => o.classList.remove('selected'));
+                    opt.classList.add('selected');
+                    answers[idx] = opt.dataset.value;
+                    submitBtn.disabled = Object.keys(answers).length < questions.length;
+                });
+            });
+        });
+
+        submitBtn.addEventListener('click', () => {
+            let correct = 0;
+            questions.forEach((q, idx) => {
+                const answer = q.dataset.answer;
+                const selected = answers[idx];
+                const options = q.querySelectorAll('.option');
+                const feedbackCorrect = q.querySelector('.feedback.correct');
+                const feedbackWrong = q.querySelector('.feedback.wrong');
+
+                options.forEach(o => {
+                    o.style.pointerEvents = 'none';
+                    if (o.dataset.value === answer) o.classList.add('correct');
+                    if (o.dataset.value === selected && selected !== answer) o.classList.add('wrong');
+                });
+
+                if (selected === answer) {
+                    correct++;
+                    feedbackCorrect.classList.add('show');
+                } else {
+                    feedbackWrong.classList.add('show');
+                }
+            });
+
+            submitBtn.style.display = 'none';
+            const result = document.getElementById('result');
+            const title = document.getElementById('resultTitle');
+            const score = document.getElementById('resultScore');
+            const msg = document.getElementById('resultMsg');
+            const passCode = document.getElementById('passCode');
+            const passCodeHint = document.getElementById('passCodeHint');
+            const retryBtn = document.getElementById('retryBtn');
+
+            result.style.display = 'block';
+            score.textContent = `${correct} / ${questions.length}`;
+
+            if (correct >= 4) {
+                result.classList.add('pass');
+                score.classList.add('pass');
+                title.textContent = correct === questions.length ? '완벽합니다!' : '통과!';
+                msg.textContent = '디자인 시스템과 반응형 감각이 잘 잡혔어요!';
+                passCode.textContent = 'PASS-21-X90G';
+                passCode.style.display = 'block';
+                passCodeHint.style.display = 'block';
+            } else {
+                result.classList.add('fail');
+                score.classList.add('fail');
+                title.textContent = '아쉽습니다';
+                msg.textContent = '4문제 이상 맞아야 통과입니다. 해설을 확인하고 다시 도전해보세요!';
+                retryBtn.style.display = 'inline-block';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -24,14 +24,23 @@ onMounted(async () => {
 <template>
   <div>
     <p v-if="loading">불러오는 중...</p>
-    <p v-else-if="error" style="color: red">에러: {{ error }}</p>
-    <article v-else-if="post">
+    <p v-else-if="error" class="text-danger">에러: {{ error }}</p>
+    <article v-else-if="post" class="card">
       <h1>{{ post.title }}</h1>
-      <p>
-        <small>작성자: {{ post.author }} · {{ post.created_at }}</small>
-      </p>
-      <hr />
-      <p style="white-space: pre-wrap">{{ post.content }}</p>
+      <p class="text-muted">작성자: {{ post.author }} · {{ post.created_at }}</p>
+      <hr class="post-divider" />
+      <p class="post-content">{{ post.content }}</p>
     </article>
   </div>
 </template>
+
+<style scoped>
+.post-divider {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: var(--space-4) 0;
+}
+.post-content {
+  white-space: pre-wrap;
+}
+</style>

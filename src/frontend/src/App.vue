@@ -28,7 +28,8 @@ function handleLogout() {
       </template>
     </nav>
 
-    <main>
+    <main class="container">
+      <!-- ← class 추가 -->
       <RouterView />
     </main>
   </div>
@@ -53,8 +54,5 @@ nav a:hover {
 nav a.router-link-active {
   background: #3b82f6;
   color: white;
-}
-main {
-  padding: 2rem;
 }
 </style>

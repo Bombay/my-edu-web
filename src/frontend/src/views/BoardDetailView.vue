@@ -58,26 +58,18 @@ async function handleCreate() {
     <h1>{{ boardId }}번 게시판</h1>
 
     <!-- 글쓰기 폼 (로그인 시에만) -->
-    <section
-      v-if="authStore.isLoggedIn"
-      style="margin-bottom: 2rem; padding: 1rem; border: 1px solid #ccc; border-radius: 8px"
-    >
+    <section v-if="authStore.isLoggedIn" class="card">
       <h2>새 글 작성</h2>
       <form @submit.prevent="handleCreate">
-        <div>
-          <input v-model="newTitle" placeholder="제목" required />
-        </div>
-        <div>
-          <textarea
-            v-model="newContent"
-            placeholder="내용을 입력하세요"
-            rows="5"
-            required
-            style="width: 100%"
-          ></textarea>
-        </div>
-        <p v-if="createError" style="color: red">{{ createError }}</p>
-        <button type="submit" :disabled="creating">
+        <input v-model="newTitle" class="input" placeholder="제목" required />
+        <textarea
+          v-model="newContent"
+          class="textarea"
+          placeholder="내용을 입력하세요"
+          required
+        ></textarea>
+        <p v-if="createError" class="text-danger">{{ createError }}</p>
+        <button type="submit" class="btn" :disabled="creating">
           {{ creating ? '작성 중...' : '작성' }}
         </button>
       </form>
@@ -85,14 +77,14 @@ async function handleCreate() {
 
     <!-- 글 목록 -->
     <p v-if="loading">불러오는 중...</p>
-    <p v-else-if="error" style="color: red">에러: {{ error }}</p>
-    <p v-else-if="posts.length === 0">아직 글이 없습니다. 첫 글을 작성해보세요!</p>
-    <ul v-else>
+    <p v-else-if="error" class="text-danger">에러: {{ error }}</p>
+    <p v-else-if="posts.length === 0" class="text-muted">
+      아직 글이 없습니다. 첫 글을 작성해보세요!
+    </p>
+    <ul v-else class="list card">
       <li v-for="post in posts" :key="post.id">
-        <RouterLink :to="`/posts/${post.id}`">
-          {{ post.title }}
-        </RouterLink>
-        <small> — {{ post.author }}</small>
+        <RouterLink :to="`/posts/${post.id}`">{{ post.title }}</RouterLink>
+        <span class="text-muted"> — {{ post.author }}</span>
       </li>
     </ul>
   </div>
