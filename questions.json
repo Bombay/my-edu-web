@@ -65,6 +65,39 @@
       "understood": true,
       "reviewCount": 0,
       "lastReviewedAt": null
+    },
+    {
+      "id": 7,
+      "chapter": "22-integration-test",
+      "askedAt": "2026-04-21",
+      "context": "통합 테스트 동기부여에서 회원가입→로그인 시나리오의 비밀번호 처리 예시가 나오면서 자연스럽게 복습 질문",
+      "question": "해싱과 암호화의 차이? (해싱=단방향, 못 풂 / 암호화=양방향, 풂)",
+      "tags": ["해싱", "암호화", "보안", "복습"],
+      "understood": true,
+      "reviewCount": 1,
+      "lastReviewedAt": "2026-04-21"
+    },
+    {
+      "id": 8,
+      "chapter": "22-integration-test",
+      "askedAt": "2026-04-21",
+      "context": "게시판 생성 시 Authorization 헤더로 토큰을 보낼 때, 토큰을 검사하는 중간 관문의 이름과 역할을 질문",
+      "question": "미들웨어란? (요청과 라우트 핸들러 사이의 중간 관문, next() 호출해야 다음으로 진행)",
+      "tags": ["미들웨어", "Express", "next", "복습"],
+      "understood": true,
+      "reviewCount": 1,
+      "lastReviewedAt": "2026-04-21"
+    },
+    {
+      "id": 9,
+      "chapter": "22-integration-test",
+      "askedAt": "2026-04-21",
+      "context": "빈 입력 시 에러가 어떻게 만들어져 클라이언트에 도달하는지 추적하면서 에러 미들웨어 매개변수 4개 짚음",
+      "question": "에러 미들웨어와 일반 미들웨어의 구분점? (매개변수 개수: 4개 vs 3개, err가 추가됨)",
+      "tags": ["에러미들웨어", "Express", "복습"],
+      "understood": true,
+      "reviewCount": 1,
+      "lastReviewedAt": "2026-04-21"
     }
   ]
 }

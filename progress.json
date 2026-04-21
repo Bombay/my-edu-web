@@ -1,9 +1,9 @@
 {
   "learner": "",
-  "currentChapter": "21-ui-polish",
+  "currentChapter": "23-deploy-prep",
   "totalChapters": 24,
-  "completedChapters": 21,
-  "lastUpdated": "2026-04-20",
+  "completedChapters": 22,
+  "lastUpdated": "2026-04-21",
   "chapters": {
     "01-environment-setup": {
       "status": "completed",
@@ -174,12 +174,12 @@
       "description": "전역 CSS + 디자인 토큰(CSS 변수), 공통 클래스(.card/.btn/.input), 미디어쿼리 반응형, 인라인 style 제거"
     },
     "22-integration-test": {
-      "status": "pending",
-      "startedAt": null,
-      "completedAt": null,
-      "quizPassed": false,
+      "status": "completed",
+      "startedAt": "2026-04-21",
+      "completedAt": "2026-04-21",
+      "quizPassed": true,
       "sourceFiles": [],
-      "description": "전체 흐름 점검, 회원가입→로그인→글쓰기 시나리오"
+      "description": "전체 흐름 점검: 회원가입→로그인→게시판→글쓰기 시나리오, JWT 페이로드 디코드, 인증/에러 미들웨어 동작 확인, 컨벤션 불일치 발견"
     },
     "23-deploy-prep": {
       "status": "pending",

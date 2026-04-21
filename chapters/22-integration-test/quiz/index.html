@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>챕터 22 퀴즈 - 통합 테스트</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; padding: 2rem; }
+        .container { max-width: 760px; margin: 0 auto; }
+        h1 { text-align: center; margin-bottom: 0.5rem; font-size: 1.8rem; color: #f8fafc; }
+        .subtitle { text-align: center; color: #94a3b8; margin-bottom: 2rem; }
+        .question { background: #1e293b; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; border: 1px solid #334155; }
+        .question h3 { color: #38bdf8; margin-bottom: 1rem; font-size: 1.05rem; line-height: 1.5; }
+        .question pre { background: #0f172a; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; overflow-x: auto; font-size: 0.88rem; color: #a5f3fc; line-height: 1.5; }
+        .options { display: flex; flex-direction: column; gap: 0.5rem; }
+        .option { padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid #475569; cursor: pointer; transition: all 0.2s; background: #1e293b; }
+        .option:hover { border-color: #38bdf8; background: #1e3a5f; }
+        .option.selected { border-color: #38bdf8; background: #1e3a5f; }
+        .option.correct { border-color: #4ade80; background: #14532d; }
+        .option.wrong { border-color: #f87171; background: #7f1d1d; }
+        .feedback { margin-top: 0.75rem; padding: 0.75rem; border-radius: 8px; display: none; font-size: 0.95rem; line-height: 1.5; }
+        .feedback.show { display: block; }
+        .feedback.correct { background: #14532d; color: #bbf7d0; border: 1px solid #4ade80; }
+        .feedback.wrong { background: #7f1d1d; color: #fecaca; border: 1px solid #f87171; }
+        .result { background: #1e293b; border-radius: 12px; padding: 2rem; text-align: center; margin-top: 2rem; display: none; border: 1px solid #334155; }
+        .result h2 { font-size: 1.5rem; margin-bottom: 1rem; }
+        .result.pass { border-color: #4ade80; }
+        .result.fail { border-color: #f87171; }
+        .score { font-size: 3rem; font-weight: bold; }
+        .score.pass { color: #4ade80; }
+        .score.fail { color: #f87171; }
+        .pass-code { margin-top: 1rem; padding: 1rem; background: #14532d; border: 2px dashed #4ade80; border-radius: 8px; font-size: 1.5rem; font-weight: bold; color: #4ade80; letter-spacing: 0.1em; display: none; }
+        .pass-code-hint { margin-top: 0.5rem; font-size: 0.9rem; color: #94a3b8; display: none; }
+        .btn { padding: 0.75rem 2rem; border-radius: 8px; border: none; font-size: 1rem; cursor: pointer; margin-top: 1rem; font-weight: 600; }
+        .btn-submit { background: #3b82f6; color: white; }
+        .btn-submit:hover { background: #2563eb; }
+        .btn-submit:disabled { background: #475569; cursor: not-allowed; }
+        .btn-retry { background: #f87171; color: white; display: none; }
+        .btn-retry:hover { background: #ef4444; }
+        .btn-area { text-align: center; margin-top: 1.5rem; }
+        .q-number { display: inline-block; background: #3b82f6; color: white; width: 28px; height: 28px; border-radius: 50%; text-align: center; line-height: 28px; font-size: 0.85rem; margin-right: 0.5rem; }
+        code { background: #0f172a; padding: 0.1rem 0.4rem; border-radius: 4px; color: #a5f3fc; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Chapter 22 Quiz</h1>
+        <p class="subtitle">통합 테스트 — JWT · 미들웨어 · 에러 미들웨어 · PUT/PATCH</p>
+
+        <!-- Q1 -->
+        <div class="question" data-answer="3">
+            <h3><span class="q-number">1</span>회원가입 API와 로그인 API를 각각 단위 테스트로 점검했을 때 모두 통과했습니다. 그런데 "회원가입 직후 같은 계정으로 로그인" 시나리오에서 실패가 발견됐습니다. 이런 종류의 버그를 가장 잘 잡아내는 테스트는?</h3>
+            <div class="options">
+                <div class="option" data-value="1">단위 테스트를 더 꼼꼼히 만든다 — 각 함수의 모든 입력 케이스를 검증하면 모든 버그가 잡힌다</div>
+                <div class="option" data-value="2">정적 분석(타입 체크)을 강화한다 — TypeScript가 모든 런타임 버그를 막아준다</div>
+                <div class="option" data-value="3">통합 테스트로 사용자 시나리오 전체(회원가입 → 로그인 → 글쓰기)를 끝~끝으로 점검한다 — 부분 사이의 약속 어긋남을 잡는다</div>
+                <div class="option" data-value="4">QA에 맡기고 개발자는 단위 테스트만 책임진다</div>
+            </div>
+            <div class="feedback correct">정답! 각 단위는 멀쩡한데 합쳐지면 깨지는 버그(예: 회원가입은 평문 저장, 로그인은 해시 비교)는 단위 테스트로 절대 안 잡혀요. 통합 테스트가 잡는 영역이 바로 "부분 사이의 합의가 어긋난 부분"이에요.</div>
+            <div class="feedback wrong">오답! 단위 테스트만 늘려도 "각 부분은 잘 동작하는데 합치니 안 됨" 같은 버그는 못 잡아요. 타입 체크는 형식 오류만 잡지 약속(회원가입과 로그인이 같은 비밀번호 처리 방식을 쓰는지)은 검증 못합니다. 통합 테스트만이 "흐름 위에서만 드러나는 버그"를 잡을 수 있어요.</div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="question" data-answer="2">
+            <h3><span class="q-number">2</span>JWT 토큰의 가운데 부분(페이로드)을 <code>atob()</code>로 디코드하면 <code>{userId, email, exp}</code>가 그대로 보입니다. 그렇다면 누가 페이로드의 <code>userId</code>를 다른 사람 ID로 바꿔서 서버에 보내면 그 사람으로 위장할 수 있을까요?</h3>
+            <div class="options">
+                <div class="option" data-value="1">위장할 수 있다 — 페이로드가 디코드 가능한 이상 위변조도 막을 방법이 없다</div>
+                <div class="option" data-value="2">위장할 수 없다 — 토큰의 마지막 부분(서명)이 서버만 아는 비밀키로 만들어져서, 페이로드를 바꾸면 서명이 안 맞아 거부된다</div>
+                <div class="option" data-value="3">위장할 수 있다 — JWT는 원래 보안용이 아니라 그냥 데이터 전달용이다</div>
+                <div class="option" data-value="4">위장할 수 없다 — 페이로드가 사실 암호화되어 있어서 디코드한 게 진짜 값이 아니다</div>
+            </div>
+            <div class="feedback correct">정답! JWT 페이로드는 암호화가 아니라 인코딩(Base64)이라 누구나 볼 수 있어요. 하지만 마지막 "서명"은 서버의 비밀키로 만들어진 도장이라, 페이로드를 살짝만 바꿔도 서명이 안 맞아 즉시 거부돼요. 그래서 비밀번호 같은 민감 정보는 페이로드에 절대 안 넣지만, 위변조는 서명이 막아줍니다.</div>
+            <div class="feedback wrong">오답! 페이로드는 누구나 디코드해서 볼 수 있는 게 맞지만, 그렇다고 위변조가 통하진 않아요. 마지막 "서명"이 서버만 아는 비밀키로 만들어진 도장이라, 페이로드 한 글자만 바꿔도 서명이 어긋나서 거부됩니다. 그리고 페이로드는 암호화가 아니라 인코딩이에요 — 디코드한 값이 진짜 값입니다.</div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="question" data-answer="2">
+            <h3><span class="q-number">3</span>다음 인증 미들웨어가 토큰이 없는 요청을 받았을 때, 그 뒤의 라우트 핸들러는 어떻게 될까요?</h3>
+            <pre>function authMiddleware(req, res, next) {
+  const token = req.headers.authorization;
+  if (!token) {
+    return res.status(401).json({ error: '로그인이 필요합니다' });
+  }
+  // ... 토큰 검증 후
+  next();
+}
+
+router.post('/posts', authMiddleware, (req, res) => {
+  // 글 저장 코드
+});</pre>
+            <div class="options">
+                <div class="option" data-value="1">라우트 핸들러는 실행되지만, 응답이 두 번 나가서 에러가 발생한다</div>
+                <div class="option" data-value="2">라우트 핸들러는 단 한 줄도 실행되지 않는다 — 미들웨어가 <code>next()</code>를 부르지 않고 401 응답을 보냈기 때문</div>
+                <div class="option" data-value="3">Express가 자동으로 라우트 핸들러를 호출하므로 글이 저장된다 (보안 구멍!)</div>
+                <div class="option" data-value="4">라우트 핸들러는 실행되지만 <code>req.user</code>가 없어서 내부에서 에러가 난다</div>
+            </div>
+            <div class="feedback correct">정답! 미들웨어 흐름의 핵심: 다음 단계로 넘기려면 반드시 <code>next()</code>를 명시적으로 호출해야 해요. 미들웨어가 <code>res.status(401).json(...)</code>으로 응답을 끝내고 <code>next()</code>를 안 부르면, 그 뒤의 라우트 핸들러는 실행조차 안 됩니다. 이게 인증 보호의 핵심 동작이에요.</div>
+            <div class="feedback wrong">오답! Express는 자동으로 다음 단계로 넘어가지 않아요 — 반드시 <code>next()</code>를 호출해야 합니다. 미들웨어가 <code>next()</code> 없이 응답만 보내면 거기서 흐름이 끝나요. 그래서 라우트 핸들러는 단 한 줄도 실행되지 않고, 응답도 두 번 나가지 않아요. 이게 "미들웨어가 라우트 핸들러를 보호한다"는 말의 진짜 의미입니다.</div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="question" data-answer="3">
+            <h3><span class="q-number">4</span>아래 두 함수가 모두 <code>app.use(...)</code>로 등록됐을 때, Express는 어느 쪽을 "에러 미들웨어"로 인식할까요? 그 구분 기준은?</h3>
+            <pre>function A(req, res, next) {
+  console.log('logging');
+  next();
+}
+
+function B(err, req, res, next) {
+  res.status(500).json({ error: err.message });
+}</pre>
+            <div class="options">
+                <div class="option" data-value="1">A — 함수 이름이 "Middleware"로 끝나야 에러 미들웨어로 인식된다</div>
+                <div class="option" data-value="2">A — <code>console.log</code>가 들어 있어서 디버깅용으로 인식된다</div>
+                <div class="option" data-value="3">B — Express는 매개변수가 4개(<code>err</code>가 첫 번째)인 함수를 자동으로 에러 미들웨어로 인식한다</div>
+                <div class="option" data-value="4">둘 다 — 등록 순서대로 모든 미들웨어가 에러 처리에 참여한다</div>
+            </div>
+            <div class="feedback correct">정답! Express의 유일한 식별 기준은 매개변수 개수예요. 4개(err, req, res, next)면 자동으로 에러 미들웨어로 인식하고, 라우트 핸들러나 다른 미들웨어에서 <code>next(err)</code>를 호출하면 거기로 점프합니다. 이름이나 위치가 아니라 시그니처가 표식이에요.</div>
+            <div class="feedback wrong">오답! Express는 함수 이름이나 내용을 보지 않아요 — 오직 매개변수 개수로 구분합니다. 4개(첫 번째가 err)면 에러 미들웨어, 3개면 일반 미들웨어. 이게 유일한 표식이라서 일반 미들웨어를 만들 때는 절대 4개로 쓰면 안 됩니다.</div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="question" data-answer="2">
+            <h3><span class="q-number">5</span>회원이 자기 프로필에서 <strong>닉네임만</strong> 바꾸는 API를 만들려고 합니다. 이메일이나 비밀번호는 건드리지 않습니다. HTTP 메서드는 PUT과 PATCH 중 어느 쪽이 더 적합하고, 그 이유는?</h3>
+            <div class="options">
+                <div class="option" data-value="1">PUT — 어떤 수정이든 PUT을 쓰는 게 REST의 원칙이다</div>
+                <div class="option" data-value="2">PATCH — 리소스의 일부 필드만 수정하는 의미라 적합하다 (PUT은 전체 교체의 의미라 닉네임 외의 필드도 함께 보내야 하는 부담이 있음)</div>
+                <div class="option" data-value="3">PUT — PATCH는 GET처럼 데이터 조회에만 쓰는 메서드다</div>
+                <div class="option" data-value="4">상관없다 — PUT과 PATCH는 의미가 완전히 동일하다</div>
+            </div>
+            <div class="feedback correct">정답! PUT은 "전체 교체"의 의미라 모든 필드를 보내야 한다는 뉘앙스가 있고, PATCH는 "일부 수정"의 의미예요. 닉네임만 바꿀 때는 PATCH가 의도를 더 정확히 표현해줍니다. 실제로 우리 프로젝트의 글 수정 API도 일부 필드만 받는 PATCH로 구현돼 있어요(<code>posts.ts</code>의 <code>router.patch('/:id', ...)</code>).</div>
+            <div class="feedback wrong">오답! PUT과 PATCH는 의미가 달라요. PUT = 전체 교체(모든 필드를 다시 받아 통째로 갈아끼움), PATCH = 일부 수정(받은 필드만 변경). 닉네임 하나만 바꿀 땐 PATCH가 의도에 정확히 맞습니다. PATCH는 조회용이 아니에요(조회는 GET).</div>
+        </div>
+
+        <div class="btn-area">
+            <button class="btn btn-submit" id="submitBtn" disabled>제출하기</button>
+            <button class="btn btn-retry" id="retryBtn" onclick="location.reload()">다시 풀기</button>
+        </div>
+
+        <div class="result" id="result">
+            <h2 id="resultTitle"></h2>
+            <div class="score" id="resultScore"></div>
+            <p id="resultMsg" style="margin-top: 1rem; color: #94a3b8;"></p>
+            <div class="pass-code" id="passCode"></div>
+            <div class="pass-code-hint" id="passCodeHint">↑ 이 코드를 Claude에게 보내주세요</div>
+        </div>
+    </div>
+
+    <script>
+        const questions = document.querySelectorAll('.question');
+        const submitBtn = document.getElementById('submitBtn');
+        const answers = {};
+
+        questions.forEach((q, idx) => {
+            const options = q.querySelectorAll('.option');
+            options.forEach(opt => {
+                opt.addEventListener('click', () => {
+                    if (opt.classList.contains('correct') || opt.classList.contains('wrong')) return;
+                    options.forEach(o => o.classList.remove('selected'));
+                    opt.classList.add('selected');
+                    answers[idx] = opt.dataset.value;
+                    submitBtn.disabled = Object.keys(answers).length < questions.length;
+                });
+            });
+        });
+
+        submitBtn.addEventListener('click', () => {
+            let correct = 0;
+            questions.forEach((q, idx) => {
+                const answer = q.dataset.answer;
+                const selected = answers[idx];
+                const options = q.querySelectorAll('.option');
+                const feedbackCorrect = q.querySelector('.feedback.correct');
+                const feedbackWrong = q.querySelector('.feedback.wrong');
+
+                options.forEach(o => {
+                    o.style.pointerEvents = 'none';
+                    if (o.dataset.value === answer) o.classList.add('correct');
+                    if (o.dataset.value === selected && selected !== answer) o.classList.add('wrong');
+                });
+
+                if (selected === answer) {
+                    correct++;
+                    feedbackCorrect.classList.add('show');
+                } else {
+                    feedbackWrong.classList.add('show');
+                }
+            });
+
+            submitBtn.style.display = 'none';
+            const result = document.getElementById('result');
+            const title = document.getElementById('resultTitle');
+            const score = document.getElementById('resultScore');
+            const msg = document.getElementById('resultMsg');
+            const passCode = document.getElementById('passCode');
+            const passCodeHint = document.getElementById('passCodeHint');
+            const retryBtn = document.getElementById('retryBtn');
+
+            result.style.display = 'block';
+            score.textContent = `${correct} / ${questions.length}`;
+
+            if (correct >= 4) {
+                result.classList.add('pass');
+                score.classList.add('pass');
+                title.textContent = correct === questions.length ? '완벽합니다!' : '통과!';
+                msg.textContent = '통합 테스트 감각이 잡혔어요! 전체 흐름을 보는 눈이 생겼습니다.';
+                passCode.textContent = 'PASS-22-V8M3';
+                passCode.style.display = 'block';
+                passCodeHint.style.display = 'block';
+            } else {
+                result.classList.add('fail');
+                score.classList.add('fail');
+                title.textContent = '아쉽습니다';
+                msg.textContent = '4문제 이상 맞아야 통과입니다. 해설을 확인하고 다시 도전해보세요!';
+                retryBtn.style.display = 'inline-block';
+            }
+        });
+    </script>
+</body>
+</html>
