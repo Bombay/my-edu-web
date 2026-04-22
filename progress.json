@@ -2,8 +2,8 @@
   "learner": "",
   "currentChapter": "23-deploy-prep",
   "totalChapters": 24,
-  "completedChapters": 22,
-  "lastUpdated": "2026-04-21",
+  "completedChapters": 23,
+  "lastUpdated": "2026-04-22",
   "chapters": {
     "01-environment-setup": {
       "status": "completed",
@@ -182,12 +182,12 @@
       "description": "전체 흐름 점검: 회원가입→로그인→게시판→글쓰기 시나리오, JWT 페이로드 디코드, 인증/에러 미들웨어 동작 확인, 컨벤션 불일치 발견"
     },
     "23-deploy-prep": {
-      "status": "pending",
-      "startedAt": null,
-      "completedAt": null,
-      "quizPassed": false,
-      "sourceFiles": ["vercel.json"],
-      "description": "빌드, 환경변수, Supabase 설정, 프로덕션 구성"
+      "status": "completed",
+      "startedAt": "2026-04-22",
+      "completedAt": "2026-04-22",
+      "quizPassed": true,
+      "sourceFiles": ["src/backend/.env.example", "src/backend/src/index.ts", "src/backend/src/routes/auth.ts", "src/backend/src/middleware/auth.ts", "src/backend/package.json", "src/frontend/.env.example", "src/frontend/.env.production", "src/frontend/src/api/index.ts", "src/frontend/env.d.ts"],
+      "description": "환경변수 분리(dotenv/process.env, Vite VITE_*), 빌드 산출물 확인(dist/), Supabase 새 조직+프로젝트+스키마 준비"
     },
     "24-deploy": {
       "status": "pending",

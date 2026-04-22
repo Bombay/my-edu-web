@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import postsRouter from "./routes/posts";
@@ -17,6 +18,7 @@ app.use("/api/boards", boardsRouter);
 // 에러 미들웨어 (반드시 라우터보다 아래에!)
 app.use(errorMiddleware);
 
+const PORT = Number(process.env.PORT) || 3000;
 app.listen(3000, () => {
   console.log("서버가 http://localhost:3000 에서 실행 중!");
 });
