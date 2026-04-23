@@ -1,32 +1,19 @@
-import Database from 'better-sqlite3';                                                               
-  import fs from 'fs';                                                                                 
-  import path from 'path';                                                                           
-                                                                                                       
-  const db = new Database('community.db');                                                             
-                                                                                                       
-  // WAL 모드: 읽기/쓰기 성능 향상                                                                     
-  db.pragma('journal_mode = WAL');                                                                     
-  // 외래 키 제약 활성화                                                                               
-  db.pragma('foreign_keys = ON');                                                                      
-                                                                                                       
-  // 마이그레이션 파일들을 순서대로 실행                                                               
-  const migrationsDir = path.join(__dirname, 'migrations');                                            
-  if (fs.existsSync(migrationsDir)) {                                                                  
-    const files = fs.readdirSync(migrationsDir)                                                        
-      .filter(f => f.endsWith('.sql'))                                                                 
-      .sort();                                                                                         
-                                                                                                       
-    for (const file of files) {                                                                        
-      const sql = fs.readFileSync(path.join(migrationsDir, file), 'utf-8');                            
-      try {                                                                                                                                                                
-          db.exec(sql);                                                                                                                                                    
-      } catch (err: any) {                                                                                                                                                 
-          // "duplicate column" 같은 이미 적용된 마이그레이션은 무시                                                                                                       
-          if (!err.message.includes('duplicate column')) {                                                                                                                 
-              throw err;                                                                                                                                                   
-          }                                                                                                                                                                
-      }                                                                                          
-    }                                                                                                  
-  }                                                                                                  
+import { Pool } from "pg";
 
-  export default db;
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  // Supabase 등 클라우드 PG는 SSL 필수
+  ssl: { rejectUnauthorized: false },
+});
+
+// 연결 확인 (선택)
+pool
+  .query("SELECT 1")
+  .then(() => {
+    console.log("PostgreSQL 연결 성공!");
+  })
+  .catch((err) => {
+    console.error("PostgreSQL 연결 실패:", err.message);
+  });
+
+export default pool;
