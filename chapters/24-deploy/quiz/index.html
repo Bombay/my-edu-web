@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>챕터 24 퀴즈 - 배포하기</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; padding: 2rem; }
+        .container { max-width: 760px; margin: 0 auto; }
+        h1 { text-align: center; margin-bottom: 0.5rem; font-size: 1.8rem; color: #f8fafc; }
+        .subtitle { text-align: center; color: #94a3b8; margin-bottom: 2rem; }
+        .question { background: #1e293b; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; border: 1px solid #334155; }
+        .question h3 { color: #38bdf8; margin-bottom: 1rem; font-size: 1.05rem; line-height: 1.5; }
+        .question pre { background: #0f172a; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; overflow-x: auto; font-size: 0.88rem; color: #a5f3fc; line-height: 1.5; }
+        .options { display: flex; flex-direction: column; gap: 0.5rem; }
+        .option { padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid #475569; cursor: pointer; transition: all 0.2s; background: #1e293b; }
+        .option:hover { border-color: #38bdf8; background: #1e3a5f; }
+        .option.selected { border-color: #38bdf8; background: #1e3a5f; }
+        .option.correct { border-color: #4ade80; background: #14532d; }
+        .option.wrong { border-color: #f87171; background: #7f1d1d; }
+        .feedback { margin-top: 0.75rem; padding: 0.75rem; border-radius: 8px; display: none; font-size: 0.95rem; line-height: 1.5; }
+        .feedback.show { display: block; }
+        .feedback.correct { background: #14532d; color: #bbf7d0; border: 1px solid #4ade80; }
+        .feedback.wrong { background: #7f1d1d; color: #fecaca; border: 1px solid #f87171; }
+        .result { background: #1e293b; border-radius: 12px; padding: 2rem; text-align: center; margin-top: 2rem; display: none; border: 1px solid #334155; }
+        .result h2 { font-size: 1.5rem; margin-bottom: 1rem; }
+        .result.pass { border-color: #4ade80; }
+        .result.fail { border-color: #f87171; }
+        .score { font-size: 3rem; font-weight: bold; }
+        .score.pass { color: #4ade80; }
+        .score.fail { color: #f87171; }
+        .pass-code { margin-top: 1rem; padding: 1rem; background: #14532d; border: 2px dashed #4ade80; border-radius: 8px; font-size: 1.5rem; font-weight: bold; color: #4ade80; letter-spacing: 0.1em; display: none; }
+        .pass-code-hint { margin-top: 0.5rem; font-size: 0.9rem; color: #94a3b8; display: none; }
+        .btn { padding: 0.75rem 2rem; border-radius: 8px; border: none; font-size: 1rem; cursor: pointer; margin-top: 1rem; font-weight: 600; }
+        .btn-submit { background: #3b82f6; color: white; }
+        .btn-submit:hover { background: #2563eb; }
+        .btn-submit:disabled { background: #475569; cursor: not-allowed; }
+        .btn-retry { background: #f87171; color: white; display: none; }
+        .btn-retry:hover { background: #ef4444; }
+        .btn-area { text-align: center; margin-top: 1.5rem; }
+        .q-number { display: inline-block; background: #3b82f6; color: white; width: 28px; height: 28px; border-radius: 50%; text-align: center; line-height: 28px; font-size: 0.85rem; margin-right: 0.5rem; }
+        code { background: #0f172a; padding: 0.1rem 0.4rem; border-radius: 4px; color: #a5f3fc; font-size: 0.9em; }
+        .celebrate { text-align: center; margin-top: 2rem; padding: 1.5rem; background: linear-gradient(135deg, #14532d 0%, #1e3a5f 100%); border: 2px solid #4ade80; border-radius: 12px; display: none; }
+        .celebrate h3 { color: #fde047; font-size: 1.3rem; margin-bottom: 0.5rem; }
+        .celebrate p { color: #bbf7d0; line-height: 1.6; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Chapter 24 Quiz</h1>
+        <p class="subtitle">배포하기 — SQLite→PG 마이그레이션 · Vercel · Render</p>
+
+        <!-- Q1 -->
+        <div class="question" data-answer="3">
+            <h3><span class="q-number">1</span>같은 SQL을 실행하는데 better-sqlite3와 pg(PostgreSQL)가 코드 모양이 다른 이유는?</h3>
+            <pre>// before (SQLite)
+const user = db.prepare('SELECT * FROM users WHERE id = ?').get(1)
+
+// after (pg)
+const result = await pool.query('SELECT * FROM users WHERE id = $1', [1])
+const user = result.rows[0]</pre>
+            <div class="options">
+                <div class="option" data-value="1">PostgreSQL은 SQL을 못 읽어서 JS 코드로 변환해야 한다</div>
+                <div class="option" data-value="2">pg는 더 새로 나온 라이브러리라 작성자가 멋있게 짠 것</div>
+                <div class="option" data-value="3">SQLite는 같은 컴퓨터 안의 파일이라 즉시(동기) 응답 가능하지만, PostgreSQL은 네트워크 너머의 서버라 응답을 기다려야(비동기/await) 함 — 그래서 결과 형태도 다름</div>
+                <div class="option" data-value="4">TypeScript를 써서 타입이 다르게 보이는 것뿐, 실제 동작은 동일</div>
+            </div>
+            <div class="feedback correct">정답! 핵심은 "데이터베이스가 어디 있는가"예요. SQLite는 같은 컴퓨터의 파일을 직접 읽고 쓰니 함수가 바로 결과를 줄 수 있어요(동기). PostgreSQL은 네트워크 건너편의 별도 서버라 요청→응답 왕복이 필요하고, 그동안 다른 일을 못하면 안 되니 await로 기다리는 비동기 패턴을 씁니다. 결과도 row뿐 아니라 메타데이터를 함께 담은 객체(`result.rows`)로 와요.</div>
+            <div class="feedback wrong">오답! 진짜 이유는 "DB가 같은 컴퓨터에 있냐, 네트워크 너머에 있냐"입니다. SQLite는 로컬 파일 → 동기(즉시 응답). PostgreSQL은 원격 서버 → 비동기(await로 응답 대기). 코드 스타일이 멋이거나 임의 규칙이 아니라, 통신 모델이 달라서 강제되는 것이에요.</div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="question" data-answer="2">
+            <h3><span class="q-number">2</span>PostgreSQL 쿼리에서 <code>?</code> 대신 <code>$1, $2</code>를 쓰는 이유로 가장 정확한 것은?</h3>
+            <pre>// SQLite
+db.prepare('INSERT INTO posts (title, content) VALUES (?, ?)').run(t, c)
+
+// PostgreSQL
+await pool.query('INSERT INTO posts (title, content) VALUES ($1, $2)', [t, c])</pre>
+            <div class="options">
+                <div class="option" data-value="1">PostgreSQL은 보안 기능이 없어서 번호를 직접 매겨야 한다</div>
+                <div class="option" data-value="2">DB마다 자리표시자(placeholder) 방언이 다르기 때문 — SQLite/MySQL은 <code>?</code>, PostgreSQL은 <code>$1, $2</code>로 위치를 명시. 둘 다 SQL 인젝션 방지라는 같은 목적</div>
+                <div class="option" data-value="3"><code>?</code>는 PostgreSQL에서 예약어라 컬럼명으로 못 써서</div>
+                <div class="option" data-value="4">JavaScript의 템플릿 리터럴(<code>${"${...}"}</code>) 표기에서 따온 것</div>
+            </div>
+            <div class="feedback correct">정답! 자리표시자는 사용자 입력을 SQL과 안전하게 분리하는 보안 장치예요(SQL 인젝션 방지). 목적은 같지만 표기법은 DB마다 달라요 — SQLite/MySQL은 위치 기반 <code>?</code>, PostgreSQL은 번호 기반 <code>$1, $2</code>(같은 값 재사용 가능), Oracle은 이름 기반 <code>:name</code>. 23챕터 퀴즈에서 본 SQL 방언의 또 다른 예입니다.</div>
+            <div class="feedback wrong">오답! 자리표시자의 본질적 목적은 같습니다 — 사용자 입력을 안전하게 SQL에 끼워넣어 인젝션을 막는 것. 단지 표기법이 DB마다 달라요(SQL 방언). PG는 번호로 위치를 명시(같은 값 여러 번 쓰기 편함). 보안 부재나 예약어 문제는 아니에요.</div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="question" data-answer="2">
+            <h3><span class="q-number">3</span>왜 프론트엔드는 <strong>Vercel</strong>에 올리고, 백엔드는 <strong>Render</strong>에 올렸을까요?</h3>
+            <div class="options">
+                <div class="option" data-value="1">두 서비스 다 무료라 비용을 분산하기 위해</div>
+                <div class="option" data-value="2">프론트는 빌드 결과(HTML/JS/CSS)만 있으면 되는 정적 호스팅(서버 실행 불필요)이라 Vercel에 적합. 백엔드는 Express 서버가 24시간 떠서 요청을 받아야 해서 서버 실행 환경(Render)이 필요</div>
+                <div class="option" data-value="3">Vercel은 Vue 전용, Render는 Node.js 전용 서비스라서 강제됨</div>
+                <div class="option" data-value="4">한 서비스에 다 올리면 보안상 위험해서 분리해야 한다</div>
+            </div>
+            <div class="feedback correct">정답! 본질은 "실행 모델의 차이"예요. 프론트는 사용자 브라우저가 다운로드해서 직접 실행하는 정적 파일 묶음 → 그저 잘 분배해주는 CDN(정적 호스팅)이면 충분. 백엔드는 우리가 작성한 Express 코드가 클라우드 컴퓨터 위에서 항상 켜져 있어야 요청을 받아 처리할 수 있음 → 진짜 컴퓨터(서버 실행 환경)가 필요. Vercel/Render는 서로 다른 모델에 특화된 서비스를 무료로 제공할 뿐.</div>
+            <div class="feedback wrong">오답! 핵심은 비용/브랜드/보안이 아니라 "실행 모델"이에요. 프론트는 빌드 결과(JS/HTML/CSS)를 사용자 브라우저로 그냥 보내주면 끝(정적 호스팅, 서버 안 켜져 있어도 OK). 백엔드는 우리 코드가 24시간 클라우드에서 켜져 있어야 동작(서버 실행 환경 필요). 두 요구가 다르니 적합한 서비스를 선택한 것.</div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="question" data-answer="3">
+            <h3><span class="q-number">4</span>Render 무료 티어에서 첫 요청이 30초~1분 정도 느린 현상(콜드 스타트)이 나타나는 이유는?</h3>
+            <div class="options">
+                <div class="option" data-value="1">PostgreSQL 비밀번호가 매번 자동 변경돼서 인증이 다시 일어나기 때문</div>
+                <div class="option" data-value="2">사용자 브라우저가 캐시를 매번 비우기 때문</div>
+                <div class="option" data-value="3">무료 티어는 15분 무요청이면 서비스를 잠재워(spin down) 자원을 회수함. 다음 요청이 오면 컨테이너를 다시 켜고 npm start로 서버를 띄우는 시간이 걸려서</div>
+                <div class="option" data-value="4">Vercel과 Render 사이의 네트워크 거리 때문</div>
+            </div>
+            <div class="feedback correct">정답! 무료 티어는 자원이 한정돼서 "안 쓰면 끔" 정책을 씁니다. 15분 동안 요청이 없으면 컨테이너를 종료(spin down)해 다른 사용자에게 자원을 양보. 다음 요청이 오면 다시 컨테이너를 띄우고 Node 프로세스 + DB 연결까지 초기화하느라 시간이 걸림. 유료 플랜으로 업그레이드하면 항상 켜진 상태가 유지돼요. 운영 서비스에서는 ping 스케줄러 등으로 우회하기도 해요.</div>
+            <div class="feedback wrong">오답! 콜드 스타트의 원인은 "무료 티어의 비활성 시 종료" 정책이에요. 비밀번호 변경, 브라우저 캐시, 네트워크 거리 같은 건 매 요청마다 영향을 주는 요소가 아니에요. Render 무료 티어는 15분 무요청 → 컨테이너 종료, 다음 요청 시 다시 시동(빌드는 안 다시 함, 그저 실행만 다시) → 그 시간이 30초~1분.</div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="question" data-answer="2">
+            <h3><span class="q-number">5</span>Render에 <code>JWT_SECRET</code> 환경변수를 등록하지 않았더니 로그인 시 500 에러("secretOrPrivateKey must have a value")가 발생했어요. 이 사건이 알려주는 것은?</h3>
+            <pre>const token = jwt.sign(
+  { userId: user.id, email: user.email },
+  process.env.JWT_SECRET!,   // ← undefined면 에러
+  { expiresIn: "24h" },
+)</pre>
+            <div class="options">
+                <div class="option" data-value="1">로컬에서만 환경변수를 쓰면 되고, 배포 환경에는 따로 등록할 필요 없음</div>
+                <div class="option" data-value="2"><code>.env</code>는 Git에 안 올라가므로(.gitignore), 배포 환경에는 우리가 따로 등록해야 함. <strong>로컬 OK ≠ 배포 OK</strong> — 환경별 점검이 필수</div>
+                <div class="option" data-value="3">JWT 라이브러리에 버그가 있어서 발생한 일시적 현상</div>
+                <div class="option" data-value="4">PostgreSQL이 JWT_SECRET을 자동으로 관리해주는 기능을 켜야 함</div>
+            </div>
+            <div class="feedback correct">정답! 환경변수 분리(23챕터)의 진짜 이유가 24챕터에서 드러난 거예요. <code>.env</code>는 비밀이라 Git에 안 올라가니 → 배포 서버는 그 값을 모름 → 우리가 직접 등록해야 함. 등록을 빼먹으면 <code>process.env.JWT_SECRET</code>가 undefined가 되고 jwt.sign이 즉시 에러. "로컬에서 됐으니 배포에서도 되겠지"는 환경변수 누락으로 자주 깨집니다. 배포 후에는 환경변수 체크리스트를 반드시 점검해야 해요.</div>
+            <div class="feedback wrong">오답! 이건 코드 버그도, DB 기능도, 일시적 현상도 아니에요. 환경변수의 본질을 보여주는 사건입니다. <code>.env</code>는 .gitignore로 제외되니 배포 서버는 값을 모름 → 우리가 클라우드 콘솔(Render Environment 탭)에서 직접 등록해야 함. 누락하면 <code>process.env.X</code>가 undefined가 돼서 의존하는 코드가 깨져요. "로컬 동작 ≠ 배포 동작"이라는 큰 교훈.</div>
+        </div>
+
+        <div class="btn-area">
+            <button class="btn btn-submit" id="submitBtn" disabled>제출하기</button>
+            <button class="btn btn-retry" id="retryBtn" onclick="location.reload()">다시 풀기</button>
+        </div>
+
+        <div class="result" id="result">
+            <h2 id="resultTitle"></h2>
+            <div class="score" id="resultScore"></div>
+            <p id="resultMsg" style="margin-top: 1rem; color: #94a3b8;"></p>
+            <div class="pass-code" id="passCode"></div>
+            <div class="pass-code-hint" id="passCodeHint">↑ 이 코드를 Claude에게 보내주세요</div>
+        </div>
+
+        <div class="celebrate" id="celebrate">
+            <h3>🎊 24챕터 + 전체 커리큘럼 완주! 🎊</h3>
+            <p>비개발자에서 시작해 SQL · API · 인증 · Vue · 배포까지 — 풀스택 한 사이클을 직접 손으로 만들어냈어요.<br>이 사이트는 지금 진짜 인터넷에 살아 있습니다.</p>
+        </div>
+    </div>
+
+    <script>
+        const questions = document.querySelectorAll('.question');
+        const submitBtn = document.getElementById('submitBtn');
+        const answers = {};
+
+        questions.forEach((q, idx) => {
+            const options = q.querySelectorAll('.option');
+            options.forEach(opt => {
+                opt.addEventListener('click', () => {
+                    if (opt.classList.contains('correct') || opt.classList.contains('wrong')) return;
+                    options.forEach(o => o.classList.remove('selected'));
+                    opt.classList.add('selected');
+                    answers[idx] = opt.dataset.value;
+                    submitBtn.disabled = Object.keys(answers).length < questions.length;
+                });
+            });
+        });
+
+        submitBtn.addEventListener('click', () => {
+            let correct = 0;
+            questions.forEach((q, idx) => {
+                const answer = q.dataset.answer;
+                const selected = answers[idx];
+                const options = q.querySelectorAll('.option');
+                const feedbackCorrect = q.querySelector('.feedback.correct');
+                const feedbackWrong = q.querySelector('.feedback.wrong');
+
+                options.forEach(o => {
+                    o.style.pointerEvents = 'none';
+                    if (o.dataset.value === answer) o.classList.add('correct');
+                    if (o.dataset.value === selected && selected !== answer) o.classList.add('wrong');
+                });
+
+                if (selected === answer) {
+                    correct++;
+                    feedbackCorrect.classList.add('show');
+                } else {
+                    feedbackWrong.classList.add('show');
+                }
+            });
+
+            submitBtn.style.display = 'none';
+            const result = document.getElementById('result');
+            const title = document.getElementById('resultTitle');
+            const score = document.getElementById('resultScore');
+            const msg = document.getElementById('resultMsg');
+            const passCode = document.getElementById('passCode');
+            const passCodeHint = document.getElementById('passCodeHint');
+            const retryBtn = document.getElementById('retryBtn');
+            const celebrate = document.getElementById('celebrate');
+
+            result.style.display = 'block';
+            score.textContent = `${correct} / ${questions.length}`;
+
+            if (correct >= 4) {
+                result.classList.add('pass');
+                score.classList.add('pass');
+                title.textContent = correct === questions.length ? '완벽합니다! 🎉' : '통과!';
+                msg.textContent = '배포의 진짜 풍경을 잘 잡았어요!';
+                passCode.textContent = 'PASS-24-K7B2';
+                passCode.style.display = 'block';
+                passCodeHint.style.display = 'block';
+                celebrate.style.display = 'block';
+            } else {
+                result.classList.add('fail');
+                score.classList.add('fail');
+                title.textContent = '아쉽습니다';
+                msg.textContent = '4문제 이상 맞아야 통과입니다. 해설을 확인하고 다시 도전해보세요!';
+                retryBtn.style.display = 'inline-block';
+            }
+        });
+    </script>
+</body>
+</html>

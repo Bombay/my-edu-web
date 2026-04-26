@@ -1,9 +1,9 @@
 {
   "learner": "",
-  "currentChapter": "23-deploy-prep",
+  "currentChapter": "24-deploy",
   "totalChapters": 24,
-  "completedChapters": 23,
-  "lastUpdated": "2026-04-22",
+  "completedChapters": 24,
+  "lastUpdated": "2026-04-26",
   "chapters": {
     "01-environment-setup": {
       "status": "completed",
@@ -190,12 +190,12 @@
       "description": "환경변수 분리(dotenv/process.env, Vite VITE_*), 빌드 산출물 확인(dist/), Supabase 새 조직+프로젝트+스키마 준비"
     },
     "24-deploy": {
-      "status": "pending",
-      "startedAt": null,
-      "completedAt": null,
-      "quizPassed": false,
-      "sourceFiles": [],
-      "description": "SQLite→Supabase 마이그레이션, Vercel 배포, 라이브 URL 확인"
+      "status": "completed",
+      "startedAt": "2026-04-23",
+      "completedAt": "2026-04-26",
+      "quizPassed": true,
+      "sourceFiles": ["src/backend/src/db/index.ts", "src/backend/src/routes/auth.ts", "src/backend/src/routes/boards.ts", "src/backend/src/routes/posts.ts", "src/backend/.env.example", "src/frontend/.env.production"],
+      "description": "SQLite→PostgreSQL 코드 마이그레이션(pg Pool, async/await, $1, RETURNING), Render 백엔드 + Vercel 프론트 배포, 라이브 URL 동작 확인"
     }
   }
 }
